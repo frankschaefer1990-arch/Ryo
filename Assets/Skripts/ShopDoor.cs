@@ -2,25 +2,38 @@ using UnityEngine;
 
 public class ShopDoor : MonoBehaviour
 {
+    [Header("Shop Overlay")]
     public GameObject shopOverlay;
 
-    private bool playerInside = false;
+    private void Start()
+    {
+        // Sicherheit: Shop am Anfang geschlossen
+        if (shopOverlay != null)
+        {
+            shopOverlay.SetActive(false);
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Spieler betritt den Shopbereich
         if (other.CompareTag("Player"))
         {
-            if (!playerInside)
+            if (shopOverlay != null)
             {
-                // Shop öffnen
                 shopOverlay.SetActive(true);
-                playerInside = true;
             }
-            else
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        // Spieler verlässt den Shopbereich
+        if (other.CompareTag("Player"))
+        {
+            if (shopOverlay != null)
             {
-                // Shop schließen
                 shopOverlay.SetActive(false);
-                playerInside = false;
             }
         }
     }

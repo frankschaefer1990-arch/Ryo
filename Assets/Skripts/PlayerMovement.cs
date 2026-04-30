@@ -2,11 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
     public float speed = 5f;
-
-    [Header("Up Scale Fix")]
-    public float upScaleMultiplier = 1.1f;
+    public LayerMask wallLayer;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -19,33 +16,26 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        // Komponenten holen
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        // SpriteRenderer direkt suchen
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Falls SpriteRenderer auf Child sitzt
         if (spriteRenderer == null)
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
-        // Originalgröße speichern
         originalScale = spriteRenderer.transform.localScale;
 
-        // Standard Blickrichtung nach unten
         lastMovement = Vector2.down;
 
-        // Sicherheitseinstellungen für Top Down
+        rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
     }
 
     void Update()
     {
-        // Input lesen
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -55,25 +45,16 @@ public class PlayerMovement : MonoBehaviour
             movement.x = 0;
         }
 
-        // Normieren
         movement = movement.normalized;
 
         bool isMoving = movement.magnitude > 0;
 
-        // Letzte Bewegungsrichtung speichern
         if (isMoving)
         {
-            if (movement.y > 0)
-                lastMovement = Vector2.up;
-            else if (movement.y < 0)
-                lastMovement = Vector2.down;
-            else if (movement.x > 0)
-                lastMovement = Vector2.right;
-            else if (movement.x < 0)
-                lastMovement = Vector2.left;
+            lastMovement = movement;
         }
 
-        // Animator Werte setzen
+        // Animator
         if (animator != null)
         {
             animator.SetFloat("MoveX", lastMovement.x);
@@ -81,19 +62,10 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isMoving", isMoving);
         }
 
-        // Standardgröße
-        float scaleMultiplier = 1f;
-
-        // Nach oben optisch anpassen
-        if (lastMovement == Vector2.up)
-        {
-            scaleMultiplier = upScaleMultiplier;
-        }
-
-        // Links/Rechts Flip
+        // Scale Fix
+        float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
         float xDirection = lastMovement.x < 0 ? -1f : 1f;
 
-        // Sprite skalieren
         if (spriteRenderer != null)
         {
             spriteRenderer.transform.localScale = new Vector3(
@@ -104,9 +76,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    [Header("Up Scale Fix")]
+    public float upScaleMultiplier = 1.1f;
+
     void FixedUpdate()
     {
-        // Stabilere Bewegung für Top Down
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        if (movement == Vector2.zero)
+            return;
+
+        Vector2 targetPosition = rb.position + movement * speed * Time.fixedDeltaTime;
+
+        // Prüfen ob Wand im Weg
+        Collider2D hit = Physics2D.OverlapCircle(targetPosition, 0.1f, wallLayer);
+
+        if (hit == null)
+        {
+            rb.MovePosition(targetPosition);
+        }
     }
 }
