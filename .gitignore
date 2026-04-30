@@ -1,0 +1,44 @@
+[Ll]ibrary/
+[Ll]ibrary/**
+[Tt]emp/
+[Tt]emp/**
+[Oo]bj/
+[Oo]bj/**
+[Ll]ogs/
+[Ll]ogs/**
+UserSettings/
+UserSettings/**
+[Bb]uild/
+[Bb]uild/**
+[Bb]uilds/
+[Bb]uilds/**
+MemoryCaptures/
+MemoryCaptures/**
+Recordings/
+Recordings/**
+.vs/
+.vscode/
+.idea/
+
+# Visual Studio / Rider
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity generated
+sysinfo.txt
+
+# OS files
+.DS_Store
+Thumbs.db

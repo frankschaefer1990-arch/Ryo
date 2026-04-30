@@ -1,0 +1,17 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SplashScreenLoader : MonoBehaviour
+{
+    public float delay = 2f;
+
+    void Start()
+    {
+        Invoke(nameof(LoadNextScene), delay);
+    }
+
+    void LoadNextScene()
+    {
+        SceneManager.LoadScene("Legend of Ryo");
+    }
+}
