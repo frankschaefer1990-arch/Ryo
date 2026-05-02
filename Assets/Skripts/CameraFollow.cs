@@ -5,11 +5,14 @@ public class CameraFollow : MonoBehaviour
     [Header("Player")]
     public Transform player;
 
-    [Header("Map Bounds")]
-    public float minX = -17f;
-    public float maxX = 17f;
-    public float minY = -17f;
-    public float maxY = 17f;
+    [Header("Camera Bounds")]
+    public BoxCollider2D boundsCollider;
+
+    [Header("Current Bounds (Auto)")]
+    public float minX;
+    public float maxX;
+    public float minY;
+    public float maxY;
 
     private float camHalfHeight;
     private float camHalfWidth;
@@ -18,24 +21,65 @@ public class CameraFollow : MonoBehaviour
     {
         Camera cam = GetComponent<Camera>();
 
-        // Hälfte der sichtbaren Kamera berechnen
+        if (cam == null)
+        {
+            Debug.LogError("Keine Camera Komponente gefunden!");
+            return;
+        }
+
+        // Sichtbare Kamerahälfte berechnen
         camHalfHeight = cam.orthographicSize;
         camHalfWidth = camHalfHeight * cam.aspect;
+
+        // Bounds initial laden
+        UpdateBounds();
     }
 
+    // =========================
+    // BOUNDS AUTOMATISCH AKTUALISIEREN
+    // =========================
+    public void UpdateBounds()
+    {
+        if (boundsCollider == null)
+        {
+            Debug.LogError("CameraBounds Collider fehlt!");
+            return;
+        }
+
+        Bounds bounds = boundsCollider.bounds;
+
+        minX = bounds.min.x;
+        maxX = bounds.max.x;
+        minY = bounds.min.y;
+        maxY = bounds.max.y;
+
+        Debug.Log("Camera Bounds aktualisiert: " +
+                  "X(" + minX + " / " + maxX + ") " +
+                  "Y(" + minY + " / " + maxY + ")");
+    }
+
+    // =========================
+    // FOLLOW
+    // =========================
     void LateUpdate()
     {
-        // Falls kein Player zugewiesen ist -> nichts tun
-        if (player == null) return;
+        if (player == null)
+            return;
 
-        // Kamera X innerhalb der Map halten
+        if (boundsCollider == null)
+            return;
+
+        // Falls Bounds im Editor geändert wurden
+        UpdateBounds();
+
+        // X clamp
         float clampedX = Mathf.Clamp(
             player.position.x,
             minX + camHalfWidth,
             maxX - camHalfWidth
         );
 
-        // Kamera Y innerhalb der Map halten
+        // Y clamp
         float clampedY = Mathf.Clamp(
             player.position.y,
             minY + camHalfHeight,

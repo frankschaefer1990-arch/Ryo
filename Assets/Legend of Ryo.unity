@@ -4922,6 +4922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   player: {fileID: 194784989}
+  boundsCollider: {fileID: 782231015}
   minX: -19
   maxX: 19
   minY: -19
@@ -5618,7 +5619,6 @@ GameObject:
   - component: {fileID: 564032596}
   - component: {fileID: 564032595}
   - component: {fileID: 564032594}
-  - component: {fileID: 564032597}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -5687,18 +5687,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &564032597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564032593}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcd1f767301a40646bfcafff5b99a9c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PersistentUI
 --- !u!1 &579820084
 GameObject:
   m_ObjectHideFlags: 0
@@ -7358,7 +7346,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -8607,7 +8595,6 @@ GameObject:
   - component: {fileID: 926080450}
   - component: {fileID: 926080449}
   - component: {fileID: 926080448}
-  - component: {fileID: 926080451}
   - component: {fileID: 926080452}
   m_Layer: 5
   m_Name: Canvas
@@ -8703,18 +8690,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &926080451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926080446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcd1f767301a40646bfcafff5b99a9c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PersistentUI
 --- !u!114 &926080452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10683,6 +10658,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1104910415}
+  - component: {fileID: 1104910416}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -10705,6 +10681,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1104910416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104910414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f34bc2b4b1b89e746a37cba214fbd8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  player: {fileID: 1591878153}
+  canvas: {fileID: 926080446}
+  eventSystem: {fileID: 564032593}
+  spawnPointName: 
 --- !u!1 &1125166984
 GameObject:
   m_ObjectHideFlags: 0

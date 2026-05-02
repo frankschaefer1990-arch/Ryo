@@ -1,20 +1,16 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class TempleCameraIntro : MonoBehaviour
 {
     [Header("References")]
-    public Transform introPoint;
-    public Transform player;
+    public Transform introPoint;          // Startpunkt oben beim Skelett/Enemy
+    public Transform player;              // Persistenter Player
     public CameraFollow cameraFollow;
 
     [Header("Intro Timing")]
     public float waitAtIntroPoint = 1.5f;
     public float panDuration = 2.5f;
-
-    [Header("Camera Offset")]
-    public float playerYOffset = 2f;
 
     private bool introRunning = false;
 
@@ -25,14 +21,19 @@ public class TempleCameraIntro : MonoBehaviour
 
     private IEnumerator BeginIntro()
     {
-        // Schutz vor Doppelstart
+        // Doppelstart verhindern
         if (introRunning)
             yield break;
 
         introRunning = true;
 
-        // WICHTIG:
-        // Player nach Szenenwechsel neu suchen
+        // CameraFollow automatisch holen
+        if (cameraFollow == null)
+        {
+            cameraFollow = GetComponent<CameraFollow>();
+        }
+
+        // Player automatisch holen
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -43,7 +44,7 @@ public class TempleCameraIntro : MonoBehaviour
             }
         }
 
-        // Sicherheitscheck
+        // Sicherheitschecks
         if (introPoint == null)
         {
             Debug.LogError("TempleIntroPoint fehlt!");
@@ -56,19 +57,17 @@ public class TempleCameraIntro : MonoBehaviour
             yield break;
         }
 
-        // CameraFollow neu suchen falls nötig
-        if (cameraFollow == null)
-        {
-            cameraFollow = GetComponent<CameraFollow>();
-        }
-
-        // CameraFollow deaktivieren
+        // =========================
+        // CAMERA FOLLOW AUS
+        // =========================
         if (cameraFollow != null)
         {
             cameraFollow.enabled = false;
         }
 
-        // Kamera startet beim Intro Point
+        // =========================
+        // STARTPOSITION BEIM ENEMY
+        // =========================
         transform.position = new Vector3(
             introPoint.position.x,
             introPoint.position.y,
@@ -78,30 +77,44 @@ public class TempleCameraIntro : MonoBehaviour
         // Kurz warten
         yield return new WaitForSeconds(waitAtIntroPoint);
 
-        // Falls Player währenddessen zerstört wurde
-        if (player == null)
-        {
-            Debug.LogError("Player wurde während Intro zerstört!");
-            yield break;
-        }
-
+        // =========================
+        // STARTPOSITION
+        // =========================
         Vector3 startPosition = transform.position;
 
+        // =========================
+        // NUR Y ACHSE BEWEGEN
+        // =========================
+        Camera cam = GetComponent<Camera>();
+
+        float camHalfHeight = cam.orthographicSize;
+
+        // X bleibt fix auf IntroPoint
+        float fixedX = introPoint.position.x;
+
+        // Y bewegt sich zum Player innerhalb Bounds
+        float clampedY = Mathf.Clamp(
+            player.position.y,
+            cameraFollow.minY + camHalfHeight,
+            cameraFollow.maxY - camHalfHeight
+        );
+
         Vector3 targetPosition = new Vector3(
-            player.position.x,
-            player.position.y + playerYOffset,
+            fixedX,
+            clampedY,
             transform.position.z
         );
 
+        // =========================
+        // SANFTER VERTIKALER SWIPE
+        // =========================
         float elapsedTime = 0f;
 
-        // Langsames Gleiten
         while (elapsedTime < panDuration)
         {
-            // Extra Schutz:
             if (player == null)
             {
-                Debug.LogError("Player Referenz verloren!");
+                Debug.LogError("Player verloren!");
                 yield break;
             }
 
@@ -119,9 +132,14 @@ public class TempleCameraIntro : MonoBehaviour
         // Exakte Endposition
         transform.position = targetPosition;
 
-        // CameraFollow wieder aktivieren
+        // =========================
+        // CAMERA FOLLOW WIEDER AN
+        // =========================
         if (cameraFollow != null)
         {
+            // Player wieder zuweisen
+            cameraFollow.player = player;
+
             cameraFollow.enabled = true;
         }
 
