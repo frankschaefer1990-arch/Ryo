@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement")]
     public float speed = 5f;
     public LayerMask wallLayer;
+
+    [Header("Movement Lock")]
+    public bool canMove = true;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -13,6 +17,15 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lastMovement;
 
     private Vector3 originalScale;
+
+    [Header("Up Scale Fix")]
+    public float upScaleMultiplier = 1.1f;
+
+    [Header("Speed Scaling")]
+    public float baseMoveSpeed = 5f;
+    public float agilitySpeedBonus = 0.2f;
+
+    private PlayerStats playerStats;
 
     void Start()
     {
@@ -25,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
+        // PlayerStats holen
+        playerStats = GetComponent<PlayerStats>();
+
         originalScale = spriteRenderer.transform.localScale;
 
         lastMovement = Vector2.down;
@@ -36,6 +52,34 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // =========================
+        // SPEED SYSTEM (AGILITY)
+        // =========================
+        if (playerStats != null)
+        {
+            // AGI 1 = Base Speed
+            // Jeder weitere Punkt = +0.2
+            speed = baseMoveSpeed + ((playerStats.agility - 1) * agilitySpeedBonus);
+        }
+
+        // =========================
+        // MOVEMENT LOCK (z.B. Shop offen)
+        // =========================
+        if (!canMove)
+        {
+            movement = Vector2.zero;
+
+            if (animator != null)
+            {
+                animator.SetBool("isMoving", false);
+            }
+
+            return;
+        }
+
+        // =========================
+        // INPUT
+        // =========================
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -54,7 +98,9 @@ public class PlayerMovement : MonoBehaviour
             lastMovement = movement;
         }
 
-        // Animator
+        // =========================
+        // ANIMATOR
+        // =========================
         if (animator != null)
         {
             animator.SetFloat("MoveX", lastMovement.x);
@@ -62,7 +108,9 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isMoving", isMoving);
         }
 
-        // Scale Fix
+        // =========================
+        // SCALE FIX
+        // =========================
         float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
         float xDirection = lastMovement.x < 0 ? -1f : 1f;
 
@@ -76,11 +124,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    [Header("Up Scale Fix")]
-    public float upScaleMultiplier = 1.1f;
-
     void FixedUpdate()
     {
+        // Kein Bewegen wenn gelockt
+        if (!canMove)
+            return;
+
         if (movement == Vector2.zero)
             return;
 

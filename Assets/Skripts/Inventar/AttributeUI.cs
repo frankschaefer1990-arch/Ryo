@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AttributeUI : MonoBehaviour
 {
@@ -29,25 +30,103 @@ public class AttributeUI : MonoBehaviour
     public Button armorButton;
     public Button speedButton;
 
-    void Start()
+    private void Start()
     {
-        // Buttons klickbar vorbereiten
+        ReconnectPlayerStats();
+        SetupAllButtons();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // =========================
+    // SZENENWECHSEL FIX
+    // =========================
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ReconnectPlayerStats();
+        SetupAllButtons();
+    }
+
+    // =========================
+    // PLAYERSTATS IMMER NEU FINDEN
+    // =========================
+    private void ReconnectPlayerStats()
+    {
+        if (PlayerStats.Instance != null)
+        {
+            playerStats = PlayerStats.Instance;
+        }
+        else
+        {
+            playerStats = FindFirstObjectByType<PlayerStats>();
+        }
+
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats konnte nicht gefunden werden!");
+        }
+        else
+        {
+            Debug.Log("PlayerStats erfolgreich verbunden.");
+        }
+    }
+
+    // =========================
+    // BUTTONS KOMPLETT NEU VERBINDEN
+    // =========================
+    private void SetupAllButtons()
+    {
         SetupButton(strengthButton);
         SetupButton(vitalityButton);
         SetupButton(armorButton);
         SetupButton(speedButton);
+
+        if (strengthButton != null)
+        {
+            strengthButton.onClick.RemoveAllListeners();
+            strengthButton.onClick.AddListener(AddStrength);
+        }
+
+        if (vitalityButton != null)
+        {
+            vitalityButton.onClick.RemoveAllListeners();
+            vitalityButton.onClick.AddListener(AddVitality);
+        }
+
+        if (armorButton != null)
+        {
+            armorButton.onClick.RemoveAllListeners();
+            armorButton.onClick.AddListener(AddArmor);
+        }
+
+        if (speedButton != null)
+        {
+            speedButton.onClick.RemoveAllListeners();
+            speedButton.onClick.AddListener(AddSpeed);
+        }
     }
 
-    void Update()
+    private void Update()
     {
-        if (playerStats == null) return;
+        if (playerStats == null)
+        {
+            ReconnectPlayerStats();
+            return;
+        }
 
-        // ===== MAIN TEXT =====
+        // =========================
+        // MAIN TEXT
+        // =========================
         if (levelText != null)
             levelText.text = playerStats.level.ToString();
 
         if (hpText != null)
-            hpText.text = playerStats.currentHP + " / " + playerStats.maxHP;
+            hpText.text = playerStats.currentHealth + " / " + playerStats.maxHealth;
 
         if (expText != null)
             expText.text = playerStats.currentXP + " / " + playerStats.xpToNextLevel;
@@ -55,7 +134,9 @@ public class AttributeUI : MonoBehaviour
         if (attributePointsText != null)
             attributePointsText.text = playerStats.attributePoints.ToString();
 
-        // ===== ATTRIBUTE TEXT =====
+        // =========================
+        // ATTRIBUTE TEXT
+        // =========================
         if (strengthText != null)
             strengthText.text = playerStats.strength.ToString();
 
@@ -63,20 +144,24 @@ public class AttributeUI : MonoBehaviour
             vitalityText.text = playerStats.vitality.ToString();
 
         if (armorText != null)
-            armorText.text = playerStats.armor.ToString();
+            armorText.text = playerStats.defense.ToString();
 
         if (speedText != null)
-            speedText.text = playerStats.speed.ToString();
+            speedText.text = playerStats.agility.ToString();
 
-        // ===== HP BAR =====
+        // =========================
+        // HP BAR
+        // =========================
         if (hpBar != null)
         {
             hpBar.minValue = 0;
-            hpBar.maxValue = playerStats.maxHP;
-            hpBar.value = playerStats.currentHP;
+            hpBar.maxValue = playerStats.maxHealth;
+            hpBar.value = playerStats.currentHealth;
         }
 
-        // ===== EXP BAR =====
+        // =========================
+        // EXP BAR
+        // =========================
         if (expBar != null)
         {
             expBar.minValue = 0;
@@ -84,25 +169,31 @@ public class AttributeUI : MonoBehaviour
             expBar.value = playerStats.currentXP;
         }
 
-        // ===== BUTTON VISUALS =====
+        // =========================
+        // BUTTON VISUALS
+        // =========================
         UpdateButtonVisual(strengthButton);
         UpdateButtonVisual(vitalityButton);
         UpdateButtonVisual(armorButton);
         UpdateButtonVisual(speedButton);
     }
 
-    void SetupButton(Button button)
+    // =========================
+    // BUTTON SETUP
+    // =========================
+    private void SetupButton(Button button)
     {
         if (button == null) return;
 
-        // Wichtig:
-        // Kein Unity Abdunkeln
         button.transition = Selectable.Transition.None;
     }
 
-    void UpdateButtonVisual(Button button)
+    // =========================
+    // BUTTON VISUAL UPDATE
+    // =========================
+    private void UpdateButtonVisual(Button button)
     {
-        if (button == null) return;
+        if (button == null || playerStats == null) return;
 
         Image buttonImage = button.GetComponent<Image>();
 
@@ -110,18 +201,108 @@ public class AttributeUI : MonoBehaviour
 
         bool hasPoints = playerStats.attributePoints > 0;
 
-        // Klickbar nur bei Punkten
         button.interactable = hasPoints;
 
         if (hasPoints)
         {
-            // Volles sichtbares Rot
             buttonImage.color = new Color(1f, 1f, 1f, 1f);
         }
         else
         {
-            // Unsichtbar -> Graues Hintergrund Plus sichtbar
             buttonImage.color = new Color(1f, 1f, 1f, 0f);
         }
+    }
+
+    // =========================
+    // STRENGTH
+    // =========================
+    public void AddStrength()
+    {
+        if (playerStats == null) return;
+        if (!playerStats.UseAttributePoint()) return;
+
+        playerStats.strength += 1;
+
+        Debug.Log("STR erhöht auf: " + playerStats.strength);
+
+        playerStats.UpdateUI();
+    }
+
+    // =========================
+    // VITALITY
+    // =========================
+    public void AddVitality()
+    {
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats fehlt!");
+            return;
+        }
+
+        if (!playerStats.UseAttributePoint())
+        {
+            Debug.Log("Keine Attributpunkte!");
+            return;
+        }
+
+        playerStats.vitality += 1;
+
+        playerStats.RecalculateStats();
+
+        if (playerStats.currentHealth > playerStats.maxHealth)
+        {
+            playerStats.currentHealth = playerStats.maxHealth;
+        }
+
+        Debug.Log("VIT erhöht auf: " + playerStats.vitality);
+        Debug.Log("HP: " + playerStats.currentHealth + " / " + playerStats.maxHealth);
+
+        playerStats.UpdateUI();
+    }
+
+    // =========================
+    // ARMOR
+    // =========================
+    public void AddArmor()
+    {
+        if (playerStats == null) return;
+        if (!playerStats.UseAttributePoint()) return;
+
+        playerStats.defense += 1;
+
+        Debug.Log("DEF erhöht auf: " + playerStats.defense);
+
+        playerStats.UpdateUI();
+    }
+
+    // =========================
+    // SPEED
+    // =========================
+    public void AddSpeed()
+    {
+        if (playerStats == null) return;
+        if (!playerStats.UseAttributePoint()) return;
+
+        playerStats.agility += 1;
+
+        Debug.Log("AGI erhöht auf: " + playerStats.agility);
+
+        playerStats.UpdateUI();
+    }
+
+    // =========================
+    // PANEL SCHLIESSEN
+    // =========================
+    public void ClosePanel()
+    {
+        gameObject.SetActive(false);
+    }
+
+    // =========================
+    // PANEL TOGGLE
+    // =========================
+    public void TogglePanel()
+    {
+        gameObject.SetActive(!gameObject.activeSelf);
     }
 }

@@ -1,147 +1,207 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
+    public static PlayerStats Instance;
+
     [Header("Level System")]
     public int level = 1;
     public int currentXP = 0;
-    public int xpToNextLevel = 100;
+    public int xpToNextLevel = 10;
     public int attributePoints = 0;
 
-    [Header("Health")]
-    public int vitality = 5;
-    public int maxHP = 100;
-    public int currentHP = 75;
+    [Header("Core Attributes")]
+    public int strength = 1;
+    public int vitality = 1;
+    public int defense = 1;
+    public int agility = 1;
 
-    [Header("Attributes")]
-    public int strength = 3;
-    public int armor = 3;
-    public int speed = 4;
+    [Header("Health / Mana")]
+    public int baseHealth = 100;
+    public int maxHealth;
+    public int currentHealth;
 
-    [Header("Combat")]
-    public int baseDamage = 5;
+    public int maxMana = 50;
+    public int currentMana = 50;
 
-    [Header("Speed Settings")]
-    public float movementSpeed = 5f;
+    [Header("UI References")]
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI healthText;
+    public TextMeshProUGUI manaText;
+    public TextMeshProUGUI expText;
+    public TextMeshProUGUI attributePointsText;
 
-    private PlayerMovement playerMovement;
+    [Header("Attribute UI Text")]
+    public TextMeshProUGUI strengthText;
+    public TextMeshProUGUI vitalityText;
+    public TextMeshProUGUI defenseText;
+    public TextMeshProUGUI agilityText;
 
-    void Start()
+    // =========================
+    // SINGLETON + PERSISTENT
+    // =========================
+    private void Awake()
     {
-        playerMovement = GetComponent<PlayerMovement>();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
 
-        ApplySpeed();
-
-        ClampValues();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Update()
+    private void OnDestroy()
     {
-        ClampValues();
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
 
+    // =========================
+    // START
+    // =========================
+    private void Start()
+    {
+        RecalculateStats();
+
+        if (currentHealth <= 0)
+            currentHealth = maxHealth;
+
+        UpdateUI();
+    }
+
+    // =========================
+    // SCENE CHANGE FIX
+    // =========================
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ReconnectUI();
+        UpdateUI();
+    }
+
+    // =========================
+    // UI AUTOMATISCH NEU VERBINDEN
+    // =========================
+    private void ReconnectUI()
+    {
+        AttributeUI attributeUI = FindFirstObjectByType<AttributeUI>();
+
+        if (attributeUI != null)
+        {
+            levelText = attributeUI.levelText;
+            healthText = attributeUI.hpText;
+            expText = attributeUI.expText;
+            attributePointsText = attributeUI.attributePointsText;
+
+            strengthText = attributeUI.strengthText;
+            vitalityText = attributeUI.vitalityText;
+            defenseText = attributeUI.armorText;
+            agilityText = attributeUI.speedText;
+        }
+
+        Debug.Log("PlayerStats UI neu verbunden.");
+    }
+
+    private void Update()
+    {
         // =========================
-        // DEBUG TEST BUTTONS
+        // DEBUG KEYS
         // =========================
 
-        // Taste 1 = Spieler nimmt 10 Schaden
+        // 1 = Stärke +
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            TakeDamage(10);
-            Debug.Log("Spieler nimmt 10 Schaden | HP: " + currentHP + "/" + maxHP);
+            strength++;
+            Debug.Log("STR: " + strength);
+            UpdateUI();
         }
 
-        // Taste 2 = Spieler heilt 10 HP
+        // 2 = Schaden
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            Heal(10);
-            Debug.Log("Spieler heilt 10 HP | HP: " + currentHP + "/" + maxHP);
+            TakeDamage(10);
         }
 
-        // Taste 3 = Zeigt deinen aktuellen Schaden
+        // 3 = EXP
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            Debug.Log("Dein Schaden: " + GetDamage());
-        }
-
-        // Taste 4 = +50 EXP
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            GainXP(50);
-            Debug.Log("EXP erhalten | XP: " + currentXP + "/" + xpToNextLevel);
+            GainXP(5);
         }
     }
 
-    void ClampValues()
+    // =========================
+    // STATS BERECHNEN
+    // =========================
+    public void RecalculateStats()
     {
-        if (vitality < 1)
-            vitality = 1;
+        // Vitality 1 = 100 HP
+        maxHealth = baseHealth + ((vitality - 1) * 10);
 
-        if (maxHP < 1)
-            maxHP = 1;
-
-        if (currentHP > maxHP)
-            currentHP = maxHP;
-
-        if (currentHP < 0)
-            currentHP = 0;
-
-        if (currentXP < 0)
-            currentXP = 0;
-
-        if (xpToNextLevel < 1)
-            xpToNextLevel = 1;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
     }
 
     // =========================
-    // DAMAGE OUTPUT
+    // UI UPDATE
     // =========================
-    public int GetDamage()
+    public void UpdateUI()
     {
-        // Base Damage + Strength
-        return baseDamage + strength;
+        // MAIN
+        if (levelText != null)
+            levelText.text = level.ToString();
+
+        if (healthText != null)
+            healthText.text = currentHealth + " / " + maxHealth;
+
+        if (manaText != null)
+            manaText.text = currentMana + " / " + maxMana;
+
+        if (expText != null)
+            expText.text = currentXP + " / " + xpToNextLevel;
+
+        if (attributePointsText != null)
+            attributePointsText.text = attributePoints.ToString();
+
+        // ATTRIBUTES
+        if (strengthText != null)
+            strengthText.text = strength.ToString();
+
+        if (vitalityText != null)
+            vitalityText.text = vitality.ToString();
+
+        if (defenseText != null)
+            defenseText.text = defense.ToString();
+
+        if (agilityText != null)
+            agilityText.text = agility.ToString();
     }
 
     // =========================
-    // XP SYSTEM
+    // DAMAGE
     // =========================
-    public void GainXP(int amount)
+    public void TakeDamage(int amount)
     {
-        currentXP += amount;
+        int finalDamage = Mathf.Max(amount - defense, 1);
 
-        while (currentXP >= xpToNextLevel)
-        {
-            currentXP -= xpToNextLevel;
-            LevelUp();
-        }
-    }
+        currentHealth -= finalDamage;
 
-    void LevelUp()
-    {
-        level++;
+        if (currentHealth < 0)
+            currentHealth = 0;
 
-        // Pro Level 3 Attributpunkte
-        attributePoints += 3;
+        Debug.Log("Damage: -" + finalDamage);
 
-        // Nächstes Level schwerer
-        xpToNextLevel += 50;
+        UpdateUI();
 
-        Debug.Log("LEVEL UP! Level: " + level);
-    }
-
-    // =========================
-    // DAMAGE INPUT
-    // =========================
-    public void TakeDamage(int enemyDamage)
-    {
-        // Armor reduziert 0.5 Schaden pro Punkt
-        float reducedDamage = enemyDamage - (armor * 0.5f);
-
-        // Mindestens 1 Schaden
-        int finalDamage = Mathf.Max(Mathf.RoundToInt(reducedDamage), 1);
-
-        currentHP -= finalDamage;
-
-        ClampValues();
+        if (currentHealth <= 0)
+            Die();
     }
 
     // =========================
@@ -149,79 +209,96 @@ public class PlayerStats : MonoBehaviour
     // =========================
     public void Heal(int amount)
     {
-        currentHP += amount;
+        currentHealth += amount;
 
-        ClampValues();
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
+        Debug.Log("Heal: +" + amount);
+
+        UpdateUI();
     }
 
     // =========================
-    // SPEED
+    // MANA
     // =========================
-    void ApplySpeed()
+    public void UseMana(int amount)
     {
-        if (playerMovement != null)
-        {
-            playerMovement.speed = movementSpeed;
-        }
+        currentMana -= amount;
+
+        if (currentMana < 0)
+            currentMana = 0;
+
+        UpdateUI();
+    }
+
+    public void RestoreMana(int amount)
+    {
+        currentMana += amount;
+
+        if (currentMana > maxMana)
+            currentMana = maxMana;
+
+        UpdateUI();
     }
 
     // =========================
-    // ATTRIBUTE BUTTONS
+    // XP
     // =========================
-    public void IncreaseStrength()
+    public void GainXP(int amount)
     {
-        if (attributePoints > 0)
-        {
-            strength++;
-            attributePoints--;
+        currentXP += amount;
 
-            Debug.Log("Strength erhöht: " + strength);
+        Debug.Log("XP: +" + amount);
+
+        while (currentXP >= xpToNextLevel)
+        {
+            LevelUp();
         }
+
+        UpdateUI();
     }
 
-    public void IncreaseVitality()
+    // =========================
+    // LEVEL UP
+    // =========================
+    public void LevelUp()
     {
-        if (attributePoints > 0)
-        {
-            vitality++;
-            attributePoints--;
+        currentXP -= xpToNextLevel;
 
-            // +5 Max HP
-            maxHP += 5;
+        level++;
 
-            // +5 Current HP
-            currentHP += 5;
+        attributePoints += 3;
 
-            ClampValues();
+        xpToNextLevel += 5;
 
-            Debug.Log("Vitality erhöht: " + vitality);
-        }
+        Debug.Log("LEVEL UP!");
+
+        UpdateUI();
     }
 
-    public void IncreaseArmor()
+    // =========================
+    // ATTRIBUTE POINT USE
+    // =========================
+    public bool UseAttributePoint()
     {
         if (attributePoints > 0)
         {
-            armor++;
             attributePoints--;
 
-            Debug.Log("Armor erhöht: " + armor);
+            UpdateUI();
+
+            return true;
         }
+
+        return false;
     }
 
-    public void IncreaseSpeed()
+    // =========================
+    // DEATH
+    // =========================
+    private void Die()
     {
-        if (attributePoints > 0)
-        {
-            speed++;
-            attributePoints--;
-
-            // Nur minimal schneller
-            movementSpeed += 0.1f;
-
-            ApplySpeed();
-
-            Debug.Log("Speed erhöht: " + speed + " | Movement Speed: " + movementSpeed);
-        }
+        Debug.Log("Spieler ist gestorben!");
     }
 }

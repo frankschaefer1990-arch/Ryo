@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: cbd3f793079ad704cb56bd769d777081
+guid: ac996c8b7e7908f4aa168a4fcf42df84
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -747049288864414840
-    second: Loading screen_0
+      213: -1158326619322377581
+    second: Toter Meister_0
+  - first:
+      213: -203864570811370515
+    second: Toter Meister_1
+  - first:
+      213: -6835038449946881062
+    second: Toter Meister_2
+  - first:
+      213: 6740827786836311113
+    second: Toter Meister_3
+  - first:
+      213: 5538078557803424271
+    second: Toter Meister_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,13 +125,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Loading screen_0
+      name: Toter Meister_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1254
-        height: 1254
+        x: 362
+        y: 374
+        width: 19
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +140,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 883478b31a2f1a5f0800000000000000
-      internalID: -747049288864414840
+      spriteID: 39a1969a31cccefe0800000000000000
+      internalID: -1158326619322377581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Toter Meister_1
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 360
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de33082c04abb2df0800000000000000
+      internalID: -203864570811370515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Toter Meister_2
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 337
+        width: 694
+        height: 226
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad397cc4eb01521a0800000000000000
+      internalID: -6835038449946881062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Toter Meister_3
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 330
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94cf57e582b3c8d50800000000000000
+      internalID: 6740827786836311113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Toter Meister_4
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 330
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0aa4183b153bdc40800000000000000
+      internalID: 5538078557803424271
       vertices: []
       indices: 
       edges: []
@@ -138,7 +238,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +248,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Loading screen_0: -747049288864414840
+      Toter Meister_0: -1158326619322377581
+      Toter Meister_1: -203864570811370515
+      Toter Meister_2: -6835038449946881062
+      Toter Meister_3: 6740827786836311113
+      Toter Meister_4: 5538078557803424271
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
