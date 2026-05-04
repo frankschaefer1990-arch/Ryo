@@ -79,7 +79,7 @@ public class AttributeUI : MonoBehaviour
     // =========================
     // BUTTONS KOMPLETT NEU VERBINDEN
     // =========================
-    private void SetupAllButtons()
+    public void SetupAllButtons()
     {
         SetupButton(strengthButton);
         SetupButton(vitalityButton);
@@ -185,7 +185,12 @@ public class AttributeUI : MonoBehaviour
     {
         if (button == null) return;
 
-        button.transition = Selectable.Transition.None;
+        // ColorTint für visuelles Feedback beim Klicken
+        button.transition = Selectable.Transition.ColorTint;
+        
+        Navigation nav = new Navigation();
+        nav.mode = Navigation.Mode.None;
+        button.navigation = nav;
     }
 
     // =========================
@@ -196,20 +201,18 @@ public class AttributeUI : MonoBehaviour
         if (button == null || playerStats == null) return;
 
         Image buttonImage = button.GetComponent<Image>();
-
         if (buttonImage == null) return;
 
         bool hasPoints = playerStats.attributePoints > 0;
-
         button.interactable = hasPoints;
 
         if (hasPoints)
         {
-            buttonImage.color = new Color(1f, 1f, 1f, 1f);
+            buttonImage.color = Color.white;
         }
         else
         {
-            buttonImage.color = new Color(1f, 1f, 1f, 0f);
+            buttonImage.color = new Color(1f, 1f, 1f, 0.3f);
         }
     }
 

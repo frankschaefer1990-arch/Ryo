@@ -81,7 +81,7 @@ public class TempleSpawnManager : MonoBehaviour
 
         if (uiManager != null)
         {
-            uiManager.SendMessage("ReconnectUI");
+            uiManager.ReconnectUIFromGameManager();
 
             Debug.Log("UI neu verbunden.");
         }
@@ -99,7 +99,7 @@ public class TempleSpawnManager : MonoBehaviour
         if (attributeUI != null)
         {
             attributeUI.playerStats = PlayerStats.Instance;
-attributeUI.SendMessage("SetupAllButtons");
+            attributeUI.SetupAllButtons();
 
             Debug.Log("PlayerStats erfolgreich verbunden.");
         }

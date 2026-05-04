@@ -13,29 +13,50 @@ public class BridgeBlocker : MonoBehaviour
     public string bridgeMessage = "Ich muss unbedingt zuerst in den Tempel...";
 
     private bool popupShown = false;
+    private QuestManager questManager;
 
+    // =========================
+    // START
+    // =========================
     private void Start()
     {
+        // BridgeWall prüfen
         if (bridgeWall == null)
         {
             Debug.LogError("BridgeWall fehlt!");
         }
 
-        if (QuestManager.Instance == null)
+        // QuestManager holen
+        questManager = FindFirstObjectByType<QuestManager>();
+
+        if (questManager == null)
         {
-            Debug.LogError("QuestManager fehlt!");
+            Debug.LogWarning("QuestManager fehlt! Bridge bleibt vorerst aktiv.");
         }
 
+        // DialogueUI prüfen
         if (DialogueUI.Instance == null)
         {
-            Debug.LogError("DialogueUI fehlt!");
+            Debug.LogWarning("DialogueUI fehlt!");
         }
     }
 
+    // =========================
+    // UPDATE
+    // =========================
     private void Update()
     {
-        // Wenn Tempel besucht -> Brücke freigeben
-        if (QuestManager.Instance != null && QuestManager.Instance.visitedTemple)
+        // Kein QuestManager -> nichts prüfen
+        if (questManager == null)
+        {
+            questManager = FindFirstObjectByType<QuestManager>();
+
+            if (questManager == null)
+                return;
+        }
+
+        // Tempel besucht -> Brücke freigeben
+        if (questManager.visitedTemple)
         {
             if (bridgeWall != null)
             {
@@ -47,33 +68,62 @@ public class BridgeBlocker : MonoBehaviour
         }
     }
 
+    // =========================
+    // PLAYER BETRITT BLOCKER
+    // =========================
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player"))
+            return;
+
+        // QuestManager später erneut suchen
+        if (questManager == null)
+        {
+            questManager = FindFirstObjectByType<QuestManager>();
+        }
+
+        // Falls kein QuestManager existiert:
+        // Nur Nachricht zeigen, aber kein Crash
+        if (questManager == null)
+        {
+            ShowBridgeMessage();
+            return;
+        }
 
         // Nur solange Tempel NICHT besucht
-        if (QuestManager.Instance != null && !QuestManager.Instance.visitedTemple)
+        if (!questManager.visitedTemple)
         {
-            if (!popupShown)
-            {
-                if (DialogueUI.Instance != null)
-                {
-                    // Speaker + Nachricht
-                    DialogueUI.Instance.ShowMessage(speakerName, bridgeMessage);
-                }
-                else
-                {
-                    Debug.LogError("DialogueUI Instance fehlt!");
-                }
-
-                popupShown = true;
-            }
+            ShowBridgeMessage();
         }
     }
 
+    // =========================
+    // MESSAGE
+    // =========================
+    private void ShowBridgeMessage()
+    {
+        if (popupShown)
+            return;
+
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage(speakerName, bridgeMessage);
+        }
+        else
+        {
+            Debug.LogWarning("DialogueUI Instance fehlt!");
+        }
+
+        popupShown = true;
+    }
+
+    // =========================
+    // PLAYER VERLÄSST BLOCKER
+    // =========================
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player"))
+            return;
 
         popupShown = false;
     }

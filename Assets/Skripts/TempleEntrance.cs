@@ -11,6 +11,13 @@ public class TempleEntrance : MonoBehaviour
 
         Debug.Log("PLAYER betritt Tempel!");
 
-        SceneManager.LoadScene("Temple");
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LoadScene("Temple", "TempleSpawnPoint");
+        }
+        else
+        {
+            SceneManager.LoadScene("Temple");
+        }
     }
 }

@@ -54,37 +54,41 @@ public class MerchantInteraction : MonoBehaviour
                 // Händler Dialog
                 if (DialogueUI.Instance != null)
                 {
-                    DialogueUI.Instance.ShowMessage(speakerName, merchantMessage);
+                    DialogueUI.Instance.ShowMessage(speakerName, merchantMessage, 1.2f);
                 }
                 else
                 {
                     Debug.LogError("DialogueUI fehlt!");
                 }
 
-                // Nach Dialog Shop öffnen
-                Invoke(nameof(OpenShop), 2.2f);
-            }
-        }
-    }
+                // Nach Dialog Shop öffnen (Delay reduziert von 2.2f auf 1.2f)
+                Invoke(nameof(OpenShop), 1.2f);
+                }
+                }
+                }
 
     private void OpenShop()
     {
-        // Shop sichtbar
-        if (shopPanel != null)
+        // Den ShopManager suchen und dort OpenShop aufrufen
+        ShopManager shopManager = FindAnyObjectByType<ShopManager>();
+
+        if (shopManager != null)
         {
-            shopPanel.SetActive(true);
+            shopManager.OpenShopFromMerchant();
         }
-
-        // Maus aktivieren
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        // Spieler Bewegung sperren
-        PlayerMovement player = FindObjectOfType<PlayerMovement>();
-
-        if (player != null)
+        else
         {
-            player.canMove = false;
+            // Fallback falls kein ShopManager da ist
+            if (shopPanel != null)
+            {
+                shopPanel.SetActive(true);
+            }
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            PlayerMovement player = FindAnyObjectByType<PlayerMovement>();
+            if (player != null) player.canMove = false;
         }
 
         isTalking = false;

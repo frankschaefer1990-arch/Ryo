@@ -5,88 +5,119 @@ public class CameraFollow : MonoBehaviour
     [Header("Player")]
     public Transform player;
 
-    [Header("Camera Bounds")]
+    [Header("Camera Bounds Collider (optional)")]
     public BoxCollider2D boundsCollider;
 
-    [Header("Current Bounds (Auto)")]
-    public float minX;
-    public float maxX;
-    public float minY;
-    public float maxY;
+    [Header("Fallback Manual Bounds")]
+    public float minX = -17f;
+    public float maxX = 17f;
+    public float minY = -17f;
+    public float maxY = 17f;
 
     private float camHalfHeight;
     private float camHalfWidth;
 
-    void Start()
+    // =========================
+    // START
+    // =========================
+    private void Start()
+    {
+        SetupCamera();
+        FindPlayer();
+        UpdateBounds();
+    }
+
+    // =========================
+    // PLAYER SUCHEN
+    // =========================
+    private void FindPlayer()
+    {
+        if (player == null)
+        {
+            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+
+            if (foundPlayer != null)
+            {
+                player = foundPlayer.transform;
+            }
+            else
+            {
+                Debug.LogError("Player NICHT gefunden! Prüfe Tag = Player");
+            }
+        }
+    }
+
+    // =========================
+    // CAMERA SETUP
+    // =========================
+    private void SetupCamera()
     {
         Camera cam = GetComponent<Camera>();
 
         if (cam == null)
         {
-            Debug.LogError("Keine Camera Komponente gefunden!");
+            Debug.LogError("Camera Component fehlt!");
             return;
         }
 
-        // Sichtbare Kamerahälfte berechnen
         camHalfHeight = cam.orthographicSize;
         camHalfWidth = camHalfHeight * cam.aspect;
-
-        // Bounds initial laden
-        UpdateBounds();
     }
 
     // =========================
-    // BOUNDS AUTOMATISCH AKTUALISIEREN
+    // BOUNDS
     // =========================
     public void UpdateBounds()
     {
+        // Nur einmal suchen
         if (boundsCollider == null)
         {
-            Debug.LogError("CameraBounds Collider fehlt!");
-            return;
+            GameObject boundsObject = GameObject.Find("CameraBounds");
+
+            if (boundsObject != null)
+            {
+                boundsCollider = boundsObject.GetComponent<BoxCollider2D>();
+            }
         }
 
-        Bounds bounds = boundsCollider.bounds;
+        // Collider Bounds
+        if (boundsCollider != null)
+        {
+            Bounds bounds = boundsCollider.bounds;
 
-        minX = bounds.min.x;
-        maxX = bounds.max.x;
-        minY = bounds.min.y;
-        maxY = bounds.max.y;
-
-        Debug.Log("Camera Bounds aktualisiert: " +
-                  "X(" + minX + " / " + maxX + ") " +
-                  "Y(" + minY + " / " + maxY + ")");
+            minX = bounds.min.x;
+            maxX = bounds.max.x;
+            minY = bounds.min.y;
+            maxY = bounds.max.y;
+        }
     }
 
     // =========================
-    // FOLLOW
+    // LATE UPDATE
     // =========================
-    void LateUpdate()
+    private void LateUpdate()
     {
+        // Falls Player nach Szenenwechsel neu gespawnt wurde
         if (player == null)
-            return;
+        {
+            FindPlayer();
 
-        if (boundsCollider == null)
-            return;
+            if (player == null)
+                return;
+        }
 
-        // Falls Bounds im Editor geändert wurden
-        UpdateBounds();
-
-        // X clamp
         float clampedX = Mathf.Clamp(
             player.position.x,
             minX + camHalfWidth,
             maxX - camHalfWidth
         );
 
-        // Y clamp
         float clampedY = Mathf.Clamp(
             player.position.y,
             minY + camHalfHeight,
             maxY - camHalfHeight
         );
 
-        // Kamera bewegen
         transform.position = new Vector3(
             clampedX,
             clampedY,
