@@ -365,45 +365,37 @@ public class ShopManager : MonoBehaviour
     // =========================
     public void SellPotion()
     {
-        // 1. Prüfen ob überhaupt etwas selektiert ist (im Shop oder im Backpack)
-        if (!potionSelected)
-        {
-            Debug.Log("Kein Item ausgewählt!");
-            return;
-        }
-
         InventoryManager inventory = InventoryManager.Instance;
         if (inventory == null) inventory = FindAnyObjectByType<InventoryManager>();
 
-        if (inventory != null)
+        if (inventory == null)
         {
-            // Versuche den selektierten Trank zu entfernen
-            if (inventory.RemoveSelectedPotion())
+            Debug.LogError("InventoryManager nicht gefunden!");
+            return;
+        }
+
+        // 1. Prüfen ob im INVENTAR etwas selektiert ist
+        int selectedIdx = inventory.GetSelectedSlotIndex();
+
+        if (selectedIdx == -1)
+        {
+            Debug.Log("Bitte wähle zuerst einen Trank in deinem Rucksack aus, um ihn zu verkaufen!");
+            return;
+        }
+
+        // 2. Den selektierten Trank aus dem Inventar entfernen
+        if (inventory.RemoveSelectedPotion())
+        {
+            if (PlayerGold.Instance != null)
             {
-                if (PlayerGold.Instance != null)
-                {
-                    PlayerGold.Instance.AddGold(potionPrice / 2);
-                }
-                UpdateGoldUI();
-                Debug.Log("Selektierte Potion verkauft!");
+                PlayerGold.Instance.AddGold(potionPrice / 2);
             }
-            else if (inventory.GetPotionCount() > 0)
-            {
-                // Fallback: Wenn nichts selektiert war aber Tränke da sind, nimm einen beliebigen
-                if (inventory.RemoveOnePotion())
-                {
-                    if (PlayerGold.Instance != null)
-                    {
-                        PlayerGold.Instance.AddGold(potionPrice / 2);
-                    }
-                    UpdateGoldUI();
-                    Debug.Log("Potion verkauft (Fallback)!");
-                }
-            }
-            else
-            {
-                Debug.Log("Keine Tränke zum Verkaufen vorhanden!");
-            }
+            UpdateGoldUI();
+            Debug.Log("Trank aus Inventar verkauft für " + (potionPrice / 2) + " Gold.");
+        }
+        else
+        {
+            Debug.Log("Fehler beim Verkauf oder Slot war leer.");
         }
     }
 

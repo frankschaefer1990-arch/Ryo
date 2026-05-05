@@ -38,9 +38,9 @@ public class DialogueUI : MonoBehaviour
 
         Instance = this;
 
-        // GANZ WICHTIG:
-        // SCRIPT OBJEKT SELBST AKTIV LASSEN
-        // NUR UI ELEMENTE AUSBLENDEN
+        // GANZ WICHTIG: Persistent machen
+        DontDestroyOnLoad(gameObject);
+
         gameObject.SetActive(true);
 
         ReconnectUI();
@@ -53,8 +53,8 @@ public class DialogueUI : MonoBehaviour
     // =========================
     private void Start()
     {
-        ReconnectUI();
-
+        // ReconnectUI() wird bereits in Awake und vom GameManager aufgerufen
+        
         if (popupText != null)
         {
             popupText.enableAutoSizing = true;
@@ -70,52 +70,65 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ReconnectUI()
     {
-        Canvas canvas = FindFirstObjectByType<Canvas>();
+        // Priorisiere den persistenten Canvas vom GameManager
+        GameObject targetCanvas = null;
+        if (GameManager.Instance != null && GameManager.Instance.canvas != null)
+        {
+            targetCanvas = GameManager.Instance.canvas;
+        }
+        else
+        {
+            Canvas c = FindAnyObjectByType<Canvas>();
+            if (c != null) targetCanvas = c.gameObject;
+        }
 
-        if (canvas == null)
+        if (targetCanvas == null)
             return;
 
-        // FRAME
-        if (DialogueFrameNew == null)
-        {
-            Transform frame = canvas.transform.Find("LockedDoorPopup/DialogueFrameNew");
+        Transform canvasTransform = targetCanvas.transform;
 
+        // FRAME suchen wenn nötig
+        if (DialogueFrameNew == null || DialogueFrameNew.scene.name == null)
+        {
+            Transform frame = canvasTransform.Find("LockedDoorPopup/DialogueFrameNew");
+            if (frame == null) frame = canvasTransform.Find("DialogueFrameNew");
+            
             if (frame == null)
-                frame = canvas.transform.Find("DialogueFrameNew");
+            {
+                foreach (Transform t in canvasTransform.GetComponentsInChildren<Transform>(true))
+                {
+                    if (t.name == "DialogueFrameNew") { frame = t; break; }
+                }
+            }
 
-            if (frame != null)
-                DialogueFrameNew = frame.gameObject;
+            if (frame != null) DialogueFrameNew = frame.gameObject;
         }
 
-        // POPUP TEXT
-        if (popupTextObject == null && DialogueFrameNew != null)
+        // Kinder IMMER neu verknüpfen wenn sie fehlen oder ungültig sind
+        if (DialogueFrameNew != null)
         {
-            Transform popup = DialogueFrameNew.transform.Find("PopupText");
+            if (popupTextObject == null || popupTextObject.scene.name == null)
+            {
+                Transform popup = DialogueFrameNew.transform.Find("PopupText");
+                if (popup != null) popupTextObject = popup.gameObject;
+            }
 
-            if (popup != null)
-                popupTextObject = popup.gameObject;
-        }
+            if (popupText == null && popupTextObject != null)
+            {
+                popupText = popupTextObject.GetComponent<TextMeshProUGUI>();
+            }
 
-        if (popupText == null && popupTextObject != null)
-        {
-            popupText = popupTextObject.GetComponent<TextMeshProUGUI>();
-        }
+            if (speakerNameObject == null || speakerNameObject.scene.name == null)
+            {
+                Transform speaker = DialogueFrameNew.transform.Find("SpeakerNameText");
+                if (speaker == null) speaker = DialogueFrameNew.transform.Find("SpeakerName");
+                if (speaker != null) speakerNameObject = speaker.gameObject;
+            }
 
-        // SPEAKER
-        if (speakerNameObject == null && DialogueFrameNew != null)
-        {
-            Transform speaker = DialogueFrameNew.transform.Find("SpeakerNameText");
-
-            if (speaker == null)
-                speaker = DialogueFrameNew.transform.Find("SpeakerName");
-
-            if (speaker != null)
-                speakerNameObject = speaker.gameObject;
-        }
-
-        if (speakerNameText == null && speakerNameObject != null)
-        {
-            speakerNameText = speakerNameObject.GetComponentInChildren<TextMeshProUGUI>();
+            if (speakerNameText == null && speakerNameObject != null)
+            {
+                speakerNameText = speakerNameObject.GetComponentInChildren<TextMeshProUGUI>();
+            }
         }
     }
 
@@ -124,6 +137,7 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ShowMessage(string message)
     {
+        Debug.Log("DialogueUI: ShowMessage aufgerufen: " + message);
         ShowMessage(defaultSpeakerName, message, 2f);
     }
 
@@ -140,19 +154,25 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ShowMessage(string speakerName, string message, float visibleDuration)
     {
-        // FALLS OBJECT DEAKTIVIERT WURDE
+        // Vor jedem Anzeigen sicherstellen, dass die UI-Elemente verknüpft sind
+        ReconnectUI();
+
         if (!gameObject.activeSelf)
         {
             gameObject.SetActive(true);
         }
 
-        ReconnectUI();
-
-        // WICHTIG:
-        // Wenn Frame fehlt -> kein Coroutine Start
+        // WICHTIG: Wenn Frame immer noch fehlt -> Notfall-Suche im gesamten Projekt
         if (DialogueFrameNew == null)
         {
-            Debug.LogWarning("DialogueFrameNew nicht gefunden!");
+            Debug.LogWarning("DialogueFrameNew fehlt! Suche Ersatz...");
+            GameObject found = GameObject.Find("DialogueFrameNew");
+            if (found != null) DialogueFrameNew = found;
+        }
+
+        if (DialogueFrameNew == null)
+        {
+            Debug.LogError("KRITISCH: DialogueFrameNew konnte nicht gefunden werden!");
             return;
         }
 

@@ -197,6 +197,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.7844787, y: 2.9509366}
   m_EdgeRadius: 0
+--- !u!1 &49425960 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 87633132258241621, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
+  m_PrefabInstance: {fileID: 545516428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &68896969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1691,7 +1696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 940f21060d6ccea4590ec5d73f786e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
-  currentGold: 60
+  currentGold: 30
 --- !u!114 &386284755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1705,8 +1710,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   player: {fileID: 7532092645922344354}
-  canvas: {fileID: 0}
-  eventSystem: {fileID: 0}
+  canvas: {fileID: 49425960}
+  eventSystem: {fileID: 637440865}
   questManager: {fileID: 148164717}
   spawnPointName: 
 --- !u!4 &386284756

@@ -17,6 +17,8 @@ public class InventoryManager : MonoBehaviour
     private bool[] slotOccupied;
     private int selectedSlotIndex = -1;
 
+    public int GetSelectedSlotIndex() => selectedSlotIndex;
+
     // =========================
     // SINGLETON + PERSISTENT
     // =========================
@@ -33,9 +35,6 @@ public class InventoryManager : MonoBehaviour
 
         // Zwischen Szenen behalten
         DontDestroyOnLoad(gameObject);
-
-        // Szenewechsel erkennen
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     // =========================
@@ -43,24 +42,13 @@ public class InventoryManager : MonoBehaviour
     // =========================
     private void OnDestroy()
     {
-        if (Instance == this)
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
+        // Keine Listener mehr nötig
     }
 
     // =========================
     // START
     // =========================
     private void Start()
-    {
-        RefreshInventory();
-    }
-
-    // =========================
-    // SCENE CHANGE FIX
-    // =========================
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshInventory();
     }
@@ -80,44 +68,49 @@ public class InventoryManager : MonoBehaviour
     // =========================
     private void ReconnectBackpackPanel()
     {
-        // Prüfen ob die aktuelle Referenz valide und in einer Szene ist
-        bool needsReconnect = backpackPanel == null || !backpackPanel.gameObject.activeInHierarchy || backpackPanel.gameObject.scene.name == null;
-
-        if (needsReconnect)
+        // WICHTIG: Nutze den Canvas vom GameManager falls vorhanden
+        GameObject targetCanvas = null;
+        if (GameManager.Instance != null && GameManager.Instance.canvas != null)
         {
-            Canvas canvas = FindAnyObjectByType<Canvas>();
-
-            if (canvas != null)
-            {
-                // Verschiedene Pfade probieren
-                Transform foundBackpack = canvas.transform.Find("InventoryPanel/BackpackPanel");
-                
-                if (foundBackpack == null)
-                    foundBackpack = canvas.transform.Find("Inventory/Backpack");
-
-                if (foundBackpack == null)
-                {
-                    // Suche tief im Canvas falls Deaktiviert oder verschoben
-                    foreach (Transform t in canvas.GetComponentsInChildren<Transform>(true))
-                    {
-                        if (t.name == "BackpackPanel") { foundBackpack = t; break; }
-                    }
-                }
-
-                if (foundBackpack != null)
-                {
-                    backpackPanel = foundBackpack;
-                }
-            }
-        }
-
-        if (backpackPanel == null)
-        {
-            Debug.LogWarning("BackpackPanel konnte nicht gefunden werden!");
+            targetCanvas = GameManager.Instance.canvas;
         }
         else
         {
-            Debug.Log("BackpackPanel verbunden: " + backpackPanel.name);
+            Canvas c = FindAnyObjectByType<Canvas>();
+            if (c != null) targetCanvas = c.gameObject;
+        }
+
+        if (targetCanvas == null)
+        {
+            Debug.LogWarning("InventoryManager: Kein Canvas gefunden!");
+            return;
+        }
+
+        Transform canvasTransform = targetCanvas.transform;
+        
+        // Suche BackpackPanel unter dem korrekten Canvas
+        Transform foundBackpack = canvasTransform.Find("InventoryPanel/BackpackPanel");
+        
+        if (foundBackpack == null)
+            foundBackpack = canvasTransform.Find("Inventory/Backpack");
+
+        if (foundBackpack == null)
+        {
+            // Suche tief im Canvas falls Deaktiviert oder verschoben
+            foreach (Transform t in canvasTransform.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "BackpackPanel") { foundBackpack = t; break; }
+            }
+        }
+
+        if (foundBackpack != null)
+        {
+            backpackPanel = foundBackpack;
+            Debug.Log("BackpackPanel verbunden unter: " + targetCanvas.name);
+        }
+        else
+        {
+            Debug.LogWarning("BackpackPanel konnte nicht im Canvas gefunden werden!");
         }
     }
 
@@ -136,56 +129,47 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        // Bereits vorhanden? Dann nur UI neu verbinden
-        bool firstSetup = inventorySlots == null || inventorySlots.Length != slotCount;
-
-        if (firstSetup)
+        // Wir erzwingen eine Neuinitialisierung der Arrays pro Szene, 
+        // da die Image-Komponenten in der Szene neu sind.
+        inventorySlots = new Image[slotCount];
+        slotBackgrounds = new Image[slotCount];
+        
+        // Aber die Daten (slotOccupied) müssen erhalten bleiben
+        if (slotOccupied == null)
         {
-            inventorySlots = new Image[slotCount];
-            slotBackgrounds = new Image[slotCount];
-            
-            // Daten erhalten, auch wenn sich die Slot-Anzahl ändert
-            if (slotOccupied == null)
+            slotOccupied = new bool[slotCount];
+        }
+        else if (slotOccupied.Length != slotCount)
+        {
+            bool[] newOccupied = new bool[slotCount];
+            int copyLength = Mathf.Min(slotOccupied.Length, slotCount);
+            for (int i = 0; i < copyLength; i++)
             {
-                slotOccupied = new bool[slotCount];
+                newOccupied[i] = slotOccupied[i];
             }
-            else if (slotOccupied.Length != slotCount)
-            {
-                // Array-Größe anpassen ohne Datenverlust (sofern möglich)
-                bool[] newOccupied = new bool[slotCount];
-                int copyLength = Mathf.Min(slotOccupied.Length, slotCount);
-                for (int i = 0; i < copyLength; i++)
-                {
-                    newOccupied[i] = slotOccupied[i];
-                }
-                slotOccupied = newOccupied;
-                Debug.Log("Inventar-Größe angepasst: " + slotCount + " Slots.");
-            }
+            slotOccupied = newOccupied;
         }
 
         for (int i = 0; i < slotCount; i++)
         {
             Transform slot = backpackPanel.GetChild(i);
+            int index = i; // Closure fix
             
             // Hintergrund für Highlight speichern
             slotBackgrounds[i] = slot.GetComponent<Image>();
-            if (slotBackgrounds[i] != null) slotBackgrounds[i].color = new Color(1f, 1f, 1f, 0f);
+            if (slotBackgrounds[i] != null) 
+            {
+                slotBackgrounds[i].enabled = true;
+                slotBackgrounds[i].color = new Color(1f, 1f, 1f, 0f);
+            }
 
-            // Klick-Event hinzufügen
-            Button btn = slot.GetComponent<Button>();
-            if (btn == null) btn = slot.gameObject.AddComponent<Button>();
-            
-            int index = i; // Closure fix
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => SelectSlot(index));
+            // NEU: Click Handler für den Slot (Hintergrund)
+            InventoryClickHandler slotHandler = slot.GetComponent<InventoryClickHandler>();
+            if (slotHandler == null) slotHandler = slot.gameObject.AddComponent<InventoryClickHandler>();
+            slotHandler.slotIndex = index;
 
             Transform itemTransform = slot.Find("Item");
-
-            // Fallback
-            if (itemTransform == null && slot.childCount > 0)
-            {
-                itemTransform = slot.GetChild(0);
-            }
+            if (itemTransform == null && slot.childCount > 0) itemTransform = slot.GetChild(0);
 
             if (itemTransform == null)
             {
@@ -194,25 +178,22 @@ public class InventoryManager : MonoBehaviour
             }
 
             Image itemImage = itemTransform.GetComponent<Image>();
-
-            if (itemImage == null)
-            {
-                itemImage = itemTransform.gameObject.AddComponent<Image>();
-            }
+            if (itemImage == null) itemImage = itemTransform.gameObject.AddComponent<Image>();
 
             inventorySlots[i] = itemImage;
             inventorySlots[i].preserveAspect = true;
-            inventorySlots[i].raycastTarget = false; // Klick soll durch zum Slot-Button
+            
+            // NEU: Click Handler auch für das Item selbst (damit Tränke rechtsklickbar sind)
+            InventoryClickHandler itemHandler = itemTransform.GetComponent<InventoryClickHandler>();
+            if (itemHandler == null) itemHandler = itemTransform.gameObject.AddComponent<InventoryClickHandler>();
+            itemHandler.slotIndex = index;
 
-            // Nur beim allerersten Setup der Daten leer machen
-            if (firstSetup && (slotOccupied[i] == false))
-            {
-                inventorySlots[i].sprite = null;
-                inventorySlots[i].color = new Color(1f, 1f, 1f, 0f);
-            }
+            // Die Tränke sollen die Klicks NICHT blockieren für den SlotHandler, 
+            // aber sie brauchen RaycastTarget=true für den eigenen IPointerClickHandler.
+            inventorySlots[i].raycastTarget = true;
         }
 
-        Debug.Log("Inventory erfolgreich verbunden.");
+        Debug.Log("Inventory erfolgreich initialisiert.");
     }
 
     // =========================
@@ -288,6 +269,7 @@ public class InventoryManager : MonoBehaviour
         if (inventorySlots == null || slotOccupied == null)
             return;
 
+        int count = 0;
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             if (inventorySlots[i] == null)
@@ -297,6 +279,7 @@ public class InventoryManager : MonoBehaviour
             {
                 inventorySlots[i].sprite = potionSprite;
                 inventorySlots[i].color = Color.white;
+                count++;
             }
             else
             {
@@ -304,6 +287,7 @@ public class InventoryManager : MonoBehaviour
                 inventorySlots[i].color = new Color(1f, 1f, 1f, 0f);
             }
         }
+        Debug.Log("Visuals wiederhergestellt. Aktive Tränke: " + count);
     }
 
     // =========================
@@ -377,7 +361,15 @@ public class InventoryManager : MonoBehaviour
             if (inventorySlots[i] == usedSlot)
             {
                 slotOccupied[i] = false;
+                
+                // Auswahl aufheben, wenn der gelöschte Slot selektiert war
+                if (selectedSlotIndex == i)
+                {
+                    selectedSlotIndex = -1;
+                }
+
                 RestoreInventoryVisuals(); // Update UI
+                UpdateSlotHighlights();
                 Debug.Log("Potion entfernt aus Slot: " + (i + 1));
                 return;
             }

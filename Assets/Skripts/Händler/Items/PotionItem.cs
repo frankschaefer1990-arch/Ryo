@@ -11,9 +11,6 @@ public class PotionItem : MonoBehaviour
 
     private void Start()
     {
-        // Button holen
-        button = GetComponent<Button>();
-
         // Erst eigenes Image versuchen
         itemImage = GetComponent<Image>();
 
@@ -21,17 +18,6 @@ public class PotionItem : MonoBehaviour
         if (itemImage == null)
         {
             itemImage = GetComponentInChildren<Image>();
-        }
-
-        // Button Event
-        if (button != null)
-        {
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(UsePotion);
-        }
-        else
-        {
-            Debug.LogError("Button fehlt auf: " + gameObject.name);
         }
     }
 
@@ -70,13 +56,18 @@ public class PotionItem : MonoBehaviour
 
         // Heilen
         PlayerStats.Instance.Heal(healAmount);
-
         Debug.Log("Trank benutzt! +" + healAmount + " HP");
 
-        // Entfernen
-        itemImage.sprite = null;
-
-        // Unsichtbar
-        itemImage.color = new Color(1f, 1f, 1f, 0f);
+        // WICHTIG: Über InventoryManager entfernen, damit der State (slotOccupied) stimmt!
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.RemovePotion(itemImage);
+        }
+        else
+        {
+            // Fallback falls Manager nicht da
+            itemImage.sprite = null;
+            itemImage.color = new Color(1f, 1f, 1f, 0f);
+        }
     }
 }

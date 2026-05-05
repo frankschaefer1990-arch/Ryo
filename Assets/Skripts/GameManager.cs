@@ -107,10 +107,13 @@ public class GameManager : MonoBehaviour
     // =========================
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log("GameManager: Szene geladen, starte Cleanup und Reconnect...");
+        
         CleanupDuplicates();
 
         ReconnectCoreReferences();
 
+        // Erst ReconnectSystems nach dem Cleanup
         ReconnectSystems();
 
         MovePlayerToSpawn();
@@ -124,27 +127,37 @@ public class GameManager : MonoBehaviour
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player");
 
-        if (canvas == null)
-        {
-            Canvas foundCanvas = FindAnyObjectByType<Canvas>();
+        // WICHTIG: Prüfen, ob der aktuelle Canvas überhaupt Gameplay-UI enthält
+        bool currentCanvasIsInvalid = canvas == null || 
+                                     (canvas.transform.Find("InventoryPanel") == null && 
+                                      canvas.transform.Find("DialogueFrameNew") == null &&
+                                      canvas.transform.Find("LockedDoorPopup") == null);
 
-            if (foundCanvas != null)
+        if (currentCanvasIsInvalid)
+        {
+            Canvas[] allCanvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var c in allCanvases)
             {
-                canvas = foundCanvas.gameObject;
-                DontDestroyOnLoad(canvas); // Sicherstellen, dass er bleibt!
-                Debug.Log("Neuer Canvas gefunden und persistent gemacht: " + canvas.name);
+                // Suche einen Canvas, der tatsächliche UI-Elemente hat
+                if (c.transform.Find("InventoryPanel") != null || 
+                    c.transform.Find("DialogueFrameNew") != null ||
+                    c.transform.Find("LockedDoorPopup") != null)
+                {
+                    canvas = c.gameObject;
+                    DontDestroyOnLoad(canvas);
+                    Debug.Log("Gültigen Gameplay-Canvas gefunden: " + canvas.name);
+                    break;
+                }
             }
         }
 
         if (eventSystem == null)
         {
             EventSystem foundEventSystem = FindAnyObjectByType<EventSystem>();
-
             if (foundEventSystem != null)
             {
                 eventSystem = foundEventSystem.gameObject;
                 DontDestroyOnLoad(eventSystem);
-                Debug.Log("Neues EventSystem persistent gemacht.");
             }
         }
     }
@@ -156,37 +169,49 @@ public class GameManager : MonoBehaviour
     {
         // PLAYER
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
         foreach (GameObject p in players)
         {
             if (player != null && p != player)
             {
-                // Wenn das Duplikat in DDOL ist, aber wir ein anderes wollen? 
-                // Normalerweise behalten wir die Instanz-Variable 'player'
                 Destroy(p);
             }
             else if (player == null)
             {
                 player = p;
+                DontDestroyOnLoad(player);
             }
         }
 
         // CANVAS
-        // WICHTIG: Inaktive einschließen!
         Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        
         foreach (Canvas c in canvases)
         {
-            // Wenn wir bereits einen persistenten Canvas haben, lösche alle anderen
+            // Wenn wir einen Canvas haben, lösche alle anderen (die NICHT unser Haupt-Canvas sind)
             if (canvas != null && c.gameObject != canvas)
             {
-                // Sicherheit Check: Wenn der andere Canvas mehr Kinder hat? 
-                // Das Risiko ist zu hoch, wir bleiben bei der etablierten Instanz.
-                Destroy(c.gameObject);
+                // Aber nur löschen, wenn der neue Canvas keine "bessere" UI hat
+                bool newHasUI = c.transform.Find("InventoryPanel") != null || 
+                               c.transform.Find("DialogueFrameNew") != null;
+                
+                bool oldHasUI = canvas.transform.Find("InventoryPanel") != null || 
+                               canvas.transform.Find("DialogueFrameNew") != null;
+
+                if (newHasUI && !oldHasUI)
+                {
+                    Debug.Log("Tausche leeren persistenten Canvas gegen neuen Gameplay-Canvas aus.");
+                    GameObject oldCanvas = canvas;
+                    canvas = c.gameObject;
+                    DontDestroyOnLoad(canvas);
+                    Destroy(oldCanvas);
+                }
+                else
+                {
+                    Debug.Log("Lösche redundanten Canvas: " + c.gameObject.name);
+                    Destroy(c.gameObject);
+                }
             }
             else if (canvas == null)
             {
-                // Erster Canvas wird der Chef
                 canvas = c.gameObject;
                 DontDestroyOnLoad(canvas);
             }
@@ -194,17 +219,11 @@ public class GameManager : MonoBehaviour
 
         // EVENT SYSTEM
         EventSystem[] systems = FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
         foreach (EventSystem e in systems)
         {
             if (eventSystem != null && e.gameObject != eventSystem)
             {
                 Destroy(e.gameObject);
-            }
-            else if (eventSystem == null)
-            {
-                eventSystem = e.gameObject;
-                DontDestroyOnLoad(eventSystem);
             }
         }
 
@@ -212,49 +231,44 @@ public class GameManager : MonoBehaviour
         QuestManager[] quests = FindObjectsByType<QuestManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (QuestManager q in quests)
         {
-            if (questManager != null && q.gameObject != questManager)
+            if (QuestManager.Instance != null && q != QuestManager.Instance)
             {
                 Destroy(q.gameObject);
             }
-            else if (questManager == null)
+            else if (QuestManager.Instance == null)
             {
-                questManager = q.gameObject;
-                DontDestroyOnLoad(questManager);
+                // QuestManager.Instance wird in seiner eigenen Awake-Methode gesetzt
+                DontDestroyOnLoad(q.gameObject);
             }
         }
-    }
+        }
 
     // =========================
     // SYSTEME NEU VERBINDEN
     // =========================
     void ReconnectSystems()
     {
-        // =========================
-        // UI MANAGER (I / B / T)
-        // =========================
+        // 1. UI MANAGER
         MyUIManager uiManager = FindAnyObjectByType<MyUIManager>();
-
         if (uiManager != null)
         {
             uiManager.ReconnectUIFromGameManager();
         }
 
-        // =========================
-        // DIALOGUE UI (LOCKEDDOORPOPUP)
-        // ROOT MUSS AKTIV BLEIBEN
-        // =========================
-        DialogueUI dialogue = FindAnyObjectByType<DialogueUI>();
-
-        if (dialogue != null)
+        // 2. DIALOGUE UI
+        if (DialogueUI.Instance != null)
         {
-            dialogue.gameObject.SetActive(true);
+            DialogueUI.Instance.ReconnectUI();
         }
 
-        // =========================
-        // SHOP MANAGER
-        // =========================
-        ShopManager[] shops = FindObjectsByType<ShopManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        // 3. INVENTORY MANAGER
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.RefreshInventory();
+        }
 
+        // 4. SHOP MANAGER
+        ShopManager[] shops = FindObjectsByType<ShopManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (ShopManager shop in shops)
         {
             if (shop != null)
@@ -263,22 +277,22 @@ public class GameManager : MonoBehaviour
                 shop.SetupButtonsPublic();
             }
         }
+        
+        // ... restliche Verbindungen (Camera, Temple etc.) ...
+        ReconnectOtherSystems();
+    }
 
-        // =========================
+    void ReconnectOtherSystems()
+    {
         // CAMERA FOLLOW
-        // =========================
         CameraFollow cameraFollow = FindAnyObjectByType<CameraFollow>();
-
         if (cameraFollow != null && player != null)
         {
             cameraFollow.player = player.transform;
-
             GameObject boundsObject = GameObject.Find("CameraBounds");
-
             if (boundsObject != null)
             {
                 BoxCollider2D bounds = boundsObject.GetComponent<BoxCollider2D>();
-
                 if (bounds != null)
                 {
                     cameraFollow.boundsCollider = bounds;
@@ -287,17 +301,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // =========================
         // TEMPLE INTRO
-        // =========================
         TempleCameraIntro templeIntro = FindAnyObjectByType<TempleCameraIntro>();
-
         if (templeIntro != null && player != null)
         {
             templeIntro.player = player.transform;
         }
 
-        Debug.Log("Systeme erfolgreich neu verbunden.");
+        Debug.Log("Alle Systeme erfolgreich synchronisiert.");
     }
 
     // =========================

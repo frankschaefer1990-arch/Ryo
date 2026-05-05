@@ -13,6 +13,15 @@ public class TempleSpawnManager : MonoBehaviour
     private void Start()
     {
         // =========================
+        // QUEST PROGRESS
+        // =========================
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.visitedTemple = true;
+            Debug.Log("Quest Progress: Temple besucht!");
+        }
+
+        // =========================
         // PLAYER SUCHEN
         // =========================
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");

@@ -360,6 +360,12 @@ public class MyUIManager : MonoBehaviour
         if (attributePanel != null) attributePanel.SetActive(false);
         if (shopPanel != null) shopPanel.SetActive(false);
 
+        // Auswahl im Inventar aufheben
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.DeselectSlot();
+        }
+
         // DialogueUI Singleton nutzen um nur das Frame zu verstecken, 
         // damit das Script-Objekt (lockedDoorPopup) aktiv bleibt!
         if (DialogueUI.Instance != null)
