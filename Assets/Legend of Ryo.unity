@@ -5388,6 +5388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMessageTrigger
   message: Scheint abgeschlossen zu sein...
+  interactionDistance: 2
 --- !u!1 &1994339190
 GameObject:
   m_ObjectHideFlags: 0
