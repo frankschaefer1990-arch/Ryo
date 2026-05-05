@@ -50,6 +50,8 @@ public class BattleManager : MonoBehaviour
         BattleUI.Instance.ToggleCommandPanel(true);
         BattleUI.Instance.SetupSubButtons(this);
         
+        state = BattleState.PLAYERTURN; // Enter player turn state immediately to allow interaction
+
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.ShowMessage(currentEnemy.enemyName + " erscheint!");
@@ -59,16 +61,15 @@ public class BattleManager : MonoBehaviour
             Debug.LogWarning("DialogueUI.Instance ist null. Nachricht konnte nicht angezeigt werden.");
         }
         
-        yield return new WaitForSeconds(2f);
-
-        state = BattleState.PLAYERTURN;
+        yield return new WaitForSeconds(1.2f); // Reduced from 2f
+        
         PlayerTurn();
-    }
+        }
 
     private void PlayerTurn()
     {
+        state = BattleState.PLAYERTURN;
         Debug.Log("BattleManager: PlayerTurn started.");
-        // Panel ist bereits aktiv vom Start her
         BattleUI.Instance.ToggleCommandPanel(true);
     }
 
@@ -130,23 +131,31 @@ public class BattleManager : MonoBehaviour
     {
         if (state != BattleState.PLAYERTURN) return;
 
-        if (InventoryManager.Instance.GetPotionCount() > 0)
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GetPotionCount() > 0)
         {
             BattleUI.Instance.HideItemPanel();
             BattleUI.Instance.ToggleCommandPanel(false);
             
-            // Reusing existing Potion logic indirectly or directly
-            // For now, let's do it directly to control the turn flow
-            int healAmount = 30; // Default potion value
-            PlayerStats.Instance.Heal(healAmount);
-            InventoryManager.Instance.RemoveOnePotion();
+            int healAmount = 30;
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.Heal(healAmount);
+                InventoryManager.Instance.RemoveOnePotion();
+                BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+            }
             
             ShowBattleMessage("Ryo verwendet einen Trank!");
-            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
-            
-            StartCoroutine(EnemyTurnAfterDelay(2f));
+            StartCoroutine(EnemyTurnAfterDelay(1.2f)); // Reduced from 2f
             }
-            }
+        else if (InventoryManager.Instance == null)
+        {
+            ShowBattleMessage("Kein Inventar gefunden!");
+        }
+        else
+        {
+            ShowBattleMessage("Keine Tränke mehr!");
+        }
+    }
 
     private IEnumerator EnemyTurnAfterDelay(float delay)
     {
@@ -159,7 +168,7 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.BUSY;
         ShowBattleMessage("Ryo setzt " + skill.skillName + " ein!");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.6f);
 
         // Move Player slightly forward
         Vector3 originalPos = playerPos.position;
@@ -184,14 +193,21 @@ public class BattleManager : MonoBehaviour
 
             if (hitSuccess)
             {
-                // Visuals
-                slashEffect.PlaySlash(enemyPos.position, skill.effectColor);
-                
                 // Damage calculation
-                int damage = Mathf.Max(1, (int)(PlayerStats.Instance.strength * skill.damageMultiplier) - currentEnemy.defense);
-                enemyCurrentHP -= damage;
+                int playerStrength = (PlayerStats.Instance != null && PlayerStats.Instance.strength > 0) ? PlayerStats.Instance.strength : 15;
+                int baseDamage = (int)(playerStrength * skill.damageMultiplier);
+                int totalDamage = Mathf.Max(1, baseDamage - currentEnemy.defense);
+                
+                enemyCurrentHP -= totalDamage;
+                Debug.Log($"SKILL: {skill.skillName} | Hit {i+1} | Dmg: {totalDamage} | Remaining HP: {enemyCurrentHP}");
+
+                if (skill.hasCombo) ShowBattleMessage("Treffer!");
+
+                // Visuals - Trigger them together for maximum impact
+                slashEffect.PlaySlash(enemyPos.position, skill.effectColor);
+                StartCoroutine(PlayHurtAnimation(enemyPos)); 
+                
                 BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
-                Debug.Log("Hit " + (i+1) + ": " + damage + " Schaden!");
 
                 if (enemyCurrentHP <= 0) break;
             }
@@ -201,11 +217,11 @@ public class BattleManager : MonoBehaviour
                 break;
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.4f);
         }
 
         playerPos.position = originalPos;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         if (enemyCurrentHP <= 0)
         {
@@ -222,14 +238,19 @@ public class BattleManager : MonoBehaviour
     private IEnumerator EnemyTurn()
     {
         ShowBattleMessage(currentEnemy.enemyName + " greift an!");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.6f);
 
         int damage = currentEnemy.attack;
-        PlayerStats.Instance.TakeDamage(damage);
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.TakeDamage(damage);
+            StartCoroutine(PlayHurtAnimation(playerPos)); // Improved unified hurt animation
+            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+        }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.4f);
 
-        if (PlayerStats.Instance.currentHealth <= 0)
+        if (PlayerStats.Instance != null && PlayerStats.Instance.currentHealth <= 0)
         {
             state = BattleState.LOST;
             StartCoroutine(EndBattle());
@@ -241,22 +262,52 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    private IEnumerator PlayHurtAnimation(Transform target)
+    {
+        Vector3 originalPos = target.position;
+        Vector3 originalScale = target.localScale;
+        SpriteRenderer sr = target.GetComponentInChildren<SpriteRenderer>();
+        
+        // Intense shake, flash and slight scale pulse
+        for (int i = 0; i < 4; i++)
+        {
+            float shakeX = Random.Range(-0.15f, 0.15f);
+            target.position = originalPos + new Vector3(shakeX, 0, 0);
+            target.localScale = originalScale * 1.1f; // Slight pop
+            
+            if (sr != null) sr.color = new Color(1, 0.3f, 0.3f, 1); // Bright red-ish
+            
+            yield return new WaitForSeconds(0.04f);
+            
+            target.position = originalPos;
+            target.localScale = originalScale;
+            
+            if (sr != null) sr.color = Color.white;
+            
+            yield return new WaitForSeconds(0.04f);
+        }
+        
+        target.position = originalPos;
+        target.localScale = originalScale;
+    }
+
     private IEnumerator EndBattle()
     {
         if (state == BattleState.WON)
         {
             ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
-            PlayerStats.Instance.GainXP(currentEnemy.xpReward);
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.GainXP(currentEnemy.xpReward);
+            }
             yield return new WaitForSeconds(2f);
-            // Return to world
-            GameManager.Instance.LoadScene("Legend of Ryo"); 
+            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Legend of Ryo"); 
         }
         else
         {
             ShowBattleMessage("Niederlage...");
             yield return new WaitForSeconds(2f);
-            // Return to world or Game Over
-            GameManager.Instance.LoadScene("Legend of Ryo");
+            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Legend of Ryo");
         }
     }
 
@@ -264,7 +315,7 @@ public class BattleManager : MonoBehaviour
     {
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage(message);
+            DialogueUI.Instance.ShowMessage("Ryo", message, 0.8f);
         }
         else
         {

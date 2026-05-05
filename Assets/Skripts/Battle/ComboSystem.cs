@@ -10,7 +10,7 @@ public class ComboSystem : MonoBehaviour
     private bool isWaitingForInput = false;
     private KeyCode currentTargetKey;
     private float timer = 0f;
-    private float timeLimit = 0.8f;
+    private float timeLimit = 1.5f; // Increased from 0.8f for easier reaction
 
     private void Awake()
     {

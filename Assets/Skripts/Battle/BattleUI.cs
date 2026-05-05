@@ -57,7 +57,11 @@ public class BattleUI : MonoBehaviour
         if (itemPanel != null)
         {
             itemPanel.SetActive(true);
-            int count = InventoryManager.Instance.GetPotionCount();
+            int count = 0;
+            if (InventoryManager.Instance != null)
+            {
+                count = InventoryManager.Instance.GetPotionCount();
+            }
             if (itemButtonText != null) itemButtonText.text = count + "x Heiltrank";
         }
     }
@@ -79,33 +83,36 @@ public class BattleUI : MonoBehaviour
         // Attack Panel
         if (attackPanel != null)
         {
-            Button btn = attackPanel.GetComponentInChildren<Button>();
-            if (btn != null)
+            Button[] buttons = attackPanel.GetComponentsInChildren<Button>(true);
+            if (buttons.Length > 0)
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => manager.UseSkill(manager.wildeSchlaege));
+                buttons[0].onClick.RemoveAllListeners();
+                buttons[0].onClick.AddListener(() => manager.UseSkill(manager.wildeSchlaege));
+                buttons[0].interactable = true;
             }
         }
 
         // Spell Panel
         if (spellPanel != null)
         {
-            Button btn = spellPanel.GetComponentInChildren<Button>();
-            if (btn != null)
+            Button[] buttons = spellPanel.GetComponentsInChildren<Button>(true);
+            if (buttons.Length > 0)
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => manager.UseSkill(manager.blitzstrahl));
+                buttons[0].onClick.RemoveAllListeners();
+                buttons[0].onClick.AddListener(() => manager.UseSkill(manager.blitzstrahl));
+                buttons[0].interactable = true;
             }
         }
 
         // Item Panel
         if (itemPanel != null)
         {
-            Button btn = itemPanel.GetComponentInChildren<Button>();
-            if (btn != null)
+            Button[] buttons = itemPanel.GetComponentsInChildren<Button>(true);
+            if (buttons.Length > 0)
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => manager.UsePotionInBattle());
+                buttons[0].onClick.RemoveAllListeners();
+                buttons[0].onClick.AddListener(() => manager.UsePotionInBattle());
+                buttons[0].interactable = true;
             }
         }
     }
@@ -135,6 +142,6 @@ public class BattleUI : MonoBehaviour
     public void ToggleCommandPanel(bool show)
     {
         if (commandPanel != null) commandPanel.SetActive(show);
-        if (!show) HideAllSubPanels();
+        HideAllSubPanels();
     }
 }

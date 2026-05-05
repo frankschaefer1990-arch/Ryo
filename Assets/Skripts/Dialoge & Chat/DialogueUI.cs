@@ -165,7 +165,7 @@ public class DialogueUI : MonoBehaviour
     public void ShowMessage(string message)
     {
         Debug.Log("DialogueUI: ShowMessage aufgerufen: " + message);
-        ShowMessage(defaultSpeakerName, message, 1.2f);
+        ShowMessage(defaultSpeakerName, message, 0.8f);
     }
 
     // =========================
@@ -173,7 +173,7 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ShowMessage(string speakerName, string message)
     {
-        ShowMessage(speakerName, message, 1.2f);
+        ShowMessage(speakerName, message, 0.8f);
     }
 
     // =========================
