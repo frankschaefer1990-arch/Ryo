@@ -48,6 +48,16 @@ public class DialogueUI : MonoBehaviour
         HideAllImmediate();
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnSystemsReady += ReconnectUI;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnSystemsReady -= ReconnectUI;
+    }
+
     // =========================
     // START
     // =========================
@@ -107,6 +117,16 @@ public class DialogueUI : MonoBehaviour
         // Kinder IMMER neu verknüpfen wenn sie fehlen oder ungültig sind
         if (DialogueFrameNew != null)
         {
+            // Layout erzwingen: Links unten bündig
+            RectTransform rt = DialogueFrameNew.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = new Vector2(0, 0);
+                rt.anchorMax = new Vector2(0, 0);
+                rt.pivot = new Vector2(0, 0);
+                rt.anchoredPosition = new Vector2(20, 20); // Kleiner Abstand vom Rand
+            }
+
             if (popupTextObject == null || popupTextObject.scene.name == null)
             {
                 Transform popup = DialogueFrameNew.transform.Find("PopupText");

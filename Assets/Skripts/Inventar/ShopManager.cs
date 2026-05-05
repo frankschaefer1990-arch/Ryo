@@ -33,6 +33,16 @@ public class ShopManager : MonoBehaviour
     // =========================
     // START
     // =========================
+    private void OnEnable()
+    {
+        GameManager.OnSystemsReady += ReconnectShop;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnSystemsReady -= ReconnectShop;
+    }
+
     private void Start()
     {
         ReconnectShop();

@@ -30,26 +30,30 @@ public class AttributeUI : MonoBehaviour
     public Button armorButton;
     public Button speedButton;
 
-    private void Start()
+    private void OnEnable()
+    {
+        GameManager.OnSystemsReady += ReconnectAndSetup;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnSystemsReady -= ReconnectAndSetup;
+    }
+
+    private void ReconnectAndSetup()
     {
         ReconnectPlayerStats();
         SetupAllButtons();
+    }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+    private void Start()
+    {
+        ReconnectAndSetup();
     }
 
     private void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    // =========================
-    // SZENENWECHSEL FIX
-    // =========================
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ReconnectPlayerStats();
-        SetupAllButtons();
+        // Keine Listener mehr nötig
     }
 
     // =========================

@@ -24,6 +24,16 @@ public class MyUIManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnSystemsReady += ReconnectUIFromGameManager;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnSystemsReady -= ReconnectUIFromGameManager;
+    }
+
     private void Start()
     {
         ReconnectUIFromGameManager();

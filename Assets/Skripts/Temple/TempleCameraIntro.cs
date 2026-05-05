@@ -58,6 +58,15 @@ public class TempleCameraIntro : MonoBehaviour
         }
 
         // =========================
+        // MOVEMENT LOCK
+        // =========================
+        PlayerMovement pm = player.GetComponent<PlayerMovement>();
+        if (pm != null)
+        {
+            pm.canMove = false;
+        }
+
+        // =========================
         // CAMERA FOLLOW AUS
         // =========================
         if (cameraFollow != null)
@@ -143,6 +152,19 @@ public class TempleCameraIntro : MonoBehaviour
             cameraFollow.enabled = true;
         }
 
+        // =========================
+        // MOVEMENT UNLOCK + DIALOG
+        // =========================
+        if (pm != null)
+        {
+            pm.canMove = true;
+        }
+
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage("Oh nein, Meister!!!");
+        }
+
         introRunning = false;
-    }
+        }
 }

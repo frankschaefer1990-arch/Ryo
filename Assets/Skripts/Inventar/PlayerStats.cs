@@ -48,8 +48,6 @@ public class PlayerStats : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -57,12 +55,25 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnSystemsReady += ReconnectAndUpdateUI;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnSystemsReady -= ReconnectAndUpdateUI;
+    }
+
+    private void ReconnectAndUpdateUI()
+    {
+        ReconnectUI();
+        UpdateUI();
+    }
+
     private void OnDestroy()
     {
-        if (Instance == this)
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
+        // Keine Listener mehr nötig
     }
 
     // =========================
@@ -78,14 +89,8 @@ public class PlayerStats : MonoBehaviour
         UpdateUI();
     }
 
-    // =========================
-    // SCENE CHANGE FIX
-    // =========================
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ReconnectUI();
-        UpdateUI();
-    }
+    // ... (rest of the file)
+
 
     // =========================
     // UI AUTOMATISCH NEU VERBINDEN

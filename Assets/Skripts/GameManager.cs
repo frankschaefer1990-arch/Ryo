@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     [Header("Spawn System")]
     public string spawnPointName = "";
 
+    // Das zentrale Signal für alle Sub-Systeme
+    public static System.Action OnSystemsReady;
+
     private void Awake()
     {
         // =========================
@@ -100,13 +103,16 @@ public class GameManager : MonoBehaviour
         // SYSTEME VERBINDEN
         // =========================
         ReconnectSystems();
-    }
 
-    // =========================
-    // SCENE LOADED
-    // =========================
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
+        // Signal auch beim ersten Start feuern
+        OnSystemsReady?.Invoke();
+        }
+
+        // =========================
+        // SCENE LOADED
+        // =========================
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
         Debug.Log("GameManager: Szene geladen, starte Cleanup und Reconnect...");
         
         CleanupDuplicates();
@@ -117,7 +123,11 @@ public class GameManager : MonoBehaviour
         ReconnectSystems();
 
         MovePlayerToSpawn();
-    }
+
+        // SIGNAL SENDEN - Jetzt sind alle Sub-Systeme dran
+        Debug.Log("GameManager: Sende Signal OnSystemsReady...");
+        OnSystemsReady?.Invoke();
+        }
 
     // =========================
     // CORE REFERENCES AKTUALISIEREN
@@ -248,37 +258,9 @@ public class GameManager : MonoBehaviour
     // =========================
     void ReconnectSystems()
     {
-        // 1. UI MANAGER
-        MyUIManager uiManager = FindAnyObjectByType<MyUIManager>();
-        if (uiManager != null)
-        {
-            uiManager.ReconnectUIFromGameManager();
-        }
-
-        // 2. DIALOGUE UI
-        if (DialogueUI.Instance != null)
-        {
-            DialogueUI.Instance.ReconnectUI();
-        }
-
-        // 3. INVENTORY MANAGER
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.RefreshInventory();
-        }
-
-        // 4. SHOP MANAGER
-        ShopManager[] shops = FindObjectsByType<ShopManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (ShopManager shop in shops)
-        {
-            if (shop != null)
-            {
-                shop.ReconnectShop();
-                shop.SetupButtonsPublic();
-            }
-        }
+        // Wir rufen nur noch Systeme auf, die (noch) nicht auf das Signal hören
+        // Alle UI-Systeme (Inventar, Shop, Stats) erledigen das jetzt selbstständig!
         
-        // ... restliche Verbindungen (Camera, Temple etc.) ...
         ReconnectOtherSystems();
     }
 

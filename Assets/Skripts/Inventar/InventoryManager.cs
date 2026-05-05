@@ -37,6 +37,18 @@ public class InventoryManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        // Am Signal anmelden
+        GameManager.OnSystemsReady += RefreshInventory;
+    }
+
+    private void OnDisable()
+    {
+        // Am Signal abmelden
+        GameManager.OnSystemsReady -= RefreshInventory;
+    }
+
     // =========================
     // CLEANUP
     // =========================

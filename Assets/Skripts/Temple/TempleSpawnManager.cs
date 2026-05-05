@@ -82,39 +82,5 @@ public class TempleSpawnManager : MonoBehaviour
         {
             Debug.LogError("TempleCameraIntro fehlt!");
         }
-
-        // =========================
-        // UI FIX
-        // =========================
-        MyUIManager uiManager = FindFirstObjectByType<MyUIManager>();
-
-        if (uiManager != null)
-        {
-            uiManager.ReconnectUIFromGameManager();
-
-            Debug.Log("UI neu verbunden.");
         }
-        else
-        {
-            Debug.LogError("MyUIManager nicht gefunden!");
         }
-
-        // =========================
-        // ATTRIBUTE UI FIX
-        // =========================
-        AttributeUI attributeUI = Resources.FindObjectsOfTypeAll<AttributeUI>()
-            .FirstOrDefault();
-
-        if (attributeUI != null)
-        {
-            attributeUI.playerStats = PlayerStats.Instance;
-            attributeUI.SetupAllButtons();
-
-            Debug.Log("PlayerStats erfolgreich verbunden.");
-        }
-        else
-        {
-            Debug.LogError("AttributeUI nicht gefunden!");
-        }
-    }
-}
