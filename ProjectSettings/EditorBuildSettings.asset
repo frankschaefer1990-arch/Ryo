@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SplashScreen.unity
+    path: Assets/Scenes/SplashScreen.unity
     guid: 8ab8bd54ce348d24daf3ced715e71ce8
   - enabled: 1
-    path: Assets/Legend of Ryo.unity
+    path: Assets/Scenes/Legend of Ryo.unity
     guid: b9af50af483f61c44853c00e61d4fb80
   - enabled: 1
-    path: Assets/Temple.unity
+    path: Assets/Scenes/Temple.unity
     guid: 147f57cd9c0c0d34b940e773d1af4c87
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
