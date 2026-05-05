@@ -10,6 +10,7 @@ public class DialogueUI : MonoBehaviour
     public GameObject DialogueFrameNew;
     public GameObject popupTextObject;
     public TextMeshProUGUI popupText;
+    public UnityEngine.UI.Text legacyPopupText; // Added fallback for legacy Text
 
     [Header("Speaker UI")]
     public GameObject speakerNameObject;
@@ -19,7 +20,7 @@ public class DialogueUI : MonoBehaviour
     public string defaultSpeakerName = "Ryo";
 
     [Header("Typewriter Settings")]
-    public float letterDelay = 0.04f;
+    public float letterDelay = 0.03f;
 
     private Coroutine currentRoutine;
     private bool isShowing = false;
@@ -102,12 +103,13 @@ public class DialogueUI : MonoBehaviour
         {
             Transform frame = canvasTransform.Find("LockedDoorPopup/DialogueFrameNew");
             if (frame == null) frame = canvasTransform.Find("DialogueFrameNew");
+            if (frame == null) frame = canvasTransform.Find("Chatbox"); // Fallback to Chatbox
             
             if (frame == null)
             {
                 foreach (Transform t in canvasTransform.GetComponentsInChildren<Transform>(true))
                 {
-                    if (t.name == "DialogueFrameNew") { frame = t; break; }
+                    if (t.name == "DialogueFrameNew" || t.name == "Chatbox") { frame = t; break; }
                 }
             }
 
@@ -117,25 +119,30 @@ public class DialogueUI : MonoBehaviour
         // Kinder IMMER neu verknüpfen wenn sie fehlen oder ungültig sind
         if (DialogueFrameNew != null)
         {
-            // Layout erzwingen: Links unten bündig
-            RectTransform rt = DialogueFrameNew.GetComponent<RectTransform>();
-            if (rt != null)
+            // Layout erzwingen: Links unten bündig (nur wenn es der DialogFrame ist)
+            if (DialogueFrameNew.name == "DialogueFrameNew")
             {
-                rt.anchorMin = new Vector2(0, 0);
-                rt.anchorMax = new Vector2(0, 0);
-                rt.pivot = new Vector2(0, 0);
-                rt.anchoredPosition = new Vector2(20, 20); // Kleiner Abstand vom Rand
+                RectTransform rt = DialogueFrameNew.GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.anchorMin = new Vector2(0, 0);
+                    rt.anchorMax = new Vector2(0, 0);
+                    rt.pivot = new Vector2(0, 0);
+                    rt.anchoredPosition = new Vector2(20, 20);
+                }
             }
 
             if (popupTextObject == null || popupTextObject.scene.name == null)
             {
                 Transform popup = DialogueFrameNew.transform.Find("PopupText");
+                if (popup == null) popup = DialogueFrameNew.transform.Find("LogText");
                 if (popup != null) popupTextObject = popup.gameObject;
             }
 
-            if (popupText == null && popupTextObject != null)
+            if (popupTextObject != null)
             {
                 popupText = popupTextObject.GetComponent<TextMeshProUGUI>();
+                legacyPopupText = popupTextObject.GetComponent<UnityEngine.UI.Text>();
             }
 
             if (speakerNameObject == null || speakerNameObject.scene.name == null)
@@ -158,7 +165,7 @@ public class DialogueUI : MonoBehaviour
     public void ShowMessage(string message)
     {
         Debug.Log("DialogueUI: ShowMessage aufgerufen: " + message);
-        ShowMessage(defaultSpeakerName, message, 2f);
+        ShowMessage(defaultSpeakerName, message, 1.2f);
     }
 
     // =========================
@@ -166,7 +173,7 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ShowMessage(string speakerName, string message)
     {
-        ShowMessage(speakerName, message, 2f);
+        ShowMessage(speakerName, message, 1.2f);
     }
 
     // =========================
@@ -182,11 +189,11 @@ public class DialogueUI : MonoBehaviour
             gameObject.SetActive(true);
         }
 
-        // WICHTIG: Wenn Frame immer noch fehlt -> Notfall-Suche im gesamten Projekt
         if (DialogueFrameNew == null)
         {
             Debug.LogWarning("DialogueFrameNew fehlt! Suche Ersatz...");
             GameObject found = GameObject.Find("DialogueFrameNew");
+            if (found == null) found = GameObject.Find("Chatbox");
             if (found != null) DialogueFrameNew = found;
         }
 
@@ -231,14 +238,14 @@ public class DialogueUI : MonoBehaviour
             speakerNameText.text = speakerName;
 
         // CLEAR
-        if (popupText != null)
-            popupText.text = "";
+        if (popupText != null) popupText.text = "";
+        if (legacyPopupText != null) legacyPopupText.text = "";
 
         // TYPEWRITER
         foreach (char letter in message)
         {
-            if (popupText != null)
-                popupText.text += letter;
+            if (popupText != null) popupText.text += letter;
+            if (legacyPopupText != null) legacyPopupText.text += letter;
 
             yield return new WaitForSeconds(letterDelay);
         }
@@ -256,14 +263,20 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void HideAll()
     {
-        // NUR UI ELEMENTE
-        if (DialogueFrameNew != null)
+        // Clear text content
+        if (popupText != null) popupText.text = "";
+        if (legacyPopupText != null) legacyPopupText.text = "";
+
+        // Only hide the frame if it's NOT the permanent Battle Chatbox
+        if (DialogueFrameNew != null && DialogueFrameNew.name != "Chatbox")
+        {
             DialogueFrameNew.SetActive(false);
+        }
 
         if (popupTextObject != null)
             popupTextObject.SetActive(false);
 
-        if (speakerNameObject != null)
+        if (speakerNameObject != null && speakerNameObject.name != "EnemyNameDisplay")
             speakerNameObject.SetActive(false);
 
         // SCRIPT ROOT BLEIBT AKTIV
@@ -275,13 +288,16 @@ public class DialogueUI : MonoBehaviour
     // =========================
     private void HideAllImmediate()
     {
-        if (DialogueFrameNew != null)
+        if (popupText != null) popupText.text = "";
+        if (legacyPopupText != null) legacyPopupText.text = "";
+
+        if (DialogueFrameNew != null && DialogueFrameNew.name != "Chatbox")
             DialogueFrameNew.SetActive(false);
 
         if (popupTextObject != null)
             popupTextObject.SetActive(false);
 
-        if (speakerNameObject != null)
+        if (speakerNameObject != null && speakerNameObject.name != "EnemyNameDisplay")
             speakerNameObject.SetActive(false);
     }
 

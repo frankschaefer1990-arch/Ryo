@@ -35,11 +35,30 @@ public class BattleManager : MonoBehaviour
     private IEnumerator SetupBattle()
     {
         enemyCurrentHP = currentEnemy.maxHP;
-        BattleUI.Instance.UpdateEnemyHP(1f);
-        BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth);
-        BattleUI.Instance.ToggleCommandPanel(false);
+        BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
+        BattleUI.Instance.UpdateEnemyHP(1f, enemyCurrentHP, currentEnemy.maxHP);
+        if (PlayerStats.Instance != null)
+        {
+            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+        }
+        else
+        {
+            Debug.LogWarning("PlayerStats.Instance ist null. HP-Leiste konnte nicht initialisiert werden.");
+        }
+
+        // NEU: Buttons sofort sichtbar machen
+        BattleUI.Instance.ToggleCommandPanel(true);
+        BattleUI.Instance.SetupSubButtons(this);
         
-        DialogueUI.Instance.ShowMessage(currentEnemy.enemyName + " erscheint!");
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage(currentEnemy.enemyName + " erscheint!");
+        }
+        else
+        {
+            Debug.LogWarning("DialogueUI.Instance ist null. Nachricht konnte nicht angezeigt werden.");
+        }
+        
         yield return new WaitForSeconds(2f);
 
         state = BattleState.PLAYERTURN;
@@ -48,37 +67,35 @@ public class BattleManager : MonoBehaviour
 
     private void PlayerTurn()
     {
-        Debug.Log("Spieler ist am Zug.");
+        Debug.Log("BattleManager: PlayerTurn started.");
+        // Panel ist bereits aktiv vom Start her
         BattleUI.Instance.ToggleCommandPanel(true);
     }
 
     public void OnAttackButton()
     {
         if (state != BattleState.PLAYERTURN) return;
-        BattleUI.Instance.ToggleCommandPanel(false);
-        StartCoroutine(ExecuteSkill(wildeSchlaege));
+        BattleUI.Instance.ShowAttackPanel();
     }
 
     public void OnSpellButton()
     {
         if (state != BattleState.PLAYERTURN) return;
-        
-        if (PlayerStats.Instance.currentMana >= blitzstrahl.manaCost)
-        {
-            BattleUI.Instance.ToggleCommandPanel(false);
-            PlayerStats.Instance.UseMana(blitzstrahl.manaCost);
-            StartCoroutine(ExecuteSkill(blitzstrahl));
-        }
-        else
-        {
-            DialogueUI.Instance.ShowMessage("Nicht genug Mana!");
-        }
+        BattleUI.Instance.ShowSpellPanel();
     }
 
     public void OnItemButton()
     {
         if (state != BattleState.PLAYERTURN) return;
         BattleUI.Instance.ShowItemPanel();
+    }
+
+    // Call this from the actual skill buttons inside panels
+    public void UseSkill(BattleSkill skill)
+    {
+        if (state != BattleState.PLAYERTURN) return;
+        BattleUI.Instance.ToggleCommandPanel(false); // Hides all
+        StartCoroutine(ExecuteSkill(skill));
     }
 
     public void OnRunButton()
@@ -91,19 +108,19 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.BUSY;
         BattleUI.Instance.ToggleCommandPanel(false);
-        DialogueUI.Instance.ShowMessage("Ryo versucht zu flüchten...");
+        ShowBattleMessage("Ryo versucht zu flüchten...");
         yield return new WaitForSeconds(1f);
 
         // 50% chance to run
         if (Random.value > 0.5f)
         {
-            DialogueUI.Instance.ShowMessage("Flucht erfolgreich!");
+            ShowBattleMessage("Flucht erfolgreich!");
             yield return new WaitForSeconds(1.5f);
             GameManager.Instance.LoadScene("Legend of Ryo"); 
         }
         else
         {
-            DialogueUI.Instance.ShowMessage("Flucht fehlgeschlagen!");
+            ShowBattleMessage("Flucht fehlgeschlagen!");
             yield return new WaitForSeconds(1f);
             StartCoroutine(EnemyTurn());
         }
@@ -124,12 +141,12 @@ public class BattleManager : MonoBehaviour
             PlayerStats.Instance.Heal(healAmount);
             InventoryManager.Instance.RemoveOnePotion();
             
-            DialogueUI.Instance.ShowMessage("Ryo verwendet einen Trank!");
-            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth);
+            ShowBattleMessage("Ryo verwendet einen Trank!");
+            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
             
             StartCoroutine(EnemyTurnAfterDelay(2f));
-        }
-    }
+            }
+            }
 
     private IEnumerator EnemyTurnAfterDelay(float delay)
     {
@@ -141,7 +158,7 @@ public class BattleManager : MonoBehaviour
     private IEnumerator ExecuteSkill(BattleSkill skill)
     {
         state = BattleState.BUSY;
-        DialogueUI.Instance.ShowMessage("Ryo setzt " + skill.skillName + " ein!");
+        ShowBattleMessage("Ryo setzt " + skill.skillName + " ein!");
         yield return new WaitForSeconds(1f);
 
         // Move Player slightly forward
@@ -173,14 +190,14 @@ public class BattleManager : MonoBehaviour
                 // Damage calculation
                 int damage = Mathf.Max(1, (int)(PlayerStats.Instance.strength * skill.damageMultiplier) - currentEnemy.defense);
                 enemyCurrentHP -= damage;
-                BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP);
+                BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
                 Debug.Log("Hit " + (i+1) + ": " + damage + " Schaden!");
 
                 if (enemyCurrentHP <= 0) break;
             }
             else
             {
-                DialogueUI.Instance.ShowMessage("Combo unterbrochen!");
+                ShowBattleMessage("Combo unterbrochen!");
                 break;
             }
 
@@ -204,7 +221,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator EnemyTurn()
     {
-        DialogueUI.Instance.ShowMessage(currentEnemy.enemyName + " greift an!");
+        ShowBattleMessage(currentEnemy.enemyName + " greift an!");
         yield return new WaitForSeconds(1f);
 
         int damage = currentEnemy.attack;
@@ -228,7 +245,7 @@ public class BattleManager : MonoBehaviour
     {
         if (state == BattleState.WON)
         {
-            DialogueUI.Instance.ShowMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
+            ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
             PlayerStats.Instance.GainXP(currentEnemy.xpReward);
             yield return new WaitForSeconds(2f);
             // Return to world
@@ -236,10 +253,22 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            DialogueUI.Instance.ShowMessage("Niederlage...");
+            ShowBattleMessage("Niederlage...");
             yield return new WaitForSeconds(2f);
             // Return to world or Game Over
             GameManager.Instance.LoadScene("Legend of Ryo");
         }
     }
-}
+
+    private void ShowBattleMessage(string message)
+    {
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage(message);
+        }
+        else
+        {
+            Debug.Log("BATTLE MSG: " + message);
+        }
+    }
+    }
