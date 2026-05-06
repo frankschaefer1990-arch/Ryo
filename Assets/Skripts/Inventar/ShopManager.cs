@@ -56,6 +56,7 @@ public class ShopManager : MonoBehaviour
             selectionHighlight.SetActive(false);
 
         UpdateGoldUI();
+        SetupButtonsPublic();
     }
 
     // =========================
@@ -147,8 +148,15 @@ public class ShopManager : MonoBehaviour
         if (shopPanel != null)
         {
             buyButton = shopPanel.transform.Find("BuyButton")?.GetComponent<Button>();
+            if (buyButton == null) buyButton = shopPanel.transform.Find("KaufenButton")?.GetComponent<Button>();
+            if (buyButton == null) buyButton = shopPanel.transform.Find("Buy")?.GetComponent<Button>();
+
             sellButton = shopPanel.transform.Find("SellButton")?.GetComponent<Button>();
+            if (sellButton == null) sellButton = shopPanel.transform.Find("VerkaufenButton")?.GetComponent<Button>();
+
             leaveButton = shopPanel.transform.Find("LeaveButton")?.GetComponent<Button>();
+            if (leaveButton == null) leaveButton = shopPanel.transform.Find("BeendenButton")?.GetComponent<Button>();
+
             potionSlotButton = shopPanel.transform.Find("PotionSlot")?.GetComponent<Button>();
             selectionHighlight = shopPanel.transform.Find("PotionSlot/SelectionHighlight")?.gameObject;
             goldText = shopPanel.transform.Find("GoldText")?.GetComponent<TextMeshProUGUI>();
@@ -228,6 +236,7 @@ public class ShopManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         UpdateGoldUI();
+        SetupButtonsPublic();
     }
 
     // =========================
@@ -307,6 +316,7 @@ public class ShopManager : MonoBehaviour
     // =========================
     public void SelectPotion()
     {
+        Debug.Log("ShopManager: Potion ausgewählt.");
         potionSelected = true;
 
         if (selectionHighlight != null)
@@ -331,17 +341,19 @@ public class ShopManager : MonoBehaviour
     // =========================
     public void BuyPotion()
     {
+        Debug.Log("ShopManager: Kaufversuch gestartet...");
+
         // Erst auswählen
         if (!potionSelected)
         {
-            Debug.Log("Kein Item im Shop ausgewählt!");
+            Debug.LogWarning("ShopManager: Kein Item im Shop ausgewählt!");
             return;
         }
 
         // PlayerGold prüfen
         if (PlayerGold.Instance == null)
         {
-            Debug.LogError("PlayerGold Instance fehlt!");
+            Debug.LogError("ShopManager: PlayerGold Instance fehlt!");
             return;
         }
 
@@ -351,23 +363,32 @@ public class ShopManager : MonoBehaviour
 
         if (inventory == null)
         {
-            Debug.LogError("InventoryManager fehlt!");
+            Debug.LogError("ShopManager: InventoryManager fehlt!");
             return;
         }
 
         // Gold ausgeben
         if (!PlayerGold.Instance.SpendGold(potionPrice))
         {
-            Debug.Log("Nicht genug Gold!");
+            Debug.LogWarning("ShopManager: Nicht genug Gold (" + PlayerGold.Instance.currentGold + " < " + potionPrice + ")!");
             return;
         }
 
         // Potion hinzufügen
-        inventory.AddPotion();
+        bool success = inventory.AddPotion();
+        if (success)
+        {
+            Debug.Log("ShopManager: Potion erfolgreich gekauft und ins Inventar gelegt.");
+        }
+        else
+        {
+            Debug.LogError("ShopManager: Potion konnte nicht zum Inventar hinzugefügt werden (Inventar voll?)");
+            // Gold zurückgeben
+            PlayerGold.Instance.AddGold(potionPrice);
+        }
 
         UpdateGoldUI();
-
-        Debug.Log("Potion gekauft für: " + potionPrice + " Gold.");
+        SetupButtonsPublic();
     }
 
     // =========================

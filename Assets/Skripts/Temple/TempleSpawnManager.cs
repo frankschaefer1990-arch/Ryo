@@ -17,8 +17,7 @@ public class TempleSpawnManager : MonoBehaviour
         // =========================
         if (QuestManager.Instance != null)
         {
-            QuestManager.Instance.visitedTemple = true;
-            Debug.Log("Quest Progress: Temple besucht!");
+            Debug.Log("Quest Progress: Temple betreten.");
         }
 
         // =========================

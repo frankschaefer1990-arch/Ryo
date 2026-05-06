@@ -55,8 +55,8 @@ public class BridgeBlocker : MonoBehaviour
                 return;
         }
 
-        // Tempel besucht -> Brücke freigeben
-        if (questManager.visitedTemple)
+        // Boss besiegt -> Brücke freigeben
+        if (questManager.defeatedTempleBoss)
         {
             if (bridgeWall != null)
             {
@@ -66,13 +66,13 @@ public class BridgeBlocker : MonoBehaviour
             // Trigger deaktivieren
             gameObject.SetActive(false);
         }
-    }
+        }
 
-    // =========================
-    // PLAYER BETRITT BLOCKER
-    // =========================
-    private void OnTriggerEnter2D(Collider2D other)
-    {
+        // =========================
+        // PLAYER BETRITT BLOCKER
+        // =========================
+        private void OnTriggerEnter2D(Collider2D other)
+        {
         if (!other.CompareTag("Player"))
             return;
 
@@ -90,12 +90,16 @@ public class BridgeBlocker : MonoBehaviour
             return;
         }
 
-        // Nur solange Tempel NICHT besucht
-        if (!questManager.visitedTemple)
+        // Nur solange Boss NICHT besiegt
+        if (!questManager.defeatedTempleBoss)
         {
+            if (questManager.visitedTemple)
+            {
+                bridgeMessage = "Ich muss zuerst den Knochenhollow im Tempel besiegen!";
+            }
             ShowBridgeMessage();
         }
-    }
+        }
 
     // =========================
     // MESSAGE

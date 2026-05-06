@@ -197,6 +197,53 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.7844787, y: 2.9509366}
   m_EdgeRadius: 0
+--- !u!1 &34313235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 34313237}
+  - component: {fileID: 34313236}
+  m_Layer: 0
+  m_Name: IntroCutsceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &34313236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34313235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50863ae089b20674d99fee0dbd63b659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IntroCutscene
+  templeEntrance: {fileID: 663806334}
+  hollowScreem: {fileID: 8300000, guid: 987d6a011bde8314a94cafc642606a13, type: 3}
+  panSpeed: 2
+--- !u!4 &34313237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34313235}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &49425960 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 87633132258241621, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
@@ -543,7 +590,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88dd1bcc6b179904094adb71b7b91eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestManager
+  introSeen: 0
   visitedTemple: 0
+  defeatedTempleBoss: 0
+  nextBattleEnemy: {fileID: 0}
 --- !u!4 &148164719
 Transform:
   m_ObjectHideFlags: 0
@@ -5959,3 +6009,4 @@ SceneRoots:
   - {fileID: 545516428}
   - {fileID: 637440868}
   - {fileID: 2037416272}
+  - {fileID: 34313237}

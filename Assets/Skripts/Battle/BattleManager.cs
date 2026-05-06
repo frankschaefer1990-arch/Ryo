@@ -37,9 +37,13 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.START;
         
-        // Hide new visual objects at start
+        // Ensure ALL visual effect objects are hidden at start
         if (blitzAnimationObject != null) blitzAnimationObject.SetActive(false);
         if (enemyAttackVisual != null) enemyAttackVisual.SetActive(false);
+        
+        if (slashEffect != null) slashEffect.gameObject.SetActive(false);
+        if (lightningEffect != null) lightningEffect.gameObject.SetActive(false);
+
         if (comboStrikeObjects != null)
         {
             foreach (var obj in comboStrikeObjects)
@@ -61,37 +65,39 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator SetupBattle()
     {
-        enemyCurrentHP = currentEnemy.maxHP;
+        Debug.Log("BattleManager: Setting up battle...");
+        
+        // Use boss data from QuestManager if it exists
+        if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
+        {
+            currentEnemy = QuestManager.Instance.nextBattleEnemy;
+            QuestManager.Instance.nextBattleEnemy = null; // Clear after use
+        }
+
+        enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
         BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
-        BattleUI.Instance.UpdateEnemyHP(1f, enemyCurrentHP, currentEnemy.maxHP);
+        BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+        
         if (PlayerStats.Instance != null)
         {
             BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
         }
-        else
-        {
-            Debug.LogWarning("PlayerStats.Instance ist null. HP-Leiste konnte nicht initialisiert werden.");
-        }
 
-        // NEU: Buttons sofort sichtbar machen
+        // Ensure Battle UI panels are correctly shown
         BattleUI.Instance.ToggleCommandPanel(true);
         BattleUI.Instance.SetupSubButtons(this);
         
-        state = BattleState.PLAYERTURN; // Enter player turn state immediately to allow interaction
+        state = BattleState.PLAYERTURN; 
 
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage(currentEnemy.enemyName + " erscheint!");
-        }
-        else
-        {
-            Debug.LogWarning("DialogueUI.Instance ist null. Nachricht konnte nicht angezeigt werden.");
+            DialogueUI.Instance.ShowMessage(currentEnemy.enemyName, "erscheint!");
         }
         
-        yield return new WaitForSeconds(1.2f); // Reduced from 2f
+        yield return new WaitForSeconds(1.2f);
         
         PlayerTurn();
-        }
+    }
 
     private void PlayerTurn()
     {
@@ -368,6 +374,13 @@ public class BattleManager : MonoBehaviour
         if (state == BattleState.WON)
         {
             ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
+            
+            // Story Progress: Unlock bridge if boss was defeated
+            if (currentEnemy.isBoss && QuestManager.Instance != null)
+            {
+                QuestManager.Instance.defeatedTempleBoss = true;
+            }
+
             if (PlayerStats.Instance != null)
             {
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);

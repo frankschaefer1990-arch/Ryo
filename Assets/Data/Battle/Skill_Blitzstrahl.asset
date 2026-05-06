@@ -19,4 +19,5 @@ MonoBehaviour:
   isSpell: 1
   manaCost: 10
   effectColor: {r: 0, g: 1, b: 1, a: 1}
+  skillSound: {fileID: 8300000, guid: 397bc8e3f24e97b48b5d6b55c47e14e4, type: 3}
   hasCombo: 0

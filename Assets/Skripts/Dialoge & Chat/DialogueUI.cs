@@ -20,7 +20,7 @@ public class DialogueUI : MonoBehaviour
     public string defaultSpeakerName = "Ryo";
 
     [Header("Typewriter Settings")]
-    public float letterDelay = 0.03f;
+    public float letterDelay = 0.05f; // Slower text speed
 
     private Coroutine currentRoutine;
     private bool isShowing = false;
@@ -69,8 +69,9 @@ public class DialogueUI : MonoBehaviour
         if (popupText != null)
         {
             popupText.enableAutoSizing = true;
-            popupText.fontSizeMin = 12;
+            popupText.fontSizeMin = 18; // Larger minimum font size
             popupText.fontSizeMax = 32;
+            popupText.alignment = TextAlignmentOptions.TopLeft;
         }
 
         HideAllImmediate();
@@ -181,26 +182,30 @@ public class DialogueUI : MonoBehaviour
     // =========================
     public void ShowMessage(string speakerName, string message, float visibleDuration)
     {
+        Debug.Log($"DialogueUI: Request to show message from {speakerName}");
+        
         // Vor jedem Anzeigen sicherstellen, dass die UI-Elemente verknüpft sind
         ReconnectUI();
-
-        if (!gameObject.activeSelf)
-        {
-            gameObject.SetActive(true);
-        }
 
         if (DialogueFrameNew == null)
         {
             Debug.LogWarning("DialogueFrameNew fehlt! Suche Ersatz...");
             GameObject found = GameObject.Find("DialogueFrameNew");
             if (found == null) found = GameObject.Find("Chatbox");
+            if (found == null) found = GameObject.Find("Kampfinformation");
             if (found != null) DialogueFrameNew = found;
         }
 
         if (DialogueFrameNew == null)
         {
             Debug.LogError("KRITISCH: DialogueFrameNew konnte nicht gefunden werden!");
+            isShowing = false;
             return;
+        }
+
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
         }
 
         if (currentRoutine != null)
@@ -255,8 +260,9 @@ public class DialogueUI : MonoBehaviour
 
         HideAll();
 
+        Debug.Log("DialogueUI: Message finished.");
         isShowing = false;
-    }
+        }
 
     // =========================
     // HIDE
