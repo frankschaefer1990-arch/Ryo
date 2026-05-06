@@ -10,6 +10,7 @@ public class BattleSkill : ScriptableObject
     public bool isSpell = false;
     public int manaCost = 0;
     public Color effectColor = Color.white;
+    public AudioClip skillSound;
     
     // For QTE
     public bool hasCombo = false;

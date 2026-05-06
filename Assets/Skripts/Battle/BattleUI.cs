@@ -17,6 +17,15 @@ public class BattleUI : MonoBehaviour
 
     [Header("QTE")]
     public TMP_Text qteText;
+    public TMP_Text qteFixedRing; // Changed from Image to TMP_Text for hollow '○'
+    public RectTransform qteShrinkingRing; 
+    public Color qteDefaultColor = new Color(1, 1, 1, 0.4f);
+    public Color qteSuccessColor = Color.green;
+    public Color qteFailColor = Color.red;
+
+    [Header("Skill Display")]
+    public GameObject battleInfoPanel; // Renamed from skillInfoPanel
+    public TMP_Text skillNameText;
 
     [Header("Panels")]
     public GameObject commandPanel;
@@ -71,6 +80,8 @@ public class BattleUI : MonoBehaviour
         if (attackPanel != null) attackPanel.SetActive(false);
         if (spellPanel != null) spellPanel.SetActive(false);
         if (itemPanel != null) itemPanel.SetActive(false);
+        
+        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
     }
 
     public void HideItemPanel()
@@ -129,19 +140,118 @@ public class BattleUI : MonoBehaviour
         if (enemyHPText != null) enemyHPText.text = current + " / " + max;
     }
 
+    public void ShowSkillName(string name)
+    {
+        if (battleInfoPanel != null)
+        {
+            battleInfoPanel.SetActive(true);
+            if (skillNameText != null) 
+            {
+                skillNameText.text = name;
+                // Force a bit of medieval style if not already set
+                skillNameText.alignment = TextAlignmentOptions.Center;
+            }
+        }
+    }
+
+    private void Start()
+    {
+        HideAllSubPanels();
+        HideComboPrompt();
+        HideActionMessage();
+        HideSkillName();
+    }
+
+    public void ShowActionMessage(string speaker, string action)
+    {
+        if (battleInfoPanel != null)
+        {
+            battleInfoPanel.SetActive(true);
+            if (skillNameText != null) 
+            {
+                // Format: Speaker in Gold, rest in White
+                skillNameText.text = "<color=#FFD700>" + speaker + "</color> " + action;
+                skillNameText.alignment = TextAlignmentOptions.Left;
+                skillNameText.enableWordWrapping = false; // Keep it on one line
+            }
+        }
+    }
+
+    // Overload for backward compatibility
+    public void ShowActionMessage(string fullMessage)
+    {
+        ShowActionMessage("", fullMessage);
+    }
+
+    public void HideActionMessage()
+    {
+        if (battleInfoPanel != null) battleInfoPanel.SetActive(false);
+    }
+
+    public void HideSkillName()
+    {
+        if (battleInfoPanel != null) battleInfoPanel.SetActive(false);
+    }
+
     public void ShowComboPrompt(string keyName)
     {
-        if (qteText != null) qteText.text = keyName;
+        if (qteText != null) 
+        {
+            qteText.gameObject.SetActive(true);
+            qteText.text = keyName;
+        }
+        if (qteFixedRing != null)
+        {
+            qteFixedRing.gameObject.SetActive(true);
+            qteFixedRing.color = qteDefaultColor;
+        }
+        if (qteShrinkingRing != null)
+        {
+            qteShrinkingRing.gameObject.SetActive(true);
+            qteShrinkingRing.localScale = Vector3.one * 3.0f; // Start 3x larger
+        }
     }
 
     public void HideComboPrompt()
     {
-        if (qteText != null) qteText.text = "";
+        if (qteText != null) 
+        {
+            qteText.text = "";
+            qteText.gameObject.SetActive(false);
+        }
+        if (qteFixedRing != null) qteFixedRing.gameObject.SetActive(false);
+        if (qteShrinkingRing != null) qteShrinkingRing.gameObject.SetActive(false);
+    }
+
+    public void SetQTEFeedback(bool success)
+    {
+        if (qteFixedRing != null)
+        {
+            qteFixedRing.gameObject.SetActive(true);
+            qteFixedRing.color = success ? qteSuccessColor : qteFailColor;
+        }
+        if (qteShrinkingRing != null) qteShrinkingRing.gameObject.SetActive(false);
     }
 
     public void ToggleCommandPanel(bool show)
     {
-        if (commandPanel != null) commandPanel.SetActive(show);
-        HideAllSubPanels();
+        if (show)
+        {
+            HideAllSubPanels();
+            if (commandPanel != null) commandPanel.SetActive(true);
+        }
+        else
+        {
+            if (commandPanel != null) commandPanel.SetActive(false);
+            HideAllSubPanels();
+            if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
+        }
+        
+        // Ensure buttons are clickable
+        if (commandPanel != null)
+        {
+            Button[] buttons = commandPanel.GetComponentsInChildren<Button>();
+            foreach(var b in buttons) b.interactable = show;
+        }
     }
 }

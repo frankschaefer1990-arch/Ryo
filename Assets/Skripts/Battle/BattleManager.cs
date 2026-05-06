@@ -17,6 +17,13 @@ public class BattleManager : MonoBehaviour
     public Transform playerPos;
     public Transform enemyPos;
     public ProceduralSlash slashEffect;
+    public ProceduralSlash lightningEffect;
+    public AudioSource audioSource;
+
+    [Header("New Visuals")]
+    public GameObject[] comboStrikeObjects;
+    public GameObject blitzAnimationObject;
+    public GameObject enemyAttackVisual; // New
 
     private BattleState state;
     private int enemyCurrentHP;
@@ -29,7 +36,27 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         state = BattleState.START;
+        
+        // Hide new visual objects at start
+        if (blitzAnimationObject != null) blitzAnimationObject.SetActive(false);
+        if (enemyAttackVisual != null) enemyAttackVisual.SetActive(false);
+        if (comboStrikeObjects != null)
+        {
+            foreach (var obj in comboStrikeObjects)
+            {
+                if (obj != null) obj.SetActive(false);
+            }
+        }
+
         StartCoroutine(SetupBattle());
+    }
+
+    private IEnumerator ShowEffectBriefly(GameObject effect, float duration)
+    {
+        if (effect == null) yield break;
+        effect.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        effect.SetActive(false);
     }
 
     private IEnumerator SetupBattle()
@@ -167,12 +194,19 @@ public class BattleManager : MonoBehaviour
     private IEnumerator ExecuteSkill(BattleSkill skill)
     {
         state = BattleState.BUSY;
-        ShowBattleMessage("Ryo setzt " + skill.skillName + " ein!");
-        yield return new WaitForSeconds(0.6f);
+        BattleUI.Instance.ShowActionMessage("Ryo", "setzt " + skill.skillName + " ein!");
+        
+        yield return new WaitForSeconds(1.0f);
+        BattleUI.Instance.HideActionMessage();
 
-        // Move Player slightly forward
         Vector3 originalPos = playerPos.position;
         playerPos.position += new Vector3(0.5f, 0.5f, 0);
+        
+        // Initial sound for non-combo skills
+        if (audioSource != null && skill.skillSound != null && !skill.hasCombo)
+        {
+            audioSource.PlayOneShot(skill.skillSound);
+        }
 
         for (int i = 0; i < skill.hitCount; i++)
         {
@@ -180,6 +214,8 @@ public class BattleManager : MonoBehaviour
 
             if (skill.hasCombo)
             {
+                yield return new WaitForSeconds(0.2f);
+
                 bool qteResult = false;
                 bool waiting = true;
                 ComboSystem.Instance.StartQTE((result) => {
@@ -193,20 +229,38 @@ public class BattleManager : MonoBehaviour
 
             if (hitSuccess)
             {
+                // Play sound for every hit
+                if (audioSource != null && skill.skillSound != null)
+                {
+                    audioSource.PlayOneShot(skill.skillSound);
+                }
+
                 // Damage calculation
-                int playerStrength = (PlayerStats.Instance != null && PlayerStats.Instance.strength > 0) ? PlayerStats.Instance.strength : 15;
+                int playerStrength = (PlayerStats.Instance != null) ? PlayerStats.Instance.strength : 15;
                 int baseDamage = (int)(playerStrength * skill.damageMultiplier);
                 int totalDamage = Mathf.Max(1, baseDamage - currentEnemy.defense);
                 
                 enemyCurrentHP -= totalDamage;
-                Debug.Log($"SKILL: {skill.skillName} | Hit {i+1} | Dmg: {totalDamage} | Remaining HP: {enemyCurrentHP}");
-
-                if (skill.hasCombo) ShowBattleMessage("Treffer!");
-
-                // Visuals - Trigger them together for maximum impact
-                slashEffect.PlaySlash(enemyPos.position, skill.effectColor);
-                StartCoroutine(PlayHurtAnimation(enemyPos)); 
                 
+                // Visuals
+                if (skill.isSpell && blitzAnimationObject != null)
+                {
+                    StartCoroutine(ShowEffectBriefly(blitzAnimationObject, 0.3f));
+                }
+                else if (skill.hasCombo && comboStrikeObjects != null && i < comboStrikeObjects.Length)
+                {
+                    StartCoroutine(ShowEffectBriefly(comboStrikeObjects[i], 0.3f));
+                }
+                else
+                {
+                    ProceduralSlash effectToUse = skill.isSpell ? lightningEffect : slashEffect;
+                    if (effectToUse != null)
+                    {
+                        effectToUse.PlaySlash(enemyPos.position, skill.effectColor);
+                    }
+                }
+
+                StartCoroutine(PlayHurtAnimation(enemyPos)); 
                 BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
 
                 if (enemyCurrentHP <= 0) break;
@@ -217,11 +271,11 @@ public class BattleManager : MonoBehaviour
                 break;
             }
 
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.3f);
         }
 
         playerPos.position = originalPos;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         if (enemyCurrentHP <= 0)
         {
@@ -230,25 +284,43 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            state = BattleState.BUSY;
             StartCoroutine(EnemyTurn());
         }
     }
 
     private IEnumerator EnemyTurn()
     {
-        ShowBattleMessage(currentEnemy.enemyName + " greift an!");
-        yield return new WaitForSeconds(0.6f);
+        state = BattleState.BUSY;
+        yield return new WaitForSeconds(1.0f);
+
+        BattleUI.Instance.ShowActionMessage(currentEnemy.enemyName, "greift an!");
+        yield return new WaitForSeconds(1.0f);
+        BattleUI.Instance.HideActionMessage();
+
+        Vector3 enemyOriginalPos = enemyPos.position;
+        enemyPos.position -= new Vector3(0.5f, 0, 0);
+
+        if (enemyAttackVisual != null) StartCoroutine(ShowEffectBriefly(enemyAttackVisual, 0.4f));
+
+        // Enemy Sound
+        AudioSource enemyAudio = enemyPos.GetComponent<AudioSource>();
+        if (enemyAudio != null)
+        {
+            AudioClip soundToPlay = currentEnemy.attackSound != null ? currentEnemy.attackSound : wildeSchlaege.skillSound;
+            if (soundToPlay != null) enemyAudio.PlayOneShot(soundToPlay);
+        }
 
         int damage = currentEnemy.attack;
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.TakeDamage(damage);
-            StartCoroutine(PlayHurtAnimation(playerPos)); // Improved unified hurt animation
+            StartCoroutine(PlayHurtAnimation(playerPos)); 
             BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
         }
 
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.5f); 
+        enemyPos.position = enemyOriginalPos;
+        yield return new WaitForSeconds(0.5f); 
 
         if (PlayerStats.Instance != null && PlayerStats.Instance.currentHealth <= 0)
         {
@@ -315,7 +387,7 @@ public class BattleManager : MonoBehaviour
     {
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", message, 0.8f);
+            DialogueUI.Instance.ShowMessage("Ryo", message, 0.4f);
         }
         else
         {

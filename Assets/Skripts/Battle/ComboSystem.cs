@@ -10,7 +10,7 @@ public class ComboSystem : MonoBehaviour
     private bool isWaitingForInput = false;
     private KeyCode currentTargetKey;
     private float timer = 0f;
-    private float timeLimit = 1.5f; // Increased from 0.8f for easier reaction
+    private float timeLimit = 1.2f; // Increased for more reaction time
 
     private void Awake()
     {
@@ -37,9 +37,29 @@ public class ComboSystem : MonoBehaviour
         {
             timer += Time.deltaTime;
 
+            // Animate Ring: Shrink from 3.0 down to 0.0 over time
+            if (BattleUI.Instance.qteShrinkingRing != null)
+            {
+                float t = timer / timeLimit;
+                float scale = Mathf.Lerp(3.0f, 0.0f, t);
+                BattleUI.Instance.qteShrinkingRing.localScale = Vector3.one * scale;
+            }
+
             if (Input.GetKeyDown(currentTargetKey))
             {
-                success = true;
+                // Success window: scale 1.0 is perfect.
+                // Loosened significantly: 0.3 to 2.0. This allows early and late hits.
+                float currentScale = BattleUI.Instance.qteShrinkingRing != null ? BattleUI.Instance.qteShrinkingRing.localScale.x : 1.0f;
+                
+                if (currentScale >= 0.3f && currentScale <= 2.2f)
+                {
+                    success = true;
+                }
+                else
+                {
+                    Debug.Log("QTE: Failed! Scale: " + currentScale);
+                    success = false;
+                }
                 break;
             }
             else if (Input.anyKeyDown)
@@ -52,8 +72,13 @@ public class ComboSystem : MonoBehaviour
             yield return null;
         }
 
+        BattleUI.Instance.SetQTEFeedback(success);
+        
+        // Show the result color for a brief moment
+        yield return new WaitForSeconds(0.3f);
         BattleUI.Instance.HideComboPrompt();
+
         isWaitingForInput = false;
-onResult?.Invoke(success);
+        onResult?.Invoke(success);
     }
 }

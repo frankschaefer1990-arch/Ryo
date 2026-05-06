@@ -18,3 +18,4 @@ MonoBehaviour:
   defense: 2
   xpReward: 20
   enemySprite: {fileID: 0}
+  attackSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}

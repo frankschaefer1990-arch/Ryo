@@ -8,11 +8,15 @@ public class ProceduralSlash : MonoBehaviour
 
     private void Awake()
     {
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.01f;
-        lineRenderer.positionCount = 2;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer = GetComponent<LineRenderer>();
+        if (lineRenderer == null)
+        {
+            lineRenderer = gameObject.AddComponent<LineRenderer>();
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.01f;
+            lineRenderer.positionCount = 2;
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        }
         lineRenderer.enabled = false;
     }
 

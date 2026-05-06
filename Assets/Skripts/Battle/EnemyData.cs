@@ -9,4 +9,5 @@ public class EnemyData : ScriptableObject
     public int defense;
     public int xpReward;
     public Sprite enemySprite;
-}
+    public AudioClip attackSound; // New: Unique sound for the enemy
+    }
