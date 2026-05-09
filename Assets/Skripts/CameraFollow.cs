@@ -32,6 +32,14 @@ public class CameraFollow : MonoBehaviour
     // =========================
     private void FindPlayer()
     {
+        // 1. Try GameManager first
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            player = GameManager.Instance.player.transform;
+            return;
+        }
+
+        // 2. Fallback to tag search
         if (player == null)
         {
             GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -39,10 +47,6 @@ public class CameraFollow : MonoBehaviour
             if (foundPlayer != null)
             {
                 player = foundPlayer.transform;
-            }
-            else
-            {
-                Debug.LogError("Player NICHT gefunden! Prüfe Tag = Player");
             }
         }
     }

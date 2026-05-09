@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4048747875721026948}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,6 +134,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 5
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  canMove: 1
+  upScaleMultiplier: 1.1
+  baseMoveSpeed: 5
+  agilitySpeedBonus: 0.2
 --- !u!95 &4048747875721026948
 Animator:
   serializedVersion: 7

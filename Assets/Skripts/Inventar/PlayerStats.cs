@@ -47,11 +47,13 @@ public class PlayerStats : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            if (transform.parent != null) transform.SetParent(null); 
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
         {
-            Destroy(gameObject);
+            // Just destroy the duplicate script, don't nuke the GameObject (which might be the Player!)
+            Destroy(this);
         }
     }
 

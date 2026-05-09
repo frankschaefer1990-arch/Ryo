@@ -17,11 +17,12 @@ public class QuestManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            if (transform.parent != null) transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
     }
 }

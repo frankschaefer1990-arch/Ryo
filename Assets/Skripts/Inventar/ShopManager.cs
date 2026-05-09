@@ -234,6 +234,7 @@ public class ShopManager : MonoBehaviour
         // Maus zeigen
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        Debug.Log("ShopManager: Cursor aktiviert.");
 
         UpdateGoldUI();
         SetupButtonsPublic();
@@ -343,21 +344,18 @@ public class ShopManager : MonoBehaviour
     {
         Debug.Log("ShopManager: Kaufversuch gestartet...");
 
-        // Erst auswählen
         if (!potionSelected)
         {
             Debug.LogWarning("ShopManager: Kein Item im Shop ausgewählt!");
             return;
         }
 
-        // PlayerGold prüfen
         if (PlayerGold.Instance == null)
         {
             Debug.LogError("ShopManager: PlayerGold Instance fehlt!");
             return;
         }
 
-        // Inventory prüfen
         InventoryManager inventory = InventoryManager.Instance;
         if (inventory == null) inventory = FindAnyObjectByType<InventoryManager>();
 
@@ -367,23 +365,22 @@ public class ShopManager : MonoBehaviour
             return;
         }
 
-        // Gold ausgeben
+        Debug.Log($"ShopManager: Gold vor Kauf: {PlayerGold.Instance.currentGold}, Preis: {potionPrice}");
+
         if (!PlayerGold.Instance.SpendGold(potionPrice))
         {
-            Debug.LogWarning("ShopManager: Nicht genug Gold (" + PlayerGold.Instance.currentGold + " < " + potionPrice + ")!");
+            Debug.LogWarning("ShopManager: Nicht genug Gold!");
             return;
         }
 
-        // Potion hinzufügen
         bool success = inventory.AddPotion();
         if (success)
         {
-            Debug.Log("ShopManager: Potion erfolgreich gekauft und ins Inventar gelegt.");
+            Debug.Log("ShopManager: Potion erfolgreich gekauft.");
         }
         else
         {
-            Debug.LogError("ShopManager: Potion konnte nicht zum Inventar hinzugefügt werden (Inventar voll?)");
-            // Gold zurückgeben
+            Debug.LogError("ShopManager: Potion konnte nicht zum Inventar hinzugefügt werden!");
             PlayerGold.Instance.AddGold(potionPrice);
         }
 

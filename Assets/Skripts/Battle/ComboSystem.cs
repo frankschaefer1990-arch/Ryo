@@ -37,20 +37,16 @@ public class ComboSystem : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            // Animate Ring: Shrink from 3.0 down to 0.0 over time
-            if (BattleUI.Instance.qteShrinkingRing != null)
-            {
-                float t = timer / timeLimit;
-                float scale = Mathf.Lerp(3.0f, 0.0f, t);
-                BattleUI.Instance.qteShrinkingRing.localScale = Vector3.one * scale;
-            }
+            // Animate Ring: Shrink from 5.0 down to 0.0 over time
+            float t = timer / timeLimit;
+            float scale = Mathf.Lerp(5.0f, 0.0f, t);
+            BattleUI.Instance.qteShrinkRing.rectTransform.localScale = Vector3.one * scale;
 
             if (Input.GetKeyDown(currentTargetKey))
             {
                 // Success window: scale 1.0 is perfect.
-                // Loosened significantly: 0.3 to 2.0. This allows early and late hits.
-                float currentScale = BattleUI.Instance.qteShrinkingRing != null ? BattleUI.Instance.qteShrinkingRing.localScale.x : 1.0f;
-                
+                float currentScale = BattleUI.Instance.qteShrinkRing != null ? BattleUI.Instance.qteShrinkRing.rectTransform.localScale.x : 1.0f;
+
                 if (currentScale >= 0.3f && currentScale <= 2.2f)
                 {
                     success = true;

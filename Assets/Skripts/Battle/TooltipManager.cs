@@ -32,14 +32,26 @@ public class TooltipManager : MonoBehaviour
     {
         if (tooltipPanel != null && tooltipPanel.activeSelf)
         {
-            RectTransform canvasRect = tooltipPanel.GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-            Vector2 localPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, Input.mousePosition, tooltipPanel.GetComponentInParent<Canvas>().worldCamera, out localPoint);
+            Canvas canvas = tooltipPanel.GetComponentInParent<Canvas>();
+            if (canvas == null) return;
             
-            // Positioning: Pivot is (1, 0) for expansion Up-Left from the mouse
-            RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
-            rt.pivot = new Vector2(1, 0); 
-            rt.anchoredPosition = localPoint + new Vector2(-15, 15);
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            Vector2 localPoint;
+            
+            // Determine camera for raycast/positioning
+            Camera uiCam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+            
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, Input.mousePosition, uiCam, out localPoint))
+            {
+                RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
+                
+                // Adjust pivot to keep it on screen
+                float pivotX = (Input.mousePosition.x > Screen.width * 0.7f) ? 1.1f : -0.1f;
+                float pivotY = (Input.mousePosition.y > Screen.height * 0.7f) ? 1.1f : -0.1f;
+                rt.pivot = new Vector2(pivotX, pivotY);
+                
+                rt.anchoredPosition = localPoint;
+            }
         }
     }
 }
@@ -67,4 +79,4 @@ public class TooltipTrigger : MonoBehaviour, UnityEngine.EventSystems.IPointerEn
     {
         if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
     }
-    }
+}

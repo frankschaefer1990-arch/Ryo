@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0836200ca45a824f85945f9973ff77a, type: 3}
   m_Name: Enemy_Skeleton
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Skelett
-  maxHP: 50
-  attack: 5
-  defense: 2
-  xpReward: 20
+  enemyName: Skelettkrieger
+  maxHP: 3000
+  attack: 20
+  defense: 5
+  xpReward: 100
+  startHP: 200
+  isBoss: 0
   enemySprite: {fileID: 0}
-  attackSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}
+  attackSound: {fileID: 0}

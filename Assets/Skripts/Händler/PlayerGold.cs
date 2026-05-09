@@ -16,7 +16,7 @@ public class PlayerGold : MonoBehaviour
         // Bereits vorhanden?
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
@@ -24,6 +24,7 @@ public class PlayerGold : MonoBehaviour
         Instance = this;
 
         // Zwischen Szenen behalten
+        if (transform.parent != null) transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
         // Optional für spätere UI / Save Erweiterung

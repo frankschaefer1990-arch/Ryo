@@ -5,6 +5,7 @@ public class IntroCutscene : MonoBehaviour
 {
     public Transform templeEntrance;
     public AudioClip hollowScreem;
+    [Range(0f, 1f)] public float screamVolume = 1.0f;
     public float panSpeed = 2f;
 
     private void Start()
@@ -50,10 +51,12 @@ public class IntroCutscene : MonoBehaviour
                 yield return null;
             }
 
-            // Play Screem
+            // Play Screem - Loudest possible intensity
             if (hollowScreem != null)
             {
-                AudioSource.PlayClipAtPoint(hollowScreem, templeEntrance.position);
+                // Play twice at listener for max impact
+                AudioSource.PlayClipAtPoint(hollowScreem, Camera.main.transform.position, screamVolume);
+                AudioSource.PlayClipAtPoint(hollowScreem, Camera.main.transform.position, screamVolume);
             }
             yield return new WaitForSeconds(1.5f);
 
@@ -62,7 +65,15 @@ public class IntroCutscene : MonoBehaviour
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
-                camFollow.transform.position = Vector3.Lerp(targetPos, new Vector3(playerTransform.position.x, playerTransform.position.y, startPos.z), elapsed / duration);
+                if (playerTransform != null && playerTransform.gameObject != null)
+                {
+                    camFollow.transform.position = Vector3.Lerp(targetPos, new Vector3(playerTransform.position.x, playerTransform.position.y, startPos.z), elapsed / duration);
+                }
+                else {
+                    // Try to recover player from GameManager if reference was lost
+                    if (GameManager.Instance != null && GameManager.Instance.player != null)
+                        playerTransform = GameManager.Instance.player.transform;
+                }
                 yield return null;
             }
 
@@ -72,7 +83,7 @@ public class IntroCutscene : MonoBehaviour
         // Dialogue
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", "Was war das???");
+            DialogueUI.Instance.ShowMessage("Ryo", "Was war das");
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 

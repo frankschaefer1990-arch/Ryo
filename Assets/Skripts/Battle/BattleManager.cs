@@ -19,14 +19,18 @@ public class BattleManager : MonoBehaviour
     public ProceduralSlash slashEffect;
     public ProceduralSlash lightningEffect;
     public AudioSource audioSource;
+    public TMPro.TMP_FontAsset damageFont;
 
     [Header("New Visuals")]
     public GameObject[] comboStrikeObjects;
     public GameObject blitzAnimationObject;
     public GameObject enemyAttackVisual; // New
 
-    private BattleState state;
+    public BattleState state;
     private int enemyCurrentHP;
+
+    [Header("Audio")]
+    public AudioClip battleMusic;
 
     private void Awake()
     {
@@ -35,23 +39,31 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("BattleManager: Start called. Waiting for scene stabilization...");
         state = BattleState.START;
         
         // Ensure ALL visual effect objects are hidden at start
         if (blitzAnimationObject != null) blitzAnimationObject.SetActive(false);
         if (enemyAttackVisual != null) enemyAttackVisual.SetActive(false);
         
-        if (slashEffect != null) slashEffect.gameObject.SetActive(false);
-        if (lightningEffect != null) lightningEffect.gameObject.SetActive(false);
+        // Fix: Check if the effect is on the same GameObject to prevent self-deactivation
+        if (slashEffect != null && slashEffect.gameObject != gameObject) slashEffect.gameObject.SetActive(false);
+        if (lightningEffect != null && lightningEffect.gameObject != gameObject) lightningEffect.gameObject.SetActive(false);
 
         if (comboStrikeObjects != null)
         {
             foreach (var obj in comboStrikeObjects)
             {
-                if (obj != null) obj.SetActive(false);
+                if (obj != null && obj != gameObject) obj.SetActive(false);
             }
         }
 
+        Debug.Log("BattleManager: Starting SetupBattle in 0.5s...");
+        Invoke(nameof(StartSetup), 0.5f);
+    }
+
+    private void StartSetup()
+    {
         StartCoroutine(SetupBattle());
     }
 
@@ -67,35 +79,69 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log("BattleManager: Setting up battle...");
         
-        // Use boss data from QuestManager if it exists
-        if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
-        {
-            currentEnemy = QuestManager.Instance.nextBattleEnemy;
-            QuestManager.Instance.nextBattleEnemy = null; // Clear after use
-        }
-
-        enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
-        BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
-        BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+        // Wait a frame to ensure all Awake/Starts are done
+        yield return null;
         
-        if (PlayerStats.Instance != null)
-        {
-            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+        try {
+            // Use boss data from QuestManager if it exists
+            if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
+            {
+                currentEnemy = QuestManager.Instance.nextBattleEnemy;
+                QuestManager.Instance.nextBattleEnemy = null; // Clear after use
+                Debug.Log("BattleManager: Loaded enemy from QuestManager: " + (currentEnemy != null ? currentEnemy.enemyName : "NULL"));
+            }
+
+            if (currentEnemy == null)
+            {
+                Debug.LogError("BattleManager: No enemy data available! Cannot start battle.");
+                yield break;
+            }
+
+            enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
+            
+            if (BattleUI.Instance != null) {
+                BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
+                float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
+                BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
+                
+                if (PlayerStats.Instance != null)
+                {
+                    float pHP = PlayerStats.Instance.maxHealth > 0 ? (float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth : 1f;
+                    float pMana = PlayerStats.Instance.maxMana > 0 ? (float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana : 1f;
+                    
+                    BattleUI.Instance.UpdatePlayerHP(pHP, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+                    BattleUI.Instance.UpdatePlayerMana(pMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
+                }
+                
+                BattleUI.Instance.ToggleCommandPanel(true);
+                BattleUI.Instance.SetupSubButtons(this);
+            } else {
+                Debug.LogError("BattleManager: BattleUI.Instance is missing!");
+            }
+
+            // Start Music
+            if (audioSource != null && battleMusic != null)
+            {
+                audioSource.clip = battleMusic;
+                audioSource.loop = true;
+                audioSource.Play();
+                Debug.Log("BattleManager: Started music " + battleMusic.name);
+            }
+            
+            state = BattleState.PLAYERTURN; 
+
+            if (DialogueUI.Instance != null)
+            {
+                DialogueUI.Instance.ShowMessage(currentEnemy.enemyName, "erscheint!");
+            }
         }
-
-        // Ensure Battle UI panels are correctly shown
-        BattleUI.Instance.ToggleCommandPanel(true);
-        BattleUI.Instance.SetupSubButtons(this);
-        
-        state = BattleState.PLAYERTURN; 
-
-        if (DialogueUI.Instance != null)
-        {
-            DialogueUI.Instance.ShowMessage(currentEnemy.enemyName, "erscheint!");
+        catch (System.Exception e) {
+            Debug.LogError("BattleManager: CRITICAL ERROR during SetupBattle: " + e.Message + "\n" + e.StackTrace);
         }
         
         yield return new WaitForSeconds(1.2f);
         
+        Debug.Log("BattleManager: Setup complete. Transitioning to PlayerTurn.");
         PlayerTurn();
     }
 
@@ -103,23 +149,34 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.PLAYERTURN;
         Debug.Log("BattleManager: PlayerTurn started.");
+
+        // Mana Regeneration: +5 per turn
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.RestoreMana(5);
+            BattleUI.Instance.UpdatePlayerMana((float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
+        }
+
         BattleUI.Instance.ToggleCommandPanel(true);
     }
 
     public void OnAttackButton()
     {
+        Debug.Log("BattleManager: OnAttackButton clicked.");
         if (state != BattleState.PLAYERTURN) return;
         BattleUI.Instance.ShowAttackPanel();
     }
 
     public void OnSpellButton()
     {
+        Debug.Log("BattleManager: OnSpellButton clicked.");
         if (state != BattleState.PLAYERTURN) return;
         BattleUI.Instance.ShowSpellPanel();
     }
 
     public void OnItemButton()
     {
+        Debug.Log("BattleManager: OnItemButton clicked.");
         if (state != BattleState.PLAYERTURN) return;
         BattleUI.Instance.ShowItemPanel();
     }
@@ -127,7 +184,16 @@ public class BattleManager : MonoBehaviour
     // Call this from the actual skill buttons inside panels
     public void UseSkill(BattleSkill skill)
     {
+        Debug.Log("BattleManager: UseSkill called for " + (skill != null ? skill.skillName : "null"));
         if (state != BattleState.PLAYERTURN) return;
+
+        // Mana check
+        if (skill.isSpell && PlayerStats.Instance != null && PlayerStats.Instance.currentMana < skill.manaCost)
+        {
+            ShowBattleMessage("Nicht genug Mana!");
+            return;
+        }
+
         BattleUI.Instance.ToggleCommandPanel(false); // Hides all
         StartCoroutine(ExecuteSkill(skill));
     }
@@ -166,7 +232,7 @@ public class BattleManager : MonoBehaviour
 
         if (InventoryManager.Instance != null && InventoryManager.Instance.GetPotionCount() > 0)
         {
-            BattleUI.Instance.HideItemPanel();
+            BattleUI.Instance.HideAllSubPanels();
             BattleUI.Instance.ToggleCommandPanel(false);
             
             int healAmount = 30;
@@ -200,6 +266,14 @@ public class BattleManager : MonoBehaviour
     private IEnumerator ExecuteSkill(BattleSkill skill)
     {
         state = BattleState.BUSY;
+
+        // Mana Deduction
+        if (skill.isSpell && PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.UseMana(skill.manaCost);
+            BattleUI.Instance.UpdatePlayerMana((float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
+        }
+
         BattleUI.Instance.ShowActionMessage("Ryo", "setzt " + skill.skillName + " ein!");
         
         yield return new WaitForSeconds(1.0f);
@@ -216,6 +290,7 @@ public class BattleManager : MonoBehaviour
 
         for (int i = 0; i < skill.hitCount; i++)
         {
+            Debug.Log($"BattleManager: Starting hit {i+1} of {skill.hitCount} for {skill.skillName}");
             bool hitSuccess = true;
 
             if (skill.hasCombo)
@@ -227,6 +302,7 @@ public class BattleManager : MonoBehaviour
                 ComboSystem.Instance.StartQTE((result) => {
                     qteResult = result;
                     waiting = false;
+                    Debug.Log($"BattleManager: QTE Result for hit {i+1}: {result}");
                 });
 
                 while (waiting) yield return null;
@@ -242,11 +318,16 @@ public class BattleManager : MonoBehaviour
                 }
 
                 // Damage calculation
-                int playerStrength = (PlayerStats.Instance != null) ? PlayerStats.Instance.strength : 15;
-                int baseDamage = (int)(playerStrength * skill.damageMultiplier);
-                int totalDamage = Mathf.Max(1, baseDamage - currentEnemy.defense);
+                int playerStrength = (PlayerStats.Instance != null) ? PlayerStats.Instance.strength : 1;
+                int baseDamage = skill.hasCombo ? 15 : 30; 
+                int totalDamage = baseDamage + playerStrength;
+                
+                Debug.Log($"BattleManager: Hit {i+1} Success! Damage: {totalDamage}");
                 
                 enemyCurrentHP -= totalDamage;
+
+                // Spawn Damage Popup
+                DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), baseDamage, playerStrength, damageFont);
                 
                 // Visuals
                 if (skill.isSpell && blitzAnimationObject != null)
@@ -255,7 +336,15 @@ public class BattleManager : MonoBehaviour
                 }
                 else if (skill.hasCombo && comboStrikeObjects != null && i < comboStrikeObjects.Length)
                 {
-                    StartCoroutine(ShowEffectBriefly(comboStrikeObjects[i], 0.3f));
+                    GameObject strikeObj = comboStrikeObjects[i];
+                    if (strikeObj != null)
+                    {
+                        // Always activate the object so children (animations) are visible
+                        StartCoroutine(ShowEffectBriefly(strikeObj, 0.5f));
+                        
+                        ProceduralSlash ps = strikeObj.GetComponent<ProceduralSlash>();
+                        if (ps != null) ps.PlaySlash(enemyPos.position, skill.effectColor);
+                    }
                 }
                 else
                 {
@@ -319,7 +408,11 @@ public class BattleManager : MonoBehaviour
         int damage = currentEnemy.attack;
         if (PlayerStats.Instance != null)
         {
+            // Calculate final damage after Ryo's defense to match what's actually subtracted
+            int finalDamage = Mathf.Max(damage - PlayerStats.Instance.defense, 1);
+            
             PlayerStats.Instance.TakeDamage(damage);
+            DamagePopup.Create(playerPos.position + Vector3.up, finalDamage, damageFont);
             StartCoroutine(PlayHurtAnimation(playerPos)); 
             BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
         }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -19,253 +18,199 @@ public class InventoryManager : MonoBehaviour
 
     public int GetSelectedSlotIndex() => selectedSlotIndex;
 
-    // =========================
-    // SINGLETON + PERSISTENT
-    // =========================
     private void Awake()
     {
-        // Duplicate Schutz
-        if (Instance != null && Instance != this)
+        if (Instance != null && Instance != this) 
         {
-            Destroy(gameObject);
-            return;
+            // Falls die persistente Instanz kein Sprite hat, nimm es von dieser (Szenen-)Instanz
+            if (Instance.potionSprite == null && this.potionSprite != null)
+            {
+                Instance.potionSprite = this.potionSprite;
+                Debug.Log("InventoryManager: PotionSprite an persistente Instanz übertragen.");
+            }
+            
+            Destroy(this); 
+            return; 
         }
-
+        
         Instance = this;
-
-        // Zwischen Szenen behalten
+        if (transform.parent != null) transform.SetParent(null); 
         DontDestroyOnLoad(gameObject);
+        
+        // Initialisiere slotOccupied mit einer Standard-Kapazität, falls es noch nicht existiert
+        if (slotOccupied == null || slotOccupied.Length == 0)
+        {
+            int count = (backpackPanel != null) ? backpackPanel.childCount : 10;
+            if (count == 0) count = 10;
+            slotOccupied = new bool[count];
+        }
     }
 
-    private void OnEnable()
-    {
-        // Am Signal anmelden
-        GameManager.OnSystemsReady += RefreshInventory;
-    }
-
-    private void OnDisable()
-    {
-        // Am Signal abmelden
-        GameManager.OnSystemsReady -= RefreshInventory;
-    }
-
-    // =========================
-    // CLEANUP
-    // =========================
-    private void OnDestroy()
-    {
-        // Keine Listener mehr nötig
-    }
-
-    // =========================
-    // START
-    // =========================
-    private void Start()
-    {
-        RefreshInventory();
-    }
+    private void OnEnable() { GameManager.OnSystemsReady += RefreshInventory; }
+    private void OnDisable() { GameManager.OnSystemsReady -= RefreshInventory; }
+    private void Start() { RefreshInventory(); }
 
     public void RefreshInventory()
     {
-        Debug.Log("Inventar Refresh gestartet...");
         ReconnectBackpackPanel();
         InitializeInventorySlots();
         RestoreInventoryVisuals();
         UpdateSlotHighlights();
-        Debug.Log("Inventar Refresh abgeschlossen. Pots: " + GetPotionCount());
     }
 
-    // =========================
-    // BACKPACK PANEL RECONNECT
-    // =========================
     private void ReconnectBackpackPanel()
     {
-        // WICHTIG: Nutze den Canvas vom GameManager falls vorhanden
-        GameObject targetCanvas = null;
-        if (GameManager.Instance != null && GameManager.Instance.canvas != null)
-        {
-            targetCanvas = GameManager.Instance.canvas;
+        GameObject target = (GameManager.Instance != null && GameManager.Instance.canvas != null) ? GameManager.Instance.canvas : null;
+        if (target == null) {
+            Canvas c = Object.FindAnyObjectByType<Canvas>();
+            if (c != null) target = c.gameObject;
         }
-        else
-        {
-            Canvas c = FindAnyObjectByType<Canvas>();
-            if (c != null) targetCanvas = c.gameObject;
-        }
+        if (target == null) return;
 
-        if (targetCanvas == null)
-        {
-            Debug.LogWarning("InventoryManager: Kein Canvas gefunden!");
-            return;
-        }
-
-        Transform canvasTransform = targetCanvas.transform;
-        
-        // Suche BackpackPanel unter dem korrekten Canvas
-        Transform foundBackpack = canvasTransform.Find("InventoryPanel/BackpackPanel");
-        
-        if (foundBackpack == null)
-            foundBackpack = canvasTransform.Find("Inventory/Backpack");
-
-        if (foundBackpack == null)
-        {
-            // Suche tief im Canvas falls Deaktiviert oder verschoben
-            foreach (Transform t in canvasTransform.GetComponentsInChildren<Transform>(true))
-            {
-                if (t.name == "BackpackPanel") { foundBackpack = t; break; }
-            }
-        }
-
-        if (foundBackpack != null)
-        {
-            backpackPanel = foundBackpack;
-            Debug.Log("BackpackPanel verbunden unter: " + targetCanvas.name);
-        }
-        else
-        {
-            Debug.LogWarning("BackpackPanel konnte nicht im Canvas gefunden werden!");
-        }
+        backpackPanel = FindChildRecursive(target.transform, "BackpackPanel");
+        if (backpackPanel == null) backpackPanel = FindChildRecursive(target.transform, "Backpack");
     }
 
-    // =========================
-    // SLOT SYSTEM AUFBAUEN
-    // =========================
+    private Transform FindChildRecursive(Transform parent, string name)
+    {
+        foreach (Transform t in parent.GetComponentsInChildren<Transform>(true)) if (t.name == name) return t;
+        return null;
+    }
+
     private void InitializeInventorySlots()
     {
-        if (backpackPanel == null)
-            return;
-
-        int slotCount = backpackPanel.childCount;
-        if (slotCount == 0) 
-        {
-            Debug.LogWarning("BackpackPanel hat keine Slots!");
-            return;
+        if (potionSprite == null) {
+            var allPotions = FindObjectsByType<PotionItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach(var p in allPotions) {
+                var img = p.GetComponent<UnityEngine.UI.Image>();
+                if (img != null && img.sprite != null) { potionSprite = img.sprite; break; }
+            }
         }
 
-        // Wir erzwingen eine Neuinitialisierung der Arrays pro Szene, 
-        // da die Image-Komponenten in der Szene neu sind.
-        inventorySlots = new Image[slotCount];
-        slotBackgrounds = new Image[slotCount];
+        if (backpackPanel == null) { 
+            inventorySlots = new Image[0]; 
+            slotBackgrounds = new Image[0]; 
+            if (slotOccupied == null) slotOccupied = new bool[10];
+            return; 
+        }
         
-        // Aber die Daten (slotOccupied) müssen erhalten bleiben
-        if (slotOccupied == null)
-        {
-            slotOccupied = new bool[slotCount];
-        }
-        else if (slotOccupied.Length != slotCount)
-        {
-            bool[] newOccupied = new bool[slotCount];
-            int copyLength = Mathf.Min(slotOccupied.Length, slotCount);
-            for (int i = 0; i < copyLength; i++)
-            {
-                newOccupied[i] = slotOccupied[i];
-            }
-            slotOccupied = newOccupied;
+        int count = backpackPanel.childCount;
+        inventorySlots = new Image[count];
+        slotBackgrounds = new Image[count];
+        
+        if (slotOccupied == null || slotOccupied.Length == 0) 
+            slotOccupied = new bool[count];
+        else if (slotOccupied.Length != count) {
+            bool[] newOcc = new bool[count];
+            System.Array.Copy(slotOccupied, newOcc, Mathf.Min(slotOccupied.Length, count));
+            slotOccupied = newOcc;
         }
 
-        for (int i = 0; i < slotCount; i++)
-        {
+        for (int i = 0; i < count; i++) {
             Transform slot = backpackPanel.GetChild(i);
-            int index = i; // Closure fix
-            
-            // Hintergrund für Highlight speichern
             slotBackgrounds[i] = slot.GetComponent<Image>();
-            if (slotBackgrounds[i] != null) 
-            {
-                slotBackgrounds[i].enabled = true;
-                slotBackgrounds[i].color = new Color(1f, 1f, 1f, 0f);
-            }
-
-            // NEU: Click Handler für den Slot (Hintergrund)
-            InventoryClickHandler slotHandler = slot.GetComponent<InventoryClickHandler>();
-            if (slotHandler == null) slotHandler = slot.gameObject.AddComponent<InventoryClickHandler>();
-            slotHandler.slotIndex = index;
-
-            Transform itemTransform = slot.Find("Item");
-            if (itemTransform == null && slot.childCount > 0) itemTransform = slot.GetChild(0);
-
-            if (itemTransform == null)
-            {
-                Debug.LogWarning("Kein Item Child gefunden in Slot: " + slot.name);
-                continue;
-            }
-
-            Image itemImage = itemTransform.GetComponent<Image>();
-            if (itemImage == null) itemImage = itemTransform.gameObject.AddComponent<Image>();
-
-            inventorySlots[i] = itemImage;
-            inventorySlots[i].preserveAspect = true;
+            if (slotBackgrounds[i] != null) { slotBackgrounds[i].enabled = true; slotBackgrounds[i].color = new Color(1,1,1,0); }
             
-            // NEU: Click Handler auch für das Item selbst (damit Tränke rechtsklickbar sind)
-            InventoryClickHandler itemHandler = itemTransform.GetComponent<InventoryClickHandler>();
-            if (itemHandler == null) itemHandler = itemTransform.gameObject.AddComponent<InventoryClickHandler>();
-            itemHandler.slotIndex = index;
+            InventoryClickHandler handler = slot.GetComponent<InventoryClickHandler>();
+            if (handler == null) handler = slot.gameObject.AddComponent<InventoryClickHandler>();
+            handler.slotIndex = i;
 
-            // Die Tränke sollen die Klicks NICHT blockieren für den SlotHandler, 
-            // aber sie brauchen RaycastTarget=true für den eigenen IPointerClickHandler.
-            inventorySlots[i].raycastTarget = true;
+            Transform item = slot.Find("Item");
+            if (item == null && slot.childCount > 0) item = slot.GetChild(0);
+            if (item != null) {
+                inventorySlots[i] = item.GetComponent<Image>();
+                if (inventorySlots[i] == null) inventorySlots[i] = item.gameObject.AddComponent<Image>();
+                inventorySlots[i].preserveAspect = true;
+                inventorySlots[i].raycastTarget = true;
+                InventoryClickHandler itemH = item.GetComponent<InventoryClickHandler>();
+                if (itemH == null) itemH = item.gameObject.AddComponent<InventoryClickHandler>();
+                itemH.slotIndex = i;
+            }
         }
-
-        Debug.Log("Inventory erfolgreich initialisiert.");
     }
 
-    // =========================
-    // SELEKTION
-    // =========================
-    public void SelectSlot(int index)
+    public void SelectSlot(int idx)
     {
-        // Nur belegte Slots auswählbar machen
-        if (index < 0 || index >= slotOccupied.Length || !slotOccupied[index])
-        {
-            selectedSlotIndex = -1;
-        }
-        else
-        {
-            selectedSlotIndex = index;
-            Debug.Log("Slot " + index + " selektiert.");
-            
-            // Shop-Auswahl aufheben
+        if (idx < 0 || idx >= slotOccupied.Length || !slotOccupied[idx]) selectedSlotIndex = -1;
+        else {
+            selectedSlotIndex = idx;
             ShopManager shop = FindAnyObjectByType<ShopManager>();
-            if (shop != null)
-            {
-                shop.DeselectShopItem();
-            }
+            if (shop != null) shop.DeselectShopItem();
         }
         UpdateSlotHighlights();
     }
 
-    public void DeselectSlot()
-    {
-        selectedSlotIndex = -1;
-        UpdateSlotHighlights();
-    }
+    public void DeselectSlot() { selectedSlotIndex = -1; UpdateSlotHighlights(); }
 
     private void UpdateSlotHighlights()
     {
         if (slotBackgrounds == null) return;
+        for (int i = 0; i < slotBackgrounds.Length; i++) {
+            if (slotBackgrounds[i] != null) slotBackgrounds[i].color = (i == selectedSlotIndex) ? new Color(0, 0.5f, 1, 0.8f) : new Color(1,1,1,0);
+        }
+    }
 
-        for (int i = 0; i < slotBackgrounds.Length; i++)
-        {
-            if (slotBackgrounds[i] == null) continue;
-            
-            // Wichtig: enabled muss TRUE bleiben, damit der Slot klickbar bleibt!
-            slotBackgrounds[i].enabled = true;
+    public bool AddPotion()
+    {
+        Debug.Log("InventoryManager: AddPotion wurde aufgerufen.");
+        
+        if (slotOccupied == null || slotOccupied.Length == 0) {
+            Debug.LogWarning("InventoryManager: slotOccupied war null/leer, initialisiere...");
+            int count = (backpackPanel != null) ? backpackPanel.childCount : 10;
+            if (count == 0) count = 10;
+            slotOccupied = new bool[count];
+        }
 
-            if (i == selectedSlotIndex)
-            {
-                slotBackgrounds[i].color = new Color(0f, 0.5f, 1f, 0.8f); // Blaues Highlight
+        // Sprite Recovery (Sehr aggressiv für Build)
+        if (potionSprite == null) {
+            Debug.LogWarning("InventoryManager: PotionSprite fehlt! Suche in allen Objekten...");
+            // 1. Suche in anderen InventoryManagern
+            var allManagers = FindObjectsByType<InventoryManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach(var mgr in allManagers) {
+                if (mgr != this && mgr.potionSprite != null) {
+                    potionSprite = mgr.potionSprite;
+                    break;
+                }
             }
-            else
-            {
-                // Nur transparent machen
-                slotBackgrounds[i].color = new Color(1f, 1f, 1f, 0f); 
+            // 2. Suche in PotionItem Komponenten (die liegen oft auf Buttons/Slots)
+            if (potionSprite == null) {
+                var allPotions = FindObjectsByType<PotionItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                foreach(var p in allPotions) {
+                    var img = p.GetComponent<UnityEngine.UI.Image>();
+                    if (img != null && img.sprite != null) {
+                        potionSprite = img.sprite;
+                        break;
+                    }
+                }
             }
         }
+
+        if (potionSprite == null) {
+            Debug.LogError("InventoryManager: KAUF ABGEBROCHEN - PotionSprite konnte nirgendwo gefunden werden!");
+            return false;
+        }
+
+        // Sicherstellen dass UI verknüpft ist
+        if (inventorySlots == null || inventorySlots.Length == 0 || inventorySlots[0] == null) {
+            RefreshInventory();
+        }
+
+        for (int i = 0; i < slotOccupied.Length; i++) {
+            if (!slotOccupied[i]) { 
+                slotOccupied[i] = true; 
+                Debug.Log($"InventoryManager: Trank erfolgreich zu Slot {i} hinzugefügt.");
+                RestoreInventoryVisuals(); 
+                return true; 
+            }
+        }
+        
+        Debug.LogWarning("InventoryManager: Inventar ist voll!");
+        return false;
     }
 
     public bool RemoveSelectedPotion()
     {
         if (selectedSlotIndex == -1 || !slotOccupied[selectedSlotIndex]) return false;
-
         slotOccupied[selectedSlotIndex] = false;
         selectedSlotIndex = -1;
         RestoreInventoryVisuals();
@@ -273,154 +218,55 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // =========================
-    // VISUALS NACH SZENENWECHSEL
-    // =========================
-    private void RestoreInventoryVisuals()
-    {
-        if (inventorySlots == null || slotOccupied == null)
-            return;
-
-        int count = 0;
-        for (int i = 0; i < inventorySlots.Length; i++)
-        {
-            if (inventorySlots[i] == null)
-                continue;
-
-            if (i < slotOccupied.Length && slotOccupied[i])
-            {
-                inventorySlots[i].sprite = potionSprite;
-                inventorySlots[i].color = Color.white;
-                count++;
-            }
-            else
-            {
-                inventorySlots[i].sprite = null;
-                inventorySlots[i].color = new Color(1f, 1f, 1f, 0f);
-            }
-        }
-        Debug.Log("Visuals wiederhergestellt. Aktive Tränke: " + count);
-    }
-
-    // =========================
-    // POTION HINZUFÜGEN
-    // =========================
-    public bool AddPotion()
-    {
-        if (potionSprite == null)
-        {
-            Debug.LogError("Potion Sprite fehlt!");
-            return false;
-        }
-
-        if (inventorySlots == null || slotOccupied == null)
-        {
-            Debug.LogError("Inventar nicht initialisiert!");
-            return false;
-        }
-
-        for (int i = 0; i < slotOccupied.Length; i++)
-        {
-            if (!slotOccupied[i])
-            {
-                slotOccupied[i] = true;
-                RestoreInventoryVisuals(); // Update UI
-                Debug.Log("Potion hinzugefügt in Slot: " + (i + 1));
-                return true;
-            }
-        }
-
-        Debug.Log("Inventar voll!");
-        return false;
-    }
-
-    // =========================
-    // POTION ENTFERNEN (EINEN)
-    // =========================
     public bool RemoveOnePotion()
     {
         if (slotOccupied == null) return false;
-
-        // Wenn etwas selektiert ist, nimm das zuerst
-        if (selectedSlotIndex != -1 && slotOccupied[selectedSlotIndex])
-        {
-            return RemoveSelectedPotion();
-        }
-
-        // Entferne den letzten Trank in der Liste
-        for (int i = slotOccupied.Length - 1; i >= 0; i--)
-        {
-            if (slotOccupied[i])
-            {
-                slotOccupied[i] = false;
-                RestoreInventoryVisuals();
-                return true;
-            }
-        }
+        if (selectedSlotIndex != -1 && slotOccupied[selectedSlotIndex]) return RemoveSelectedPotion();
+        for (int i = slotOccupied.Length - 1; i >= 0; i--) if (slotOccupied[i]) { slotOccupied[i] = false; RestoreInventoryVisuals(); return true; }
         return false;
     }
 
-    // =========================
-    // POTION ENTFERNEN (SPEZIFISCH)
-    // =========================
     public void RemovePotion(Image usedSlot)
     {
-        if (usedSlot == null || inventorySlots == null)
-            return;
+        if (usedSlot == null || inventorySlots == null) return;
+        for (int i = 0; i < inventorySlots.Length; i++) {
+            if (inventorySlots[i] == usedSlot) { slotOccupied[i] = false; if (selectedSlotIndex == i) selectedSlotIndex = -1; RestoreInventoryVisuals(); UpdateSlotHighlights(); return; }
+        }
+    }
 
-        for (int i = 0; i < inventorySlots.Length; i++)
+    private void RestoreInventoryVisuals()
+    {
+        if (inventorySlots == null || inventorySlots.Length == 0)
         {
-            if (inventorySlots[i] == usedSlot)
-            {
-                slotOccupied[i] = false;
-                
-                // Auswahl aufheben, wenn der gelöschte Slot selektiert war
-                if (selectedSlotIndex == i)
-                {
-                    selectedSlotIndex = -1;
-                }
+            ReconnectBackpackPanel();
+            InitializeInventorySlots();
+        }
+        RestoreVisualsInternal();
+    }
 
-                RestoreInventoryVisuals(); // Update UI
-                UpdateSlotHighlights();
-                Debug.Log("Potion entfernt aus Slot: " + (i + 1));
-                return;
+    private void RestoreVisualsInternal()
+    {
+        if (inventorySlots == null || slotOccupied == null) return;
+        
+        for (int i = 0; i < inventorySlots.Length; i++) {
+            if (inventorySlots[i] == null) continue;
+            if (i < slotOccupied.Length && slotOccupied[i]) { 
+                inventorySlots[i].sprite = potionSprite; 
+                inventorySlots[i].color = Color.white; 
+                inventorySlots[i].gameObject.SetActive(true);
+            }
+            else { 
+                inventorySlots[i].sprite = null; 
+                inventorySlots[i].color = new Color(1,1,1,0); 
             }
         }
     }
 
-    // =========================
-    // INVENTAR CHECK
-    // =========================
-    public bool HasFreeSlot()
-    {
-        if (slotOccupied == null)
-            return false;
-
-        for (int i = 0; i < slotOccupied.Length; i++)
-        {
-            if (!slotOccupied[i])
-                return true;
-        }
-
-        return false;
-    }
-
-    // =========================
-    // SLOT COUNT
-    // =========================
     public int GetPotionCount()
     {
-        if (slotOccupied == null)
-            return 0;
-
+        if (slotOccupied == null) return 0;
         int count = 0;
-
-        for (int i = 0; i < slotOccupied.Length; i++)
-        {
-            if (slotOccupied[i])
-                count++;
-        }
-
+        foreach (bool b in slotOccupied) if (b) count++;
         return count;
     }
 }

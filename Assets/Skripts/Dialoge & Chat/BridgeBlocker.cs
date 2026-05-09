@@ -95,7 +95,7 @@ public class BridgeBlocker : MonoBehaviour
         {
             if (questManager.visitedTemple)
             {
-                bridgeMessage = "Ich muss zuerst den Knochenhollow im Tempel besiegen!";
+                bridgeMessage = "Ich muss zuerst den Skelettkrieger im Tempel besiegen!";
             }
             ShowBridgeMessage();
         }

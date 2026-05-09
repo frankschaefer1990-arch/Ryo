@@ -16,6 +16,13 @@ public class TempleCameraIntro : MonoBehaviour
 
     private void Start()
     {
+        // Wenn die Cutscene läuft, macht diese das Intro
+        if (QuestManager.Instance != null && !QuestManager.Instance.visitedTemple)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
         StartCoroutine(BeginIntro());
     }
 

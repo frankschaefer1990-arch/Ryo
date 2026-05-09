@@ -68,12 +68,8 @@ public class PlayerMovement : MonoBehaviour
         if (!canMove)
         {
             movement = Vector2.zero;
-
-            if (animator != null)
-            {
-                animator.SetBool("isMoving", false);
-            }
-
+            // Wenn canMove false ist, fassen wir den Animator nicht an, 
+            // damit Cutscenes die Kontrolle behalten können.
             return;
         }
 

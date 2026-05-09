@@ -21,6 +21,13 @@ public class TempleCutscene : MonoBehaviour
         PlayerMovement playerMove = FindFirstObjectByType<PlayerMovement>();
         if (playerMove != null) playerMove.canMove = false;
 
+        if (skeleton == null)
+        {
+            Debug.LogError("TempleCutscene: Skeleton reference missing!");
+            if (playerMove != null) playerMove.canMove = true;
+            yield break;
+        }
+
         CameraFollow camFollow = FindFirstObjectByType<CameraFollow>();
         if (camFollow != null)
         {
@@ -65,16 +72,16 @@ public class TempleCutscene : MonoBehaviour
             while (di.IsDialogueActive()) yield return null;
             
             Debug.Log("TempleCutscene: Dialogues finished.");
-        }
+            }
 
-        // Ryo walks towards skeleton (Slowly)
-        if (playerMove != null && skeleton != null)
-        {
+            // 4. Danach Player automatisch langsam zum Skelett gehen lassen
+            if (playerMove != null && skeleton != null)
+            {
             Debug.Log("TempleCutscene: Ryo walking to skeleton slowly.");
-            float walkTime = 2.0f; // Slower walk
+            float walkTime = 3.5f; // Noch langsamer
             float elapsed = 0;
             Vector3 startPos = playerMove.transform.position;
-            Vector3 targetPos = skeleton.position + (startPos - skeleton.position).normalized * 1.2f;
+            Vector3 targetPos = skeleton.position + (startPos - skeleton.position).normalized * 1.5f;
             
             Animator anim = playerMove.GetComponentInChildren<Animator>();
             if (anim != null)
@@ -93,7 +100,7 @@ public class TempleCutscene : MonoBehaviour
             }
 
             if (anim != null) anim.SetBool("isMoving", false);
-        }
+            }
 
         // Transition to Battle
         Debug.Log("TempleCutscene: Starting battle transition.");

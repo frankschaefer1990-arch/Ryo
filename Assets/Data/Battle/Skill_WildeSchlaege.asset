@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: "Wilde Schl\xE4ge"
   description: "Eine Serie von schnellen Angriffen. Erm\xF6glicht Combos."
   hitCount: 3
-  damageMultiplier: 0.5
+  damageMultiplier: 1.0
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}

@@ -252,9 +252,13 @@ public class AttributeUI : MonoBehaviour
             return;
         }
 
+        int oldMax = playerStats.maxHealth;
         playerStats.vitality += 1;
-
         playerStats.RecalculateStats();
+        
+        // Die Differenz (HP Gewinn) auch heilen
+        int healthGain = playerStats.maxHealth - oldMax;
+        playerStats.currentHealth += healthGain;
 
         if (playerStats.currentHealth > playerStats.maxHealth)
         {
