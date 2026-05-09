@@ -26,9 +26,10 @@ public class PlayerMovement : MonoBehaviour
     public float agilitySpeedBonus = 0.2f;
 
     private PlayerStats playerStats;
+    private bool wasLockedLastFrame = false;
 
     void Start()
-    {
+{
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
@@ -48,10 +49,23 @@ public class PlayerMovement : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
-    }
 
-    void Update()
-    {
+        ResetMovementState();
+        }
+
+        public void ResetMovementState()
+        {
+        movement = Vector2.zero;
+        if (animator != null)
+        {
+            animator.SetBool("isMoving", false);
+            animator.SetFloat("MoveX", lastMovement.x);
+            animator.SetFloat("MoveY", lastMovement.y);
+        }
+        }
+
+        void Update()
+{
         // =========================
         // SPEED SYSTEM (AGILITY)
         // =========================
@@ -63,19 +77,25 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // =========================
-        // MOVEMENT LOCK (z.B. Shop offen)
+        // MOVEMENT LOCK (z.B. Shop offen oder Dialog)
         // =========================
-        if (!canMove)
+        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+        if (!canMove || dialogueActive)
         {
             movement = Vector2.zero;
-            // Wenn canMove false ist, fassen wir den Animator nicht an, 
-            // damit Cutscenes die Kontrolle behalten können.
+            if (!wasLockedLastFrame)
+            {
+                ResetMovementState();
+                wasLockedLastFrame = true;
+            }
             return;
         }
 
+        wasLockedLastFrame = false;
+
         // =========================
         // INPUT
-        // =========================
+// =========================
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 

@@ -43,11 +43,56 @@ public class BattleUI : MonoBehaviour
     public Color qteSuccessColor = Color.green;
     public Color qteFailColor = Color.red;
 
+    [Header("Smooth Animation")]
+    public float lerpSpeed = 5f;
+    private float targetPlayerHP = 1f;
+    private float targetEnemyHP = 1f;
+    private float targetPlayerMana = 1f;
+
+    [Header("GameOver")]
+    public GameObject gameOverPanel;
+
+    public void ShowGameOver(bool show)
+    {
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(show);
+            if (show)
+            {
+                HideAllSubPanels();
+                if (commandPanel != null) commandPanel.SetActive(false);
+                // Ensure cursor is visible for the menu
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
+    }
+
+    public void OnRetryButton()
+    {
+        // Reload current scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
+
+    public void OnMainMenuButton()
+    {
+        Debug.Log("Spiel wird beendet...");
+        Application.Quit();
+        // In the editor, this doesn't quit, so we could also load a menu scene if one existed
+    }
+
     private void Awake() { Instance = this; }
 
     private void Start() 
     { 
         ResetAllUI(); 
+    }
+
+    private void Update()
+    {
+        if (playerHPFill != null) playerHPFill.fillAmount = Mathf.Lerp(playerHPFill.fillAmount, targetPlayerHP, Time.deltaTime * lerpSpeed);
+        if (enemyHPFill != null) enemyHPFill.fillAmount = Mathf.Lerp(enemyHPFill.fillAmount, targetEnemyHP, Time.deltaTime * lerpSpeed);
+        if (playerManaFill != null) playerManaFill.fillAmount = Mathf.Lerp(playerManaFill.fillAmount, targetPlayerMana, Time.deltaTime * lerpSpeed);
     }
 
     public void ResetAllUI()
@@ -62,10 +107,19 @@ public class BattleUI : MonoBehaviour
             // Ensure interactable is true
             foreach(var b in commandPanel.GetComponentsInChildren<Button>()) b.interactable = true;
         }
+
+        // Initialize targets
+        if (playerHPFill != null) targetPlayerHP = playerHPFill.fillAmount;
+        if (enemyHPFill != null) targetEnemyHP = enemyHPFill.fillAmount;
+        if (playerManaFill != null) targetPlayerMana = playerManaFill.fillAmount;
     }
 
     public void SetEnemyName(string name) { 
-        if (enemyNameText != null) enemyNameText.text = name; 
+        if (enemyNameText != null) {
+            enemyNameText.gameObject.SetActive(true);
+            enemyNameText.text = name; 
+            Debug.Log($"BattleUI: Enemy name set to '{name}' on object '{enemyNameText.gameObject.name}'");
+        }
         else Debug.LogWarning("BattleUI: enemyNameText is not assigned!");
     }
 
@@ -138,25 +192,23 @@ public class BattleUI : MonoBehaviour
     }
 
     public void UpdatePlayerHP(float ratio, int curr, int max) { 
-        if (playerHPFill != null) playerHPFill.fillAmount = ratio; 
+        targetPlayerHP = ratio; 
         if (playerHPText != null) {
             playerHPText.text = curr + " / " + max; 
-            Debug.Log($"BattleUI: UpdatePlayerHP text to {playerHPText.text}");
         }
     }
 
     public void UpdatePlayerMana(float ratio, int curr, int max) { 
-        if (playerManaFill != null) playerManaFill.fillAmount = ratio; 
+        targetPlayerMana = ratio; 
         if (playerManaText != null) {
             playerManaText.text = curr + " / " + max; 
         }
     }
 
     public void UpdateEnemyHP(float ratio, int curr, int max) { 
-        if (enemyHPFill != null) enemyHPFill.fillAmount = ratio; 
+        targetEnemyHP = ratio; 
         if (enemyHPText != null) {
             enemyHPText.text = curr + " / " + max; 
-            Debug.Log($"BattleUI: UpdateEnemyHP text to {enemyHPText.text}");
         }
     }
 
@@ -171,7 +223,14 @@ public class BattleUI : MonoBehaviour
         if (qteRoot != null) {
             qteRoot.SetActive(true);
             if (qteKeyText != null) qteKeyText.text = key;
-            if (qteShrinkRing != null) { qteShrinkRing.gameObject.SetActive(true); qteShrinkRing.rectTransform.localScale = Vector3.one * 5.0f; qteShrinkRing.color = Color.white; }
+            if (qteShrinkRing != null) { 
+                qteShrinkRing.gameObject.SetActive(true); 
+                qteShrinkRing.rectTransform.localScale = Vector3.one * 5.0f; 
+                // Preserve existing alpha from the inspector
+                Color c = qteShrinkRing.color;
+                c.r = 1f; c.g = 1f; c.b = 1f;
+                qteShrinkRing.color = c; 
+            }
             if (qteOuterRing != null) qteOuterRing.color = Color.white;
             if (qteButtonCore != null) qteButtonCore.color = Color.white;
         }

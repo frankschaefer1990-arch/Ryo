@@ -24,12 +24,43 @@ public class IntroCutscene : MonoBehaviour
 
     private IEnumerator PlayIntro()
     {
-        // Lock player
-        PlayerMovement playerMove = FindFirstObjectByType<PlayerMovement>();
-        if (playerMove != null) playerMove.canMove = false;
+        // 1. Lock UI first and close everything
+        if (MyUIManager.Instance != null)
+        {
+            MyUIManager.Instance.CloseAllPanels();
+            MyUIManager.Instance.isLocked = true;
+        }
+
+        // 2. Wait for the CORRECT player from GameManager
+        GameObject playerObj = null;
+        float timeout = 3.0f;
+        while (playerObj == null && timeout > 0)
+        {
+            if (GameManager.Instance != null && GameManager.Instance.player != null)
+                playerObj = GameManager.Instance.player;
+            else
+                playerObj = GameObject.FindGameObjectWithTag("Player");
+
+            if (playerObj == null)
+            {
+                yield return null;
+                timeout -= Time.deltaTime;
+            }
+        }
+
+        PlayerMovement playerMove = null;
+        if (playerObj != null)
+        {
+            playerMove = playerObj.GetComponent<PlayerMovement>();
+            if (playerMove != null) playerMove.canMove = false;
+        }
+        else
+        {
+            Debug.LogWarning("IntroCutscene: Player not found!");
+        }
 
         // Eye blink effect
-        if (FadeManager.Instance != null)
+if (FadeManager.Instance != null)
         {
             yield return StartCoroutine(FadeManager.Instance.PlayRealisticBlink());
         }
@@ -100,5 +131,6 @@ public class IntroCutscene : MonoBehaviour
         // Finish
         if (QuestManager.Instance != null) QuestManager.Instance.introSeen = true;
         if (playerMove != null) playerMove.canMove = true;
-    }
-}
+        if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
+        }
+        }

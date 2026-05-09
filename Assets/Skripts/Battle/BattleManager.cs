@@ -100,9 +100,10 @@ public class BattleManager : MonoBehaviour
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
             
             if (BattleUI.Instance != null) {
+                Debug.Log($"BattleManager: Setting enemy name to '{currentEnemy.enemyName}'");
                 BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
-                BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
+BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
                 
                 if (PlayerStats.Instance != null)
                 {
@@ -325,9 +326,10 @@ public class BattleManager : MonoBehaviour
                 Debug.Log($"BattleManager: Hit {i+1} Success! Damage: {totalDamage}");
                 
                 enemyCurrentHP -= totalDamage;
+                if (enemyCurrentHP < 0) enemyCurrentHP = 0;
 
                 // Spawn Damage Popup
-                DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), baseDamage, playerStrength, damageFont);
+DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), baseDamage, playerStrength, damageFont);
                 
                 // Visuals
                 if (skill.isSpell && blitzAnimationObject != null)
@@ -479,13 +481,25 @@ public class BattleManager : MonoBehaviour
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);
             }
             yield return new WaitForSeconds(2f);
-            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Legend of Ryo"); 
-        }
+            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Temple", "BossDefeatedSpawn"); 
+            else UnityEngine.SceneManagement.SceneManager.LoadScene("Temple");
+}
         else
         {
             ShowBattleMessage("Niederlage...");
-            yield return new WaitForSeconds(2f);
-            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Legend of Ryo");
+            yield return new WaitForSeconds(1f);
+            
+            // Show Game Over UI instead of direct reload
+            if (BattleUI.Instance != null)
+            {
+                BattleUI.Instance.ShowGameOver(true);
+            }
+            else
+            {
+                // Fallback
+                if (GameManager.Instance != null) GameManager.Instance.LoadScene("Legend of Ryo");
+                else UnityEngine.SceneManagement.SceneManager.LoadScene("Legend of Ryo");
+            }
         }
     }
 

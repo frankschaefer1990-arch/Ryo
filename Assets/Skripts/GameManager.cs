@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     [Header("Spawn System")]
     public string spawnPointName = "";
 
+    private bool isSceneLoading = false;
+
     public static System.Action OnSystemsReady;
 
     private void Awake()
@@ -96,8 +98,13 @@ public class GameManager : MonoBehaviour
     {
         try {
             Debug.Log($"GameManager: Scene Loaded [{scene.name}]. Cleaning up duplicates...");
-            CleanupDuplicates();
             
+            // Re-enable core systems if they were disabled for transition
+            if (mainCamera != null) mainCamera.SetActive(true);
+            if (eventSystem != null) eventSystem.SetActive(true);
+
+            CleanupDuplicates();
+
             // Critical: Always try to re-find player after scene load
             GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
             if (foundPlayer != null) {
@@ -117,9 +124,16 @@ public class GameManager : MonoBehaviour
 
             ReconnectSystems();
             MovePlayerToSpawn();
+
+            // Ensure player is idle after scene load
+            if (player != null)
+            {
+                var pm = player.GetComponent<PlayerMovement>();
+                if (pm != null) pm.ResetMovementState();
+            }
             
             Invoke(nameof(NotifySystemsReady), 0.2f);
-        }
+}
         catch (System.Exception e) {
             Debug.LogError("GameManager: Error in OnSceneLoaded: " + e.Message);
         }
@@ -132,11 +146,37 @@ public class GameManager : MonoBehaviour
     void CleanupDuplicates()
     {
         try {
+            // Camera cleanup - Important for Unity 6 crash prevention
+            Camera[] cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (Camera cam in cameras)
+            {
+                if (mainCamera != null && cam.gameObject != mainCamera && cam.CompareTag("MainCamera"))
+                {
+                    Debug.Log($"GameManager: Nuking duplicate Main Camera on [{cam.gameObject.name}].");
+                    // Disable immediately to prevent conflicts during transition
+                    cam.enabled = false;
+                    var al = cam.GetComponent<AudioListener>();
+                    if (al != null) al.enabled = false;
+                    
+                    var brain = cam.GetComponent("CinemachineBrain");
+                    if (brain != null) (brain as MonoBehaviour).enabled = false;
+
+                    Destroy(cam.gameObject);
+                }
+                else if (mainCamera == null && cam.CompareTag("MainCamera"))
+                {
+                    mainCamera = cam.gameObject;
+                    mainCamera.transform.SetParent(null);
+                    DontDestroyOnLoad(mainCamera);
+                }
+            }
+
             // EventSystem - Absolute control
             EventSystem[] systems = FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (EventSystem e in systems) {
                 if (eventSystem != null && e.gameObject != eventSystem) {
                     Debug.Log($"GameManager: Nuking duplicate EventSystem on [{e.gameObject.name}].");
+                    e.enabled = false;
                     Destroy(e.gameObject);
                 }
                 else if (eventSystem == null) { 
@@ -208,18 +248,45 @@ public class GameManager : MonoBehaviour
     }
 
     public void LoadScene(string sceneName, string newSpawnPoint) {
+        if (isSceneLoading) return;
         spawnPointName = newSpawnPoint;
         StartCoroutine(LoadSceneDelayed(sceneName));
     }
 
     public void LoadScene(string sceneName) { 
+        if (isSceneLoading) return;
         StartCoroutine(LoadSceneDelayed(sceneName)); 
     }
 
     private IEnumerator LoadSceneDelayed(string sceneName)
     {
-        yield return new WaitForSeconds(0.1f);
+        isSceneLoading = true;
+        Debug.Log($"GameManager: Starting LoadScene [{sceneName}]...");
+
+        // --- PRE-LOAD CLEANUP (Unity 6 Crash Prevention) ---
+        if (mainCamera != null) {
+            Debug.Log("GameManager: Disabling camera systems...");
+            var al = mainCamera.GetComponent<AudioListener>();
+            if (al != null) al.enabled = false;
+            var brain = mainCamera.GetComponent("CinemachineBrain");
+            if (brain != null) (brain as MonoBehaviour).enabled = false;
+        }
+        if (eventSystem != null) {
+            Debug.Log("GameManager: Disabling event system...");
+            var es = eventSystem.GetComponent<EventSystem>();
+            if (es != null) es.enabled = false;
+        }
+
+        // Optional GC and wait
+        System.GC.Collect();
+        yield return new WaitForSeconds(0.2f);
+        
+        Debug.Log("GameManager: Triggering SceneManager.LoadScene...");
         SceneManager.LoadScene(sceneName);
+        
+        // Safety wait after trigger
+        yield return null;
+        isSceneLoading = false;
     }
 
     private void OnDestroy() { SceneManager.sceneLoaded -= OnSceneLoaded; }

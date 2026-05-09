@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: d3b99f1fb675b25448d5899ffafebec1
+guid: 50db2e072403ea243a2f6cef65cd1a81
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4260860209262165977
-    second: qte_shrink_ring neu_0
+      213: -2760568817161096706
+    second: HP-MANA-GEIST Panel_0
+  - first:
+      213: -2854983436761836994
+    second: HP-MANA-GEIST Panel_1
+  - first:
+      213: 6262809675901056438
+    second: HP-MANA-GEIST Panel_2
+  - first:
+      213: 2548981963398357107
+    second: HP-MANA-GEIST Panel_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: qte_shrink_ring neu_0
+      name: HP-MANA-GEIST Panel_0
       rect:
         serializedVersion: 2
-        x: 21
-        y: 36
-        width: 981
-        height: 965
+        x: 11
+        y: 0
+        width: 1502
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9dffaaa09cd912b30800000000000000
-      internalID: 4260860209262165977
+      spriteID: ef1b713794d70b9d0800000000000000
+      internalID: -2760568817161096706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HP-MANA-GEIST Panel_1
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 982
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e32df2cc0bf0168d0800000000000000
+      internalID: -2854983436761836994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HP-MANA-GEIST Panel_2
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 951
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b536fbe738f9e650800000000000000
+      internalID: 6262809675901056438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HP-MANA-GEIST Panel_3
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 0
+        width: 6
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 370ac33379dcf5320800000000000000
+      internalID: 2548981963398357107
       vertices: []
       indices: 
       edges: []
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      qte_shrink_ring neu_0: 4260860209262165977
+      HP-MANA-GEIST Panel_0: -2760568817161096706
+      HP-MANA-GEIST Panel_1: -2854983436761836994
+      HP-MANA-GEIST Panel_2: 6262809675901056438
+      HP-MANA-GEIST Panel_3: 2548981963398357107
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

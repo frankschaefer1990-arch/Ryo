@@ -13,8 +13,10 @@ public class TempleIntroController : MonoBehaviour
     public Transform skeleton;
     public EnemyData bossData;
 
+    private bool hasStartedBattle = false;
+
     private void Awake()
-    {
+{
         // Auto-assign if missing (Searching including inactive)
         if (introCam == null)
         {
@@ -72,10 +74,11 @@ public class TempleIntroController : MonoBehaviour
     private void Update()
     {
         // Ensure background stays black
-        if (Time.timeSinceLevelLoad < 3f && Camera.main != null)
+        Camera main = Camera.main;
+        if (Time.timeSinceLevelLoad < 3f && main != null)
         {
-            Camera.main.backgroundColor = Color.black;
-            Camera.main.clearFlags = CameraClearFlags.SolidColor;
+            main.backgroundColor = Color.black;
+            main.clearFlags = CameraClearFlags.SolidColor;
         }
     }
 
@@ -83,20 +86,36 @@ public class TempleIntroController : MonoBehaviour
     {
         // 1. Lock Player Movement (search for player first)
         GameObject player = null;
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            player = GameManager.Instance.player;
+        }
+
         while (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
             if (player == null) player = GameObject.Find("Player");
             if (player == null) player = GameObject.Find("Ryo");
             if (player != null) break;
-            yield return new WaitForSeconds(0.1f);
+            yield return null; // Faster than 0.1s
         }
 
         PlayerMovement pm = player.GetComponent<PlayerMovement>();
-        if (pm != null) pm.canMove = false;
+        if (pm != null) 
+        {
+            pm.canMove = false;
+            pm.ResetMovementState(); // Force reset immediately
+        }
+
+        // 1.5 Lock UI panels
+        if (MyUIManager.Instance != null)
+        {
+            MyUIManager.Instance.CloseAllPanels();
+            MyUIManager.Instance.isLocked = true;
+        }
 
         // 2. Focus Skeleton
-        introCam.Priority.Value = 30;
+introCam.Priority.Value = 30;
         playerCam.Priority.Value = 10;
         playerCam.Follow = player.transform; 
 
@@ -190,15 +209,25 @@ public class TempleIntroController : MonoBehaviour
             {
             Debug.LogError("TempleIntroController: DialogueUI konnte nicht gefunden werden!");
             }
-
+ 
             // 6. Transition to Battle
+            if (hasStartedBattle) yield break;
+            hasStartedBattle = true;
+
             if (QuestManager.Instance != null)
-        {
-            QuestManager.Instance.visitedTemple = true;
-            if (bossData != null) QuestManager.Instance.nextBattleEnemy = bossData;
-            Debug.Log($"TempleIntroController: Setting boss data: {bossData?.enemyName}");
-        }
-        
+            {
+                QuestManager.Instance.visitedTemple = true;
+                if (bossData != null) 
+                {
+                    QuestManager.Instance.nextBattleEnemy = bossData;
+                    Debug.Log($"TempleIntroController: Assigned boss data '{bossData.enemyName}' to QuestManager.");
+                }
+                else 
+                {
+                    Debug.LogWarning("TempleIntroController: bossData is NULL!");
+                }
+            }
+
         Debug.Log("TempleIntroController: Loading BattleScene...");
         if (GameManager.Instance != null) GameManager.Instance.LoadScene("BattleScene");
         else SceneManager.LoadScene("BattleScene");

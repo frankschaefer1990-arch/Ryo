@@ -22,8 +22,10 @@ public class MyUIManager : MonoBehaviour
     public Sprite cursorSprite;
     public RectTransform softwareCursor;
 
+    public bool isLocked = false;
+
     private void Awake()
-    {
+{
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -50,6 +52,7 @@ public class MyUIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        isLocked = false;
         ReconnectUIFromGameManager();
         CloseAllPanels();
     }
@@ -65,8 +68,20 @@ public class MyUIManager : MonoBehaviour
         UpdateCursorState();
         UpdateSoftwareCursor();
 
+        // Check for active dialogues, manual lock, or if BattleScene is loaded
+        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+        bool inBattle = false;
+        for (int i = 0; i < SceneManager.sceneCount; i++) {
+            if (SceneManager.GetSceneAt(i).name == "BattleScene") {
+                inBattle = true;
+                break;
+            }
+        }
+        
+        if (isLocked || dialogueActive || inBattle) return;
+
         if (Input.GetKeyDown(backpackKey)) ToggleBackpack();
-        if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
+if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
         if (Input.GetKeyDown(KeyCode.Escape)) CloseAllPanels();
     }
@@ -212,8 +227,9 @@ public class MyUIManager : MonoBehaviour
 
     public void ToggleBackpack()
     {
+        if (isLocked) return;
         if (inventoryPanel == null || backpackPanel == null) { ReconnectUIFromGameManager(); }
-        if (inventoryPanel == null || backpackPanel == null) return;
+if (inventoryPanel == null || backpackPanel == null) return;
 
         bool opening = !backpackPanel.activeSelf || !inventoryPanel.activeSelf;
 
@@ -246,6 +262,7 @@ public class MyUIManager : MonoBehaviour
 
     public void ToggleInventory()
     {
+        if (isLocked) return;
         if (inventoryPanel == null || backpackPanel == null) { ReconnectUIFromGameManager(); }
         if (inventoryPanel == null) return;
 
@@ -327,7 +344,7 @@ public class MyUIManager : MonoBehaviour
         }
     }
 
-    public void ToggleAttributes() { if (attributePanel != null) attributePanel.SetActive(!attributePanel.activeSelf); }
+    public void ToggleAttributes() { if (isLocked) return; if (attributePanel != null) attributePanel.SetActive(!attributePanel.activeSelf); }
 
     public void CloseAllPanels()
     {
@@ -350,15 +367,8 @@ public class MyUIManager : MonoBehaviour
         }
         
         if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
-        
-        // Player wieder freigeben falls er noch gesperrt ist (Sicherheitshalber)
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) {
-            PlayerMovement pm = player.GetComponent<PlayerMovement>();
-            if (pm != null) pm.canMove = true;
-        }
 
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+Cursor.lockState = CursorLockMode.Locked;
     }
 }

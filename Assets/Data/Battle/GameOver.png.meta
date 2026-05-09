@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d3b99f1fb675b25448d5899ffafebec1
+guid: b672560db1e25b74991fb5d8d5a7a7c1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4260860209262165977
-    second: qte_shrink_ring neu_0
+      213: -6899527831451061053
+    second: GameOver_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: qte_shrink_ring neu_0
+      name: GameOver_0
       rect:
         serializedVersion: 2
-        x: 21
-        y: 36
-        width: 981
-        height: 965
+        x: 0
+        y: 0
+        width: 1537
+        height: 1023
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9dffaaa09cd912b30800000000000000
-      internalID: 4260860209262165977
+      spriteID: 3c430781ef3ff30a0800000000000000
+      internalID: -6899527831451061053
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      qte_shrink_ring neu_0: 4260860209262165977
+      GameOver_0: -6899527831451061053
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

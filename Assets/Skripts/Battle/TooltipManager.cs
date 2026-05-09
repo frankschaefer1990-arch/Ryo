@@ -19,6 +19,7 @@ public class TooltipManager : MonoBehaviour
         if (tooltipPanel != null)
         {
             tooltipPanel.SetActive(true);
+            tooltipPanel.transform.SetAsLastSibling(); // Ensure it's on top of everything in the same Canvas
             if (tooltipText != null) tooltipText.text = content;
         }
     }
@@ -45,14 +46,22 @@ public class TooltipManager : MonoBehaviour
             {
                 RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
                 
-                // Adjust pivot to keep it on screen
-                float pivotX = (Input.mousePosition.x > Screen.width * 0.7f) ? 1.1f : -0.1f;
-                float pivotY = (Input.mousePosition.y > Screen.height * 0.7f) ? 1.1f : -0.1f;
+                // Adjust pivot for Top-Left expansion
+                // Pivot X: 1.0 (Right edge at mouse -> expands Left)
+                // Pivot Y: 0.0 (Bottom edge at mouse -> expands Up)
+                float pivotX = 1.0f; 
+                float pivotY = 0.0f;
+                
+                // Safety check: if it goes off the left edge, flip to Right
+                if (Input.mousePosition.x < 300f) pivotX = 0f;
+                // Safety check: if it goes off the top edge, flip to Down
+                if (Input.mousePosition.y > Screen.height - 200f) pivotY = 1f;
+
                 rt.pivot = new Vector2(pivotX, pivotY);
                 
                 rt.anchoredPosition = localPoint;
             }
-        }
+}
     }
 }
 

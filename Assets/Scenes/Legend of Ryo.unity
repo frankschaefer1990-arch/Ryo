@@ -1198,6 +1198,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5290041, y: 4.737649}
   m_EdgeRadius: 0
+--- !u!1 &261785541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 261785542}
+  m_Layer: 0
+  m_Name: BossDefeatedSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &261785542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261785541}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.9000001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &285097544
 GameObject:
   m_ObjectHideFlags: 0
@@ -3689,7 +3720,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   masterVolume: 0.5
   crossfadeDuration: 1.5
-  sceneMusicList: []
+  sceneMusicList:
+  - sceneName: Legend of Ryo
+    musicClip: {fileID: 8300000, guid: 701df46c6a82f474ba38b4a7d6bdc360, type: 3}
+  - sceneName: Temple
+    musicClip: {fileID: 8300000, guid: e406b5508edc4044c904c5b9600a2797, type: 3}
 --- !u!1 &1337152643
 GameObject:
   m_ObjectHideFlags: 0
@@ -4422,6 +4457,98 @@ Transform:
   - {fileID: 1984714255}
   m_Father: {fileID: 1481334153}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1660540287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1660540290}
+  - component: {fileID: 1660540289}
+  - component: {fileID: 1660540288}
+  m_Layer: 0
+  m_Name: Trigger_DoorLock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!61 &1660540288
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660540287}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &1660540289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660540287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c9b0517f2933d7498b7bdb5cb3d796c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldMessageTrigger
+  message: Scheint verschlossen zu seien
+--- !u!4 &1660540290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660540287}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1703303527
 GameObject:
   m_ObjectHideFlags: 0
@@ -5119,7 +5246,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMessageTrigger
   message: Scheint abgeschlossen zu sein...
-  interactionDistance: 2
 --- !u!1 &1994339190
 GameObject:
   m_ObjectHideFlags: 0
@@ -7108,11 +7234,11 @@ RectTransform:
   - {fileID: 7431835496426694846}
   m_Father: {fileID: 2838062554922280318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -536, y: 180}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -0.00012207031, y: 0}
   m_SizeDelta: {x: 1400, y: 900}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!1001 &1193190792913326907
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13914,7 +14040,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -24.2404, y: -302.53}
+  m_AnchoredPosition: {x: -24.240356, y: -302.53}
   m_SizeDelta: {x: 278.143, y: 83.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5630699418954743668
@@ -14163,7 +14289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5771754013677411494
 GameObject:
   m_ObjectHideFlags: 0
@@ -14771,7 +14897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -375.13733, y: 0}
+  m_AnchoredPosition: {x: -515.7, y: 0}
   m_SizeDelta: {x: 1031.4, y: 1440.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6116906079561632319
@@ -15104,7 +15230,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &6276492777750527950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16357,6 +16483,7 @@ MonoBehaviour:
   cursorSize: 80
   cursorSprite: {fileID: 0}
   softwareCursor: {fileID: 0}
+  isLocked: 0
 --- !u!224 &6998937563696700681
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16942,7 +17069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.200012, y: 125.7}
+  m_AnchoredPosition: {x: -5.2000732, y: 125.7}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.49999592, y: 0.50000006}
 --- !u!222 &7460614769432087695
@@ -17948,11 +18075,11 @@ RectTransform:
   - {fileID: 7707464500957503462}
   m_Father: {fileID: 2838062554922280318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -786.2181, y: -10.109934}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: -0.00012207031, y: -0.0000047683716}
   m_SizeDelta: {x: 704.0084, y: 1200.4}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &8114639025134501111
 GameObject:
   m_ObjectHideFlags: 0
@@ -18313,7 +18440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &8304410660759560052
 GameObject:
   m_ObjectHideFlags: 0
@@ -18881,7 +19008,7 @@ RectTransform:
   m_Father: {fileID: 575733926295688188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -19874,7 +20001,7 @@ RectTransform:
   m_Father: {fileID: 4022874183810042293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -20113,7 +20240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &9129393661530029959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20230,3 +20357,5 @@ SceneRoots:
   - {fileID: 34313237}
   - {fileID: 651956868}
   - {fileID: 1518614258}
+  - {fileID: 1660540290}
+  - {fileID: 261785542}
