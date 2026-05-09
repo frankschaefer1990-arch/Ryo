@@ -81,15 +81,7 @@ public class ShopManager : MonoBehaviour
         {
             OpenShop();
         }
-
-        // =========================
-        // SHOP MIT ESC SCHLIESSEN
-        // =========================
-        if (isShopOpen && Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseShop();
         }
-    }
 
     // =========================
     // PLAYER FINDEN
@@ -119,30 +111,28 @@ public class ShopManager : MonoBehaviour
     // =========================
     public void ReconnectShop()
     {
-        Canvas canvas = FindAnyObjectByType<Canvas>();
-        if (canvas == null)
+        Canvas targetCanvas = null;
+        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        
+        foreach (var c in canvases)
         {
-            Debug.LogError("ShopManager: Canvas nicht gefunden!");
+            if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor")
+            {
+                targetCanvas = c;
+                break;
+            }
+        }
+
+        if (targetCanvas == null)
+        {
+            Debug.LogError("ShopManager: Kein gültiges Canvas gefunden!");
             return;
         }
 
-        // Suche ShopPanel unter dem Canvas (auch wenn deaktiviert)
-        Transform spTransform = canvas.transform.Find("ShopPanel");
-        if (spTransform != null)
+        // Suche ShopPanel rekursiv im Canvas
+        if (shopPanel == null)
         {
-            shopPanel = spTransform.gameObject;
-        }
-        else
-        {
-            // Suche tiefer falls nötig
-            foreach (Transform t in canvas.GetComponentsInChildren<Transform>(true))
-            {
-                if (t.name == "ShopPanel")
-                {
-                    shopPanel = t.gameObject;
-                    break;
-                }
-            }
+            shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel")?.gameObject;
         }
 
         if (shopPanel != null)
@@ -162,8 +152,21 @@ public class ShopManager : MonoBehaviour
             goldText = shopPanel.transform.Find("GoldText")?.GetComponent<TextMeshProUGUI>();
             potionPriceText = shopPanel.transform.Find("PotionSlot/PotionPriceText")?.GetComponent<TextMeshProUGUI>();
         }
+        else
+        {
+            Debug.LogWarning("ShopManager: ShopPanel konnte nicht gefunden werden!");
+        }
 
         SetupButtonsPublic();
+    }
+
+    private Transform FindChildRecursive(Transform parent, string name)
+    {
+        foreach (Transform t in parent.GetComponentsInChildren<Transform>(true))
+        {
+            if (t.name == name) return t;
+        }
+        return null;
     }
 
     // =========================
@@ -298,23 +301,16 @@ public class ShopManager : MonoBehaviour
     // =========================
     private void LockPlayerMovement(bool locked)
     {
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) FindPlayer();
+        if (player == null) return;
 
-        if (playerObject == null)
-            return;
-
-        PlayerMovement movement = playerObject.GetComponent<PlayerMovement>();
-
+        PlayerMovement movement = player.GetComponent<PlayerMovement>();
         if (movement != null)
         {
-            // canMove = false -> Stop
             movement.canMove = !locked;
         }
     }
 
-    // =========================
-    // POTION AUSWÄHLEN
-    // =========================
     public void SelectPotion()
     {
         Debug.Log("ShopManager: Potion ausgewählt.");
@@ -337,9 +333,6 @@ public class ShopManager : MonoBehaviour
             selectionHighlight.SetActive(false);
     }
 
-    // =========================
-    // KAUFEN
-    // =========================
     public void BuyPotion()
     {
         Debug.Log("ShopManager: Kaufversuch gestartet...");
@@ -350,9 +343,19 @@ public class ShopManager : MonoBehaviour
             return;
         }
 
-        if (PlayerGold.Instance == null)
+        PlayerGold gold = PlayerGold.GetInstance();
+
+        if (gold == null)
         {
             Debug.LogError("ShopManager: PlayerGold Instance fehlt!");
+            return;
+        }
+
+        Debug.Log($"ShopManager: Gold vor Kauf: {gold.currentGold}, Preis: {potionPrice}");
+
+        if (!gold.SpendGold(potionPrice))
+        {
+            Debug.LogWarning("ShopManager: Nicht genug Gold!");
             return;
         }
 
@@ -362,14 +365,7 @@ public class ShopManager : MonoBehaviour
         if (inventory == null)
         {
             Debug.LogError("ShopManager: InventoryManager fehlt!");
-            return;
-        }
-
-        Debug.Log($"ShopManager: Gold vor Kauf: {PlayerGold.Instance.currentGold}, Preis: {potionPrice}");
-
-        if (!PlayerGold.Instance.SpendGold(potionPrice))
-        {
-            Debug.LogWarning("ShopManager: Nicht genug Gold!");
+            gold.AddGold(potionPrice);
             return;
         }
 
@@ -381,7 +377,7 @@ public class ShopManager : MonoBehaviour
         else
         {
             Debug.LogError("ShopManager: Potion konnte nicht zum Inventar hinzugefügt werden!");
-            PlayerGold.Instance.AddGold(potionPrice);
+            gold.AddGold(potionPrice);
         }
 
         UpdateGoldUI();
@@ -393,6 +389,8 @@ public class ShopManager : MonoBehaviour
     // =========================
     public void SellPotion()
     {
+        PlayerGold gold = PlayerGold.GetInstance();
+        
         InventoryManager inventory = InventoryManager.Instance;
         if (inventory == null) inventory = FindAnyObjectByType<InventoryManager>();
 
@@ -414,9 +412,9 @@ public class ShopManager : MonoBehaviour
         // 2. Den selektierten Trank aus dem Inventar entfernen
         if (inventory.RemoveSelectedPotion())
         {
-            if (PlayerGold.Instance != null)
+            if (gold != null)
             {
-                PlayerGold.Instance.AddGold(potionPrice / 2);
+                gold.AddGold(potionPrice / 2);
             }
             UpdateGoldUI();
             Debug.Log("Trank aus Inventar verkauft für " + (potionPrice / 2) + " Gold.");
@@ -432,8 +430,10 @@ public class ShopManager : MonoBehaviour
     // =========================
     private void UpdateGoldUI()
     {
-        if (goldText != null && PlayerGold.Instance != null)
-            goldText.text = PlayerGold.Instance.currentGold.ToString();
+        PlayerGold gold = PlayerGold.GetInstance();
+        
+        if (goldText != null && gold != null)
+            goldText.text = gold.currentGold.ToString();
 
         if (potionPriceText != null)
             potionPriceText.text = potionPrice.ToString();

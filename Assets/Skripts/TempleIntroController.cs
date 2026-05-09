@@ -42,6 +42,10 @@ public class TempleIntroController : MonoBehaviour
 
     private void Start()
     {
+        // Enable CinemachineBrain for this cutscene
+        var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null) brain.enabled = true;
+
         // Disable legacy scripts that fight for control
         Camera main = Camera.main;
         if (main != null)
@@ -123,62 +127,72 @@ public class TempleIntroController : MonoBehaviour
         {
             Debug.Log("TempleIntroController: Starting sequence.");
             
-            // Erster Dialog: Ryo
-            di.ShowMessage("Ryo", "Der Meister hat ihn geschwächt, jetzt ist meine Stunde!");
+            // 1. Ryo: Meister!?
+            di.ShowMessage("Ryo", "Meister!?");
             yield return new WaitForSeconds(0.3f); 
             while (di.IsDialogueActive()) yield return null;
             yield return new WaitForSeconds(0.5f);
 
-            // Zweiter Dialog: Skelett
-            di.ShowMessage("Skelettkrieger", "Sirb die Made!");
+            // 2. Meister: Lauf Ryo...!
+            di.ShowMessage("Meister", "Lauf Ryo...!");
+            yield return new WaitForSeconds(0.3f);
+            while (di.IsDialogueActive()) yield return null;
+            yield return new WaitForSeconds(0.5f);
+
+            // 3. Ryo: Der Meister hat ihn geschwächt...
+            di.ShowMessage("Ryo", "Der Meister hat ihn geschwächt, jetzt ist meine Stunde!");
+            yield return new WaitForSeconds(0.3f);
+            while (di.IsDialogueActive()) yield return null;
+            yield return new WaitForSeconds(0.5f);
+            
+            Debug.Log("TempleIntroController: First part of dialogue finished. Player walking.");
+
+            // 4. Player walk to skeleton
+            if (pm != null && skeleton != null)
+            {
+                float walkTime = 3.0f;
+                float elapsed = 0;
+                Vector3 startPos = pm.transform.position;
+                Vector3 targetPos = skeleton.position + (startPos - skeleton.position).normalized * 1.5f;
+                
+                Animator anim = pm.GetComponentInChildren<Animator>();
+                if (anim != null)
+                {
+                    anim.SetBool("isMoving", true);
+                    Vector3 dir = (targetPos - startPos).normalized;
+                    anim.SetFloat("MoveX", dir.x);
+                    anim.SetFloat("MoveY", dir.y);
+                    if (dir.y > 0.5f) anim.Play("Walk Up");
+                }
+
+                while (elapsed < walkTime)
+                {
+                    elapsed += Time.deltaTime;
+                    pm.transform.position = Vector3.Lerp(startPos, targetPos, elapsed / walkTime);
+                    yield return null;
+                }
+
+                if (anim != null) 
+                {
+                    anim.SetBool("isMoving", false);
+                    anim.SetFloat("MoveY", 1);
+                }
+            }
+
+            // 5. Skelett: Sirb du Wurm!
+            di.ShowMessage("Skelettkrieger", "Sirb du Wurm!");
             yield return new WaitForSeconds(0.3f);
             while (di.IsDialogueActive()) yield return null;
             
-            Debug.Log("TempleIntroController: Dialogue sequence finished. Player should walk now.");
-        }
-        else
-        {
+            Debug.Log("TempleIntroController: Dialogue sequence finished. Starting battle.");
+            }
+            else
+            {
             Debug.LogError("TempleIntroController: DialogueUI konnte nicht gefunden werden!");
-        }
-
-        // 5. Player walk to skeleton
-        if (pm != null && skeleton != null)
-        {
-            Debug.Log("TempleIntroController: Ryo walking to skeleton.");
-            float walkTime = 3.5f; // Etwas langsamer für die Animation
-            float elapsed = 0;
-            Vector3 startPos = pm.transform.position;
-            Vector3 targetPos = skeleton.position + (startPos - skeleton.position).normalized * 1.5f;
-            
-            Animator anim = pm.GetComponentInChildren<Animator>();
-            if (anim != null)
-            {
-                anim.SetBool("isMoving", true);
-                Vector3 dir = (targetPos - startPos).normalized;
-                anim.SetFloat("MoveX", dir.x);
-                anim.SetFloat("MoveY", dir.y);
-                
-                // Falls die Parameter nicht reichen, erzwingen wir den Walk-State
-                if (dir.y > 0.5f) anim.Play("Walk Up");
             }
 
-            while (elapsed < walkTime)
-            {
-                elapsed += Time.deltaTime;
-                pm.transform.position = Vector3.Lerp(startPos, targetPos, elapsed / walkTime);
-                yield return null;
-            }
-
-            if (anim != null) 
-            {
-                anim.SetBool("isMoving", false);
-                anim.SetFloat("MoveX", 0);
-                anim.SetFloat("MoveY", 1); // Stehen bleiben und nach oben schauen
-            }
-        }
-
-        // 6. Transition to Battle
-        if (QuestManager.Instance != null)
+            // 6. Transition to Battle
+            if (QuestManager.Instance != null)
         {
             QuestManager.Instance.visitedTemple = true;
             if (bossData != null) QuestManager.Instance.nextBattleEnemy = bossData;

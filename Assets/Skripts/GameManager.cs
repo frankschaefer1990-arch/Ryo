@@ -147,9 +147,6 @@ public class GameManager : MonoBehaviour
             }
 
             // Manager Cleanup
-            var diags = FindObjectsByType<DialogueUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (var d in diags) if (DialogueUI.Instance != null && d != DialogueUI.Instance) Destroy(d.gameObject);
-
             var uis = FindObjectsByType<MyUIManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var u in uis) if (MyUIManager.Instance != null && u != MyUIManager.Instance) Destroy(u.gameObject);
             

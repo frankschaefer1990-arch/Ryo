@@ -61,14 +61,27 @@ public class InventoryManager : MonoBehaviour
     private void ReconnectBackpackPanel()
     {
         GameObject target = (GameManager.Instance != null && GameManager.Instance.canvas != null) ? GameManager.Instance.canvas : null;
+        
         if (target == null) {
-            Canvas c = Object.FindAnyObjectByType<Canvas>();
-            if (c != null) target = c.gameObject;
+            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var c in canvases) {
+                if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor") {
+                    target = c.gameObject;
+                    break;
+                }
+            }
         }
+        
         if (target == null) return;
 
         backpackPanel = FindChildRecursive(target.transform, "BackpackPanel");
         if (backpackPanel == null) backpackPanel = FindChildRecursive(target.transform, "Backpack");
+        
+        if (backpackPanel != null) {
+            Debug.Log($"InventoryManager: BackpackPanel gefunden auf {backpackPanel.name}");
+        } else {
+            Debug.LogWarning("InventoryManager: BackpackPanel konnte nicht gefunden werden!");
+        }
     }
 
     private Transform FindChildRecursive(Transform parent, string name)

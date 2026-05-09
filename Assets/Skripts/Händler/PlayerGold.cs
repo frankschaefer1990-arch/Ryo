@@ -13,22 +13,29 @@ public class PlayerGold : MonoBehaviour
     // =========================
     private void Awake()
     {
-        // Bereits vorhanden?
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Debug.Log("PlayerGold: Duplikat zerstört.");
+            Destroy(gameObject);
             return;
         }
 
-        // Erste echte Instanz
         Instance = this;
+        Debug.Log("PlayerGold: Instanz gesetzt.");
 
-        // Zwischen Szenen behalten
-        if (transform.parent != null) transform.SetParent(null);
-        DontDestroyOnLoad(gameObject);
-
-        // Optional für spätere UI / Save Erweiterung
+        // Wenn wir kein Parent haben (lose im Raum), werden wir persistent
+        if (transform.parent == null)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+        
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public static PlayerGold GetInstance()
+    {
+        if (Instance == null) Instance = FindAnyObjectByType<PlayerGold>();
+        return Instance;
     }
 
     // =========================

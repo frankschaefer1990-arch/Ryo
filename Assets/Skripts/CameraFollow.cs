@@ -25,6 +25,10 @@ public class CameraFollow : MonoBehaviour
         SetupCamera();
         FindPlayer();
         UpdateBounds();
+
+        // Ensure CinemachineBrain is disabled so this script has control
+        var brain = GetComponent<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null) brain.enabled = false;
     }
 
     // =========================
@@ -32,21 +36,21 @@ public class CameraFollow : MonoBehaviour
     // =========================
     private void FindPlayer()
     {
-        // 1. Try GameManager first
-        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        // Prioritize scene instance with "Player" tag
+        GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+        if (foundPlayer != null)
         {
-            player = GameManager.Instance.player.transform;
+            player = foundPlayer.transform;
             return;
         }
 
-        // 2. Fallback to tag search
-        if (player == null)
+        // Fallback to GameManager only if it's a scene object
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
         {
-            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
-
-            if (foundPlayer != null)
+            if (GameManager.Instance.player.scene.name != null) // Not a prefab
             {
-                player = foundPlayer.transform;
+                player = GameManager.Instance.player.transform;
+                return;
             }
         }
     }
@@ -101,31 +105,27 @@ public class CameraFollow : MonoBehaviour
     // =========================
     private void LateUpdate()
     {
-        // Falls Player nach Szenenwechsel neu gespawnt wurde
         if (player == null)
         {
             FindPlayer();
-
-            if (player == null)
-                return;
+            if (player == null) return;
         }
 
-        float clampedX = Mathf.Clamp(
-            player.position.x,
-            minX + camHalfWidth,
-            maxX - camHalfWidth
-        );
+        camHalfHeight = GetComponent<Camera>().orthographicSize;
+        camHalfWidth = camHalfHeight * GetComponent<Camera>().aspect;
 
-        float clampedY = Mathf.Clamp(
-            player.position.y,
-            minY + camHalfHeight,
-            maxY - camHalfHeight
-        );
+        float targetX = player.position.x;
+        float targetY = player.position.y;
 
-        transform.position = new Vector3(
-            clampedX,
-            clampedY,
-            -10f
-        );
+        float clampedX = Mathf.Clamp(targetX, minX + camHalfWidth, maxX - camHalfWidth);
+        float clampedY = Mathf.Clamp(targetY, minY + camHalfHeight, maxY - camHalfHeight);
+
+        Vector3 targetPos = new Vector3(clampedX, clampedY, -10f);
+        
+        // Safety check: if the clamping range is invalid, use target directly
+        if (minX + camHalfWidth > maxX - camHalfWidth) clampedX = targetX;
+        if (minY + camHalfHeight > maxY - camHalfHeight) clampedY = targetY;
+
+        transform.position = new Vector3(clampedX, clampedY, -10f);
     }
 }

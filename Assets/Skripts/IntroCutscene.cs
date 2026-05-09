@@ -14,6 +14,12 @@ public class IntroCutscene : MonoBehaviour
         {
             StartCoroutine(PlayIntro());
         }
+        else
+        {
+            // Ensure CinemachineBrain is disabled if intro is skipped
+            var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+            if (brain != null) brain.enabled = false;
+        }
     }
 
     private IEnumerator PlayIntro()
@@ -78,14 +84,18 @@ public class IntroCutscene : MonoBehaviour
             }
 
             camFollow.enabled = true;
-        }
+            
+            // Disable CinemachineBrain to let CameraFollow take over
+            var brain = Camera.main.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+            if (brain != null) brain.enabled = false;
+            }
 
-        // Dialogue
-        if (DialogueUI.Instance != null)
-        {
-            DialogueUI.Instance.ShowMessage("Ryo", "Was war das");
-            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
-        }
+            // Dialogue
+            if (DialogueUI.Instance != null)
+            {
+                DialogueUI.Instance.ShowMessage("Ryo", "Was war das?");
+                while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+            }
 
         // Finish
         if (QuestManager.Instance != null) QuestManager.Instance.introSeen = true;

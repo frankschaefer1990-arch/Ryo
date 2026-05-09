@@ -338,8 +338,26 @@ public class MyUIManager : MonoBehaviour
         }
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         if (attributePanel != null) attributePanel.SetActive(false);
-        if (shopPanel != null) shopPanel.SetActive(false);
+        
+        if (shopPanel != null) {
+            // Falls der Shop offen ist, über den ShopManager schließen (wegen Movement Lock)
+            ShopManager shop = FindAnyObjectByType<ShopManager>();
+            if (shop != null) {
+                shop.CloseShop();
+            } else {
+                shopPanel.SetActive(false);
+            }
+        }
+        
         if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
+        
+        // Player wieder freigeben falls er noch gesperrt ist (Sicherheitshalber)
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) {
+            PlayerMovement pm = player.GetComponent<PlayerMovement>();
+            if (pm != null) pm.canMove = true;
+        }
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
