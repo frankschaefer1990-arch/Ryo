@@ -15,7 +15,10 @@ public class ProceduralSlash : MonoBehaviour
             lineRenderer.startWidth = 0.1f;
             lineRenderer.endWidth = 0.01f;
             lineRenderer.positionCount = 2;
-            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            
+            Shader s = Shader.Find("Sprites/Default");
+            if (s == null) s = Shader.Find("UI/Default");
+            if (s != null) lineRenderer.material = new Material(s);
         }
         lineRenderer.enabled = false;
     }

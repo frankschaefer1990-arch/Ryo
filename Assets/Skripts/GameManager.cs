@@ -100,20 +100,8 @@ public class GameManager : MonoBehaviour
             Debug.Log($"GameManager: Scene Loaded [{scene.name}].");
             isSceneLoading = false;
 
-            // SPECIAL CASE: BattleScene
-            // Unity 6 crashes often when persistent cameras fight scene cameras.
-            if (scene.name.Contains("Battle"))
-            {
-                if (mainCamera != null) mainCamera.SetActive(false);
-                if (eventSystem != null) eventSystem.SetActive(false);
-                // We keep MyUIManager active but hidden if needed
-            }
-            else
-            {
-                if (mainCamera != null) mainCamera.SetActive(true);
-                if (eventSystem != null) eventSystem.SetActive(true);
-                CleanupDuplicates();
-            }
+            // Start a safe, delayed cleanup for builds
+            StartCoroutine(SafeBuildCleanupRoutine(scene.name));
             
             // Refind Player
             GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -136,6 +124,44 @@ public class GameManager : MonoBehaviour
         }
         catch (System.Exception e) {
             Debug.LogError("GameManager: Error in OnSceneLoaded: " + e.Message);
+        }
+    }
+
+    private IEnumerator SafeBuildCleanupRoutine(string sceneName)
+    {
+        // Wait one frame to ensure Unity's internal scene management is stable
+        yield return null;
+
+        // Cleanup EventSystems
+        var allEventSystems = FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var es in allEventSystems)
+        {
+            if (eventSystem != null && es.gameObject != eventSystem)
+            {
+                Destroy(es.gameObject);
+            }
+        }
+
+        // Handle Camera for BattleScene
+        if (sceneName.Contains("Battle"))
+        {
+            if (mainCamera != null) 
+            {
+                var cam = mainCamera.GetComponent<Camera>();
+                if (cam != null) cam.enabled = false;
+                var listener = mainCamera.GetComponent<AudioListener>();
+                if (listener != null) listener.enabled = false;
+            }
+        }
+        else
+        {
+            if (mainCamera != null) 
+            {
+                mainCamera.SetActive(true);
+                var cam = mainCamera.GetComponent<Camera>();
+                if (cam != null) cam.enabled = true;
+            }
+            CleanupDuplicates();
         }
     }
 

@@ -218,7 +218,7 @@ introCam.Priority.Value = 30;
             // 6. Transition to Battle
             if (hasStartedBattle) yield break;
             hasStartedBattle = true;
-
+ 
             if (QuestManager.Instance != null)
             {
                 QuestManager.Instance.visitedTemple = true;
@@ -232,7 +232,7 @@ introCam.Priority.Value = 30;
                     Debug.LogWarning("TempleIntroController: bossData is NULL!");
                 }
             }
-
+ 
         Debug.Log("TempleIntroController: Loading BattleScene...");
         if (GameManager.Instance != null) GameManager.Instance.LoadScene("BattleScene");
         else SceneManager.LoadScene("BattleScene");

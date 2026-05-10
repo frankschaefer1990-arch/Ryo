@@ -3725,6 +3725,8 @@ MonoBehaviour:
     musicClip: {fileID: 8300000, guid: 701df46c6a82f474ba38b4a7d6bdc360, type: 3}
   - sceneName: Temple
     musicClip: {fileID: 8300000, guid: e406b5508edc4044c904c5b9600a2797, type: 3}
+  - sceneName: BattleScene
+    musicClip: {fileID: 8300000, guid: 96560a145d5000e4db27440871db789c, type: 3}
 --- !u!1 &1337152643
 GameObject:
   m_ObjectHideFlags: 0
