@@ -149,19 +149,22 @@ introCam.Priority.Value = 30;
             // 1. Ryo: Meister!?
             di.ShowMessage("Ryo", "Meister!?");
             yield return new WaitForSeconds(0.3f); 
-            while (di.IsDialogueActive()) yield return null;
+            float dTimeout = 5f;
+            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
             yield return new WaitForSeconds(0.5f);
 
             // 2. Meister: Lauf Ryo...!
             di.ShowMessage("Meister", "Lauf Ryo...!");
             yield return new WaitForSeconds(0.3f);
-            while (di.IsDialogueActive()) yield return null;
+            dTimeout = 5f;
+            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
             yield return new WaitForSeconds(0.5f);
 
             // 3. Ryo: Der Meister hat ihn geschwächt...
             di.ShowMessage("Ryo", "Der Meister hat ihn geschwächt, jetzt ist meine Stunde!");
             yield return new WaitForSeconds(0.3f);
-            while (di.IsDialogueActive()) yield return null;
+            dTimeout = 5f;
+            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
             yield return new WaitForSeconds(0.5f);
             
             Debug.Log("TempleIntroController: First part of dialogue finished. Player walking.");
@@ -181,7 +184,8 @@ introCam.Priority.Value = 30;
                     Vector3 dir = (targetPos - startPos).normalized;
                     anim.SetFloat("MoveX", dir.x);
                     anim.SetFloat("MoveY", dir.y);
-                    if (dir.y > 0.5f) anim.Play("Walk Up");
+                    // Check if state exists would be better but try-catch or just Play is okay if handled by Unity
+                    try { anim.Play("Walk Up"); } catch {}
                 }
 
                 while (elapsed < walkTime)
@@ -201,7 +205,8 @@ introCam.Priority.Value = 30;
             // 5. Skelett: Sirb du Wurm!
             di.ShowMessage("Skelettkrieger", "Sirb du Wurm!");
             yield return new WaitForSeconds(0.3f);
-            while (di.IsDialogueActive()) yield return null;
+            dTimeout = 5f;
+            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
             
             Debug.Log("TempleIntroController: Dialogue sequence finished. Starting battle.");
             }

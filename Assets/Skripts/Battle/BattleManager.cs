@@ -100,7 +100,6 @@ public class BattleManager : MonoBehaviour
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
             
             if (BattleUI.Instance != null) {
-                Debug.Log($"BattleManager: Setting enemy name to '{currentEnemy.enemyName}'");
                 BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
 BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);

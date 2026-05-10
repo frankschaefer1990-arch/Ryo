@@ -97,35 +97,35 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         try {
-            Debug.Log($"GameManager: Scene Loaded [{scene.name}]. Cleaning up duplicates...");
-            
-            // Re-enable core systems if they were disabled for transition
-            if (mainCamera != null) mainCamera.SetActive(true);
-            if (eventSystem != null) eventSystem.SetActive(true);
+            Debug.Log($"GameManager: Scene Loaded [{scene.name}].");
+            isSceneLoading = false;
 
-            CleanupDuplicates();
-
-            // Critical: Always try to re-find player after scene load
-            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
-            if (foundPlayer != null) {
-                if (player != null && player != foundPlayer) {
-                     // If we have a persistent player but found a scene one, transfer data if needed?
-                     // Usually we prefer the persistent player.
-                     if (foundPlayer.scene.name != "DontDestroyOnLoad") {
-                        Debug.Log("GameManager: Scene has its own player. Preferring persistent player.");
-                        Destroy(foundPlayer);
-                     }
-                } else {
-                    player = foundPlayer;
-                    player.transform.SetParent(null);
-                    DontDestroyOnLoad(player);
-                }
+            // SPECIAL CASE: BattleScene
+            // Unity 6 crashes often when persistent cameras fight scene cameras.
+            if (scene.name.Contains("Battle"))
+            {
+                if (mainCamera != null) mainCamera.SetActive(false);
+                if (eventSystem != null) eventSystem.SetActive(false);
+                // We keep MyUIManager active but hidden if needed
             }
+            else
+            {
+                if (mainCamera != null) mainCamera.SetActive(true);
+                if (eventSystem != null) eventSystem.SetActive(true);
+                CleanupDuplicates();
+            }
+            
+            // Refind Player
+            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+            if (foundPlayer != null && player != null && foundPlayer != player)
+            {
+                if (foundPlayer.scene.name != "DontDestroyOnLoad") Destroy(foundPlayer);
+            }
+            else if (foundPlayer != null) player = foundPlayer;
 
             ReconnectSystems();
             MovePlayerToSpawn();
 
-            // Ensure player is idle after scene load
             if (player != null)
             {
                 var pm = player.GetComponent<PlayerMovement>();
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
             }
             
             Invoke(nameof(NotifySystemsReady), 0.2f);
-}
+        }
         catch (System.Exception e) {
             Debug.LogError("GameManager: Error in OnSceneLoaded: " + e.Message);
         }
@@ -146,21 +146,15 @@ public class GameManager : MonoBehaviour
     void CleanupDuplicates()
     {
         try {
-            // Camera cleanup - Important for Unity 6 crash prevention
+            // Camera cleanup - Critical for Unity 6
             Camera[] cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (Camera cam in cameras)
             {
                 if (mainCamera != null && cam.gameObject != mainCamera && cam.CompareTag("MainCamera"))
                 {
-                    Debug.Log($"GameManager: Nuking duplicate Main Camera on [{cam.gameObject.name}].");
-                    // Disable immediately to prevent conflicts during transition
+                    Debug.Log($"GameManager: Neutralizing duplicate Main Camera on [{cam.gameObject.name}].");
+                    cam.tag = "Untagged"; // Crucial: Remove tag first to stop Unity/Cinemachine tracking
                     cam.enabled = false;
-                    var al = cam.GetComponent<AudioListener>();
-                    if (al != null) al.enabled = false;
-                    
-                    var brain = cam.GetComponent("CinemachineBrain");
-                    if (brain != null) (brain as MonoBehaviour).enabled = false;
-
                     Destroy(cam.gameObject);
                 }
                 else if (mainCamera == null && cam.CompareTag("MainCamera"))
@@ -261,32 +255,10 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoadSceneDelayed(string sceneName)
     {
         isSceneLoading = true;
-        Debug.Log($"GameManager: Starting LoadScene [{sceneName}]...");
-
-        // --- PRE-LOAD CLEANUP (Unity 6 Crash Prevention) ---
-        if (mainCamera != null) {
-            Debug.Log("GameManager: Disabling camera systems...");
-            var al = mainCamera.GetComponent<AudioListener>();
-            if (al != null) al.enabled = false;
-            var brain = mainCamera.GetComponent("CinemachineBrain");
-            if (brain != null) (brain as MonoBehaviour).enabled = false;
-        }
-        if (eventSystem != null) {
-            Debug.Log("GameManager: Disabling event system...");
-            var es = eventSystem.GetComponent<EventSystem>();
-            if (es != null) es.enabled = false;
-        }
-
-        // Optional GC and wait
-        System.GC.Collect();
-        yield return new WaitForSeconds(0.2f);
+        Debug.Log($"GameManager: Triggering SceneManager.LoadScene [{sceneName}]...");
         
-        Debug.Log("GameManager: Triggering SceneManager.LoadScene...");
+        yield return new WaitForSeconds(0.1f);
         SceneManager.LoadScene(sceneName);
-        
-        // Safety wait after trigger
-        yield return null;
-        isSceneLoading = false;
     }
 
     private void OnDestroy() { SceneManager.sceneLoaded -= OnSceneLoaded; }

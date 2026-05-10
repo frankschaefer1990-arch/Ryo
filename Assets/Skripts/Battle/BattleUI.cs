@@ -70,6 +70,14 @@ public class BattleUI : MonoBehaviour
 
     public void OnRetryButton()
     {
+        // Reset player health and mana before reloading
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.currentHealth = PlayerStats.Instance.maxHealth;
+            PlayerStats.Instance.currentMana = PlayerStats.Instance.maxMana;
+            PlayerStats.Instance.UpdateUI();
+        }
+        
         // Reload current scene
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }

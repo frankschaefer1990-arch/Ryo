@@ -70,6 +70,14 @@ public class PlayerStats : MonoBehaviour
     private void ReconnectAndUpdateUI()
     {
         ReconnectUI();
+        
+        // Reset health if dead when switching scenes or reloading
+        if (currentHealth <= 0)
+        {
+            currentHealth = maxHealth;
+            currentMana = maxMana;
+        }
+        
         UpdateUI();
     }
 

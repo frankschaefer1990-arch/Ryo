@@ -75,19 +75,27 @@ public class DialogueUI : MonoBehaviour
 
     public void ShowMessage(string speakerName, string message, float visibleDuration = 0.8f)
     {
-        isShowing = true;
-        Debug.Log($"DialogueUI: ShowMessage for {speakerName}");
-        
         // Ensure local references are set
         LocalReconnect();
 
-        if (currentRoutine != null) StopCoroutine(currentRoutine);
+        if (currentRoutine != null) 
+        {
+            StopCoroutine(currentRoutine);
+        }
+        
+        isShowing = true;
+        Debug.Log($"DialogueUI: ShowMessage for {speakerName}");
         currentRoutine = StartCoroutine(ShowPopup(speakerName, message, visibleDuration));
     }
 
     public void ShowMessage(string message)
     {
         ShowMessage(defaultSpeakerName, message);
+    }
+
+    private void OnDisable()
+    {
+        isShowing = false;
     }
 
     private IEnumerator ShowPopup(string speakerName, string message, float visibleDuration)
@@ -108,7 +116,6 @@ public class DialogueUI : MonoBehaviour
             canvasGroup.alpha = 1f;
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
-            Debug.Log($"DialogueUI: CanvasGroup Alpha set to {canvasGroup.alpha}");
         }
 
         if (DialogueFrameNew != null) {
@@ -139,24 +146,22 @@ public class DialogueUI : MonoBehaviour
             }
         }
 
-        Debug.Log("DialogueUI: Typewriter finished. Waiting duration: " + visibleDuration);
         yield return new WaitForSeconds(visibleDuration);
         
-        Debug.Log("DialogueUI: ShowPopup calling HideAll.");
         HideAll();
     }
 
     public void HideAll()
     {
-        Debug.Log("DialogueUI: HideAll called.");
         if (DialogueFrameNew != null)
             DialogueFrameNew.SetActive(false);
 
         if (popupTextObject != null) popupTextObject.SetActive(false);
+        
+        // NEVER hide the EnemyNameDisplay automatically, as it belongs to the BattleUI
         if (speakerNameObject != null && speakerNameObject.name != "EnemyNameDisplay")
             speakerNameObject.SetActive(false);
             
-        // Wir verstecken nur die CanvasGroup, wenn sie NICHT auf dem root Canvas liegt
         if (canvasGroup != null && canvasGroup.gameObject != gameObject) {
             canvasGroup.alpha = 0f;
             canvasGroup.blocksRaycasts = false;
