@@ -44,7 +44,7 @@ public class BattleUI : MonoBehaviour
     public Color qteFailColor = Color.red;
 
     [Header("Smooth Animation")]
-    public float lerpSpeed = 5f;
+    public float lerpSpeed = 2f;
     private float targetPlayerHP = 1f;
     private float targetEnemyHP = 1f;
     private float targetPlayerMana = 1f;
@@ -98,9 +98,20 @@ public class BattleUI : MonoBehaviour
 
     private void Update()
     {
-        if (playerHPFill != null) playerHPFill.fillAmount = Mathf.Lerp(playerHPFill.fillAmount, targetPlayerHP, Time.deltaTime * lerpSpeed);
-        if (enemyHPFill != null) enemyHPFill.fillAmount = Mathf.Lerp(enemyHPFill.fillAmount, targetEnemyHP, Time.deltaTime * lerpSpeed);
-        if (playerManaFill != null) playerManaFill.fillAmount = Mathf.Lerp(playerManaFill.fillAmount, targetPlayerMana, Time.deltaTime * lerpSpeed);
+        // Use a more robust interpolation that ensures we eventually reach the target
+        if (playerHPFill != null) 
+            playerHPFill.fillAmount = Mathf.Lerp(playerHPFill.fillAmount, targetPlayerHP, Time.deltaTime * lerpSpeed);
+        
+        if (enemyHPFill != null) 
+            enemyHPFill.fillAmount = Mathf.Lerp(enemyHPFill.fillAmount, targetEnemyHP, Time.deltaTime * lerpSpeed);
+        
+        if (playerManaFill != null) 
+            playerManaFill.fillAmount = Mathf.Lerp(playerManaFill.fillAmount, targetPlayerMana, Time.deltaTime * lerpSpeed);
+
+        // Snap to target if very close to avoid infinite lerping
+        if (playerHPFill != null && Mathf.Abs(playerHPFill.fillAmount - targetPlayerHP) < 0.001f) playerHPFill.fillAmount = targetPlayerHP;
+        if (enemyHPFill != null && Mathf.Abs(enemyHPFill.fillAmount - targetEnemyHP) < 0.001f) enemyHPFill.fillAmount = targetEnemyHP;
+        if (playerManaFill != null && Mathf.Abs(playerManaFill.fillAmount - targetPlayerMana) < 0.001f) playerManaFill.fillAmount = targetPlayerMana;
     }
 
     public void ResetAllUI()
@@ -116,10 +127,25 @@ public class BattleUI : MonoBehaviour
             foreach(var b in commandPanel.GetComponentsInChildren<Button>()) b.interactable = true;
         }
 
-        // Initialize targets
-        if (playerHPFill != null) targetPlayerHP = playerHPFill.fillAmount;
+        // Initialize targets and SNAP bars to current player state immediately
+        if (PlayerStats.Instance != null)
+        {
+            targetPlayerHP = (float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth;
+            targetPlayerMana = (float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana;
+            
+            if (playerHPFill != null) playerHPFill.fillAmount = targetPlayerHP;
+            if (playerManaFill != null) playerManaFill.fillAmount = targetPlayerMana;
+            
+            if (playerHPText != null) playerHPText.text = PlayerStats.Instance.currentHealth + " / " + PlayerStats.Instance.maxHealth;
+            if (playerManaText != null) playerManaText.text = PlayerStats.Instance.currentMana + " / " + PlayerStats.Instance.maxMana;
+        }
+        else
+        {
+            if (playerHPFill != null) targetPlayerHP = playerHPFill.fillAmount;
+            if (playerManaFill != null) targetPlayerMana = playerManaFill.fillAmount;
+        }
+        
         if (enemyHPFill != null) targetEnemyHP = enemyHPFill.fillAmount;
-        if (playerManaFill != null) targetPlayerMana = playerManaFill.fillAmount;
     }
 
     public void SetEnemyName(string name) { 
@@ -131,11 +157,12 @@ public class BattleUI : MonoBehaviour
         else Debug.LogWarning("BattleUI: enemyNameText is not assigned!");
     }
 
-    public void ShowAttackPanel() { HideAllSubPanels(); if (attackPanel != null) attackPanel.SetActive(true); }
-    public void ShowSpellPanel() { HideAllSubPanels(); if (spellPanel != null) spellPanel.SetActive(true); }
+    public void ShowAttackPanel() { HideAllSubPanels(); if (commandPanel != null) commandPanel.SetActive(false); if (attackPanel != null) attackPanel.SetActive(true); }
+    public void ShowSpellPanel() { HideAllSubPanels(); if (commandPanel != null) commandPanel.SetActive(false); if (spellPanel != null) spellPanel.SetActive(true); }
     public void ShowItemPanel()
     {
         HideAllSubPanels();
+        if (commandPanel != null) commandPanel.SetActive(false);
         if (itemPanel != null) {
             itemPanel.SetActive(true);
             int count = 0;

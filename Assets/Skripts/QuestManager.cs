@@ -22,7 +22,7 @@ public class QuestManager : MonoBehaviour
         }
         else if (Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 }

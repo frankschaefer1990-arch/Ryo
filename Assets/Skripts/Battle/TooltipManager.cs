@@ -41,51 +41,18 @@ public class TooltipManager : MonoBehaviour
             
             // Determine camera for raycast/positioning
             Camera uiCam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+            if (uiCam == null && canvas.renderMode != RenderMode.ScreenSpaceOverlay) uiCam = Camera.main;
             
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, Input.mousePosition, uiCam, out localPoint))
+            Vector3 worldPoint;
+            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRect, Input.mousePosition, uiCam, out worldPoint))
             {
                 RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
                 
-                // Adjust pivot for Top-Left expansion
-                // Pivot X: 1.0 (Right edge at mouse -> expands Left)
-                // Pivot Y: 0.0 (Bottom edge at mouse -> expands Up)
-                float pivotX = 1.0f; 
-                float pivotY = 0.0f;
-                
-                // Safety check: if it goes off the left edge, flip to Right
-                if (Input.mousePosition.x < 300f) pivotX = 0f;
-                // Safety check: if it goes off the top edge, flip to Down
-                if (Input.mousePosition.y > Screen.height - 200f) pivotY = 1f;
-
-                rt.pivot = new Vector2(pivotX, pivotY);
-                
-                rt.anchoredPosition = localPoint;
+                // Pivot at (1, 0) means the bottom-right corner of the tooltip is at the mouse.
+                // We add a tiny offset so it doesn't clip with the cursor.
+                rt.pivot = new Vector2(1f, 0f);
+                rt.position = worldPoint + new Vector3(-0.1f, 0.1f, 0); // Offset to the Top-Left
             }
 }
     }
-}
-
-public class TooltipTrigger : MonoBehaviour, UnityEngine.EventSystems.IPointerEnterHandler, UnityEngine.EventSystems.IPointerExitHandler
-{
-    public string content;
-
-    public void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData)
-    {
-        if (TooltipManager.Instance != null) TooltipManager.Instance.ShowTooltip(content);
     }
-
-    public void OnPointerExit(UnityEngine.EventSystems.PointerEventData eventData)
-    {
-        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
-    }
-
-    private void OnDisable()
-    {
-        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
-    }
-
-    private void OnDestroy()
-    {
-        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
-    }
-}

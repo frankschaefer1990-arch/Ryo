@@ -100,9 +100,10 @@ public class BattleManager : MonoBehaviour
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
             
             if (BattleUI.Instance != null) {
+                Debug.Log($"BattleManager: Initializing UI with {enemyCurrentHP} Enemy HP and {PlayerStats.Instance?.currentHealth} Player HP.");
                 BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
-BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
+                BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
                 
                 if (PlayerStats.Instance != null)
                 {
@@ -115,7 +116,7 @@ BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
                 
                 BattleUI.Instance.ToggleCommandPanel(true);
                 BattleUI.Instance.SetupSubButtons(this);
-            } else {
+            }else {
                 Debug.LogError("BattleManager: BattleUI.Instance is missing!");
             }
 

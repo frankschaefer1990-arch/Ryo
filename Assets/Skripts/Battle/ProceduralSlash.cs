@@ -18,7 +18,9 @@ public class ProceduralSlash : MonoBehaviour
             
             Shader s = Shader.Find("Sprites/Default");
             if (s == null) s = Shader.Find("UI/Default");
+            if (s == null) s = Shader.Find("Legacy Shaders/Transparent/Diffuse");
             if (s != null) lineRenderer.material = new Material(s);
+            else Debug.LogWarning("ProceduralSlash: Could not find any fallback shader. Material might be null.");
         }
         lineRenderer.enabled = false;
     }

@@ -97,34 +97,52 @@ public class TempleIntroController : MonoBehaviour
             if (player == null) player = GameObject.Find("Player");
             if (player == null) player = GameObject.Find("Ryo");
             if (player != null) break;
-            yield return null; // Faster than 0.1s
+            yield return null; 
         }
 
+        Debug.Log($"TempleIntroController: Player found: {player.name} at {player.transform.position}. Assigning to playerCam.");
+        
         PlayerMovement pm = player.GetComponent<PlayerMovement>();
         if (pm != null) 
         {
             pm.canMove = false;
-            pm.ResetMovementState(); // Force reset immediately
+            pm.ResetMovementState(); 
         }
 
-        // 1.5 Lock UI panels
         if (MyUIManager.Instance != null)
         {
             MyUIManager.Instance.CloseAllPanels();
             MyUIManager.Instance.isLocked = true;
         }
 
-        // 2. Focus Skeleton
-introCam.Priority.Value = 30;
+        // Ensure zoom levels are identical and closer
+        float targetZoom = 5f;
+        var introLens = introCam.Lens;
+        introLens.OrthographicSize = targetZoom;
+        introCam.Lens = introLens;
+
+        var playerLens = playerCam.Lens;
+        playerLens.OrthographicSize = targetZoom;
+        playerCam.Lens = playerLens;
+
+        // 2. Focus Skeleton first
+        if (skeleton != null)
+        {
+            introCam.Follow = skeleton;
+            introCam.LookAt = skeleton;
+        }
+        
+        introCam.Priority.Value = 30;
         playerCam.Priority.Value = 10;
         playerCam.Follow = player.transform; 
+        playerCam.LookAt = player.transform;
 
         // Wait at skeleton
         yield return new WaitForSeconds(waitAtSkeleton);
 
         // 3. Switch to Player (This triggers the Cinemachine pan)
-        introCam.Priority.Value = 10;
-        playerCam.Priority.Value = 30;
+        introCam.Priority.Value = 5;
+        playerCam.Priority.Value = 40; 
 
         // Wait for pan to finish (based on CinemachineBrain blend time)
         yield return new WaitForSeconds(2.0f);
@@ -233,8 +251,15 @@ introCam.Priority.Value = 30;
                 }
             }
  
-        Debug.Log("TempleIntroController: Loading BattleScene...");
+        Debug.Log("TempleIntroController: Loading BattleTestScene...");
+        
+        // Disable Cinemachine brain briefly to stop calculations during unload
+        var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null) brain.enabled = false;
+        
+        yield return null; // Let it settle
+
         if (GameManager.Instance != null) GameManager.Instance.LoadScene("BattleScene");
         else SceneManager.LoadScene("BattleScene");
         }
-}
+        }
