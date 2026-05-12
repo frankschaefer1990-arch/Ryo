@@ -25,10 +25,10 @@ public class MyUIManager : MonoBehaviour
     public bool isLocked = false;
 
     private void Awake()
-{
+    {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         Instance = this;
@@ -65,25 +65,23 @@ public class MyUIManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateCursorState();
+        bool inBattle = IsInBattleScene();
+        UpdateCursorState(inBattle);
         UpdateSoftwareCursor();
 
-        // Check for active dialogues, manual lock, or if BattleScene is loaded
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
-        bool inBattle = false;
-        for (int i = 0; i < SceneManager.sceneCount; i++) {
-            if (SceneManager.GetSceneAt(i).name == "BattleScene") {
-                inBattle = true;
-                break;
-            }
-        }
-        
         if (isLocked || dialogueActive || inBattle) return;
 
         if (Input.GetKeyDown(backpackKey)) ToggleBackpack();
-if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
+        if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
         if (Input.GetKeyDown(KeyCode.Escape)) CloseAllPanels();
+    }
+
+    private bool IsInBattleScene()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        return sceneName != null && (sceneName.Contains("Battle") || sceneName.Contains("Kampf"));
     }
 
     private void UpdateSoftwareCursor()
@@ -98,8 +96,6 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (shouldShow)
         {
             softwareCursor.position = Input.mousePosition;
-            // Force size 80 pixels every frame. 
-            // Scaler is ConstantPixelSize, so this is literal screen pixels.
             softwareCursor.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, cursorSize);
             softwareCursor.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, cursorSize);
             softwareCursor.localScale = Vector3.one;
@@ -122,7 +118,7 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
             DontDestroyOnLoad(canvasObj);
             Canvas c = canvasObj.AddComponent<Canvas>();
             c.renderMode = RenderMode.ScreenSpaceOverlay;
-            c.sortingOrder = 9999; // Above EVERYTHING
+            c.sortingOrder = 9999;
 
             var scaler = canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
             scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ConstantPixelSize;
@@ -152,7 +148,7 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         img.color = Color.white;
     }
 
-    private void UpdateCursorState()
+    private void UpdateCursorState(bool inBattle)
     {
         bool bpOpen = backpackPanel != null && backpackPanel.activeInHierarchy;
         bool invOpen = inventoryPanel != null && inventoryPanel.activeInHierarchy;
@@ -162,7 +158,7 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
 
         bool anyPanelOpen = bpOpen || invOpen || attrOpen || shopOpen || lockOpen;
 
-        if (anyPanelOpen) {
+        if (anyPanelOpen || inBattle) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         } else {
@@ -173,28 +169,18 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
 
     public void ReconnectUIFromGameManager()
     {
-        GameObject targetCanvas = null;
-        if (GameManager.Instance != null && GameManager.Instance.canvas != null) {
-            targetCanvas = GameManager.Instance.canvas;
-        } else {
-            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (var c in canvases) {
-                if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor") {
-                    targetCanvas = c.gameObject;
-                    break;
-                }
-            }
-        }
-
+        GameObject targetCanvas = GetTargetCanvas();
         if (targetCanvas == null) return;
 
-        if (inventoryPanel == null || inventoryPanel.scene.name == null)
-            inventoryPanel = FindChildRecursive(targetCanvas.transform, "InventoryPanel");
+        inventoryPanel = FindChildRecursive(targetCanvas.transform, "InventoryPanel");
+        backpackPanel = FindChildRecursive(targetCanvas.transform, "BackpackPanel");
+        attributePanel = FindChildRecursive(targetCanvas.transform, "AttributePanel");
+        shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel");
+        lockedDoorPopup = FindChildRecursive(targetCanvas.transform, "LockedDoorPopup");
 
         if (inventoryPanel != null) {
             var btn = inventoryPanel.transform.Find("BackpackButton")?.GetComponent<UnityEngine.UI.Button>();
             if (btn == null) {
-                // Suche rekursiv falls nicht direktes Kind
                 foreach(var b in inventoryPanel.GetComponentsInChildren<UnityEngine.UI.Button>(true)) {
                     if (b.name == "BackpackButton") { btn = b; break; }
                 }
@@ -205,17 +191,12 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
             }
         }
         
-        if (backpackPanel == null || backpackPanel.scene.name == null)
-            backpackPanel = FindChildRecursive(targetCanvas.transform, "BackpackPanel");
-
-        if (attributePanel == null || attributePanel.scene.name == null)
-            attributePanel = FindChildRecursive(targetCanvas.transform, "AttributePanel");
-
-        if (shopPanel == null || shopPanel.scene.name == null)
-            shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel");
-            
-        if (lockedDoorPopup == null || lockedDoorPopup.scene.name == null)
-            lockedDoorPopup = FindChildRecursive(targetCanvas.transform, "LockedDoorPopup");
+        // Ensure panels are siblings under Canvas on load to reset parenting depth issues
+        if (inventoryPanel != null) inventoryPanel.transform.SetParent(targetCanvas.transform, false);
+        if (backpackPanel != null) backpackPanel.transform.SetParent(targetCanvas.transform, false);
+        if (attributePanel != null) attributePanel.transform.SetParent(targetCanvas.transform, false);
+        
+        ResetLayout();
     }
 
     private GameObject FindChildRecursive(Transform parent, string name)
@@ -229,21 +210,14 @@ if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
     {
         if (isLocked) return;
         if (inventoryPanel == null || backpackPanel == null) { ReconnectUIFromGameManager(); }
-if (inventoryPanel == null || backpackPanel == null) return;
+        if (inventoryPanel == null || backpackPanel == null) return;
 
         bool opening = !backpackPanel.activeSelf || !inventoryPanel.activeSelf;
 
         if (opening)
         {
-            // Erst das allgemeine Layout resetten (Inventar nach Rechts)
             ResetLayout();
-
-            // Backpack zum Child vom Inventar machen
             backpackPanel.transform.SetParent(inventoryPanel.transform, false);
-            
-            // Layout: Backpack links neben das Inventar kleben
-            // Anker Oben-Links vom Inventar (0,1)
-            // Pivot Oben-Rechts vom Rucksack (1,1) -> Rucksack ragt nach links raus
             RectTransform bpRT = backpackPanel.GetComponent<RectTransform>();
             bpRT.anchorMin = new Vector2(0, 1);
             bpRT.anchorMax = new Vector2(0, 1);
@@ -272,7 +246,7 @@ if (inventoryPanel == null || backpackPanel == null) return;
         {
             ResetLayout();
             inventoryPanel.SetActive(true);
-            backpackPanel.SetActive(false); // Bei 'I' bleibt Backpack unsichtbar
+            backpackPanel.SetActive(false);
         }
         else
         {
@@ -299,27 +273,24 @@ if (inventoryPanel == null || backpackPanel == null) return;
         RectTransform bpRT = backpackPanel.GetComponent<RectTransform>();
 
         if (active) {
-            // 1. Shop Panel: Anchor oben links
             shopRT.anchorMin = new Vector2(0, 1);
             shopRT.anchorMax = new Vector2(0, 1);
             shopRT.pivot = new Vector2(0, 1);
             shopRT.anchoredPosition = new Vector2(50, -50);
 
-            // 2. Backpack zum Child von Shop machen und rechts andocken
             backpackPanel.transform.SetParent(shopPanel.transform, false);
-            
-            // Anker oben rechts vom Shop, Pivot oben links vom Backpack
             bpRT.anchorMin = new Vector2(1, 1);
             bpRT.anchorMax = new Vector2(1, 1);
             bpRT.pivot = new Vector2(0, 1);
             bpRT.anchoredPosition = Vector2.zero;
+            bpRT.sizeDelta = new Vector2(874.15f, 693.14f); // Original size
+            bpRT.localScale = Vector3.one; // Original scale for shop
 
             shopPanel.SetActive(true);
             backpackPanel.SetActive(true);
         } else {
-            // 3. Zurück zum Inventar-Parent
-            backpackPanel.transform.SetParent(inventoryPanel.transform, false);
-            
+            GameObject targetCanvas = GetTargetCanvas();
+            if (targetCanvas != null) backpackPanel.transform.SetParent(targetCanvas.transform, false);
             shopPanel.SetActive(false);
             inventoryPanel.SetActive(false);
             backpackPanel.SetActive(false);
@@ -327,18 +298,52 @@ if (inventoryPanel == null || backpackPanel == null) return;
         }
     }
 
+    private GameObject GetTargetCanvas()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.canvas != null) return GameManager.Instance.canvas;
+        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var c in canvases) {
+            if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor") return c.gameObject;
+        }
+        return null;
+    }
+
     private void ResetLayout() 
     {
         if (inventoryPanel == null || backpackPanel == null) return;
         RectTransform invRT = inventoryPanel.GetComponent<RectTransform>();
+        RectTransform bpRT = backpackPanel.GetComponent<RectTransform>();
+        RectTransform attRT = (attributePanel != null) ? attributePanel.GetComponent<RectTransform>() : null;
         
-        // Restore InventoryPanel Standard (Rechts)
+        // Restore original sizes so internal children aren't squashed
+        invRT.sizeDelta = new Vector2(1031.4f, 1440.5f);
+        bpRT.sizeDelta = new Vector2(874.15f, 693.14f);
+        if (attRT != null) attRT.sizeDelta = new Vector2(704.01f, 1200.4f);
+
+        // Scale down panels using localScale
+        // Inventory Panel: Anchored to right, 45% size
         invRT.anchorMin = new Vector2(1, 0.5f);
         invRT.anchorMax = new Vector2(1, 0.5f);
-        invRT.pivot = new Vector2(0.5f, 0.5f);
-        invRT.anchoredPosition = new Vector2(-257, 0);
+        invRT.pivot = new Vector2(1, 0.5f);
+        invRT.anchoredPosition = new Vector2(-20f, 0f);
+        invRT.localScale = Vector3.one * 0.45f; 
 
-        // Alle Kinder des Inventars wieder aktivieren (außer Backpack)
+        // Backpack Panel: Centered or relative to Inventory, 20-30% larger (0.95 -> 1.2f)
+        bpRT.anchorMin = new Vector2(0.5f, 0.5f);
+        bpRT.anchorMax = new Vector2(0.5f, 0.5f);
+        bpRT.pivot = new Vector2(0.5f, 0.5f);
+        bpRT.anchoredPosition = new Vector2(-1028.09f, 304.5f); 
+        bpRT.localScale = Vector3.one * 1.25f; 
+
+        // Attribute Panel: Anchored to left, 50% size
+        if (attRT != null) {
+            attRT.anchorMin = new Vector2(0, 0.5f);
+            attRT.anchorMax = new Vector2(0, 0.5f);
+            attRT.pivot = new Vector2(0, 0.5f);
+            attRT.anchoredPosition = new Vector2(20f, 0f);
+            attRT.localScale = Vector3.one * 0.5f;
+        }
+
         foreach (Transform child in inventoryPanel.transform) {
             if (child.gameObject != backpackPanel) child.gameObject.SetActive(true);
         }
@@ -348,27 +353,24 @@ if (inventoryPanel == null || backpackPanel == null) return;
 
     public void CloseAllPanels()
     {
-        if (backpackPanel != null) {
-            // Sicherstellen, dass Backpack wieder beim Inventar ist
-            if (inventoryPanel != null) backpackPanel.transform.SetParent(inventoryPanel.transform, false);
+        GameObject targetCanvas = GetTargetCanvas();
+        if (backpackPanel != null && targetCanvas != null) {
+            backpackPanel.transform.SetParent(targetCanvas.transform, false);
             backpackPanel.SetActive(false);
         }
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         if (attributePanel != null) attributePanel.SetActive(false);
         
         if (shopPanel != null) {
-            // Falls der Shop offen ist, über den ShopManager schließen (wegen Movement Lock)
             ShopManager shop = FindAnyObjectByType<ShopManager>();
-            if (shop != null) {
-                shop.CloseShop();
-            } else {
-                shopPanel.SetActive(false);
-            }
+            if (shop != null) shop.CloseShop();
+            else shopPanel.SetActive(false);
         }
         
         if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
 
-        Cursor.visible = false;
-Cursor.lockState = CursorLockMode.Locked;
+        bool inBattle = IsInBattleScene();
+        Cursor.visible = inBattle;
+        Cursor.lockState = inBattle ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }

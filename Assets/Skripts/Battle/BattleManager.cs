@@ -100,18 +100,20 @@ public class BattleManager : MonoBehaviour
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
             
             if (BattleUI.Instance != null) {
-                Debug.Log($"BattleManager: Initializing UI with {enemyCurrentHP} Enemy HP and {PlayerStats.Instance?.currentHealth} Player HP.");
+                var stats = PlayerStats.Instance ?? FindFirstObjectByType<PlayerStats>();
+                Debug.Log($"BattleManager: Initializing UI with {enemyCurrentHP} Enemy HP and {(stats != null ? stats.currentHealth.ToString() : "NULL")} Player HP.");
                 BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
                 BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
                 
-                if (PlayerStats.Instance != null)
+                if (stats != null)
                 {
-                    float pHP = PlayerStats.Instance.maxHealth > 0 ? (float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth : 1f;
-                    float pMana = PlayerStats.Instance.maxMana > 0 ? (float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana : 1f;
+                    stats.RecalculateStats(); // Ensure latest values
+                    float pHP = stats.maxHealth > 0 ? (float)stats.currentHealth / stats.maxHealth : 1f;
+                    float pMana = stats.maxMana > 0 ? (float)stats.currentMana / stats.maxMana : 1f;
                     
-                    BattleUI.Instance.UpdatePlayerHP(pHP, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
-                    BattleUI.Instance.UpdatePlayerMana(pMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
+                    BattleUI.Instance.UpdatePlayerHP(pHP, stats.currentHealth, stats.maxHealth);
+                    BattleUI.Instance.UpdatePlayerMana(pMana, stats.currentMana, stats.maxMana);
                 }
                 
                 BattleUI.Instance.ToggleCommandPanel(true);
@@ -408,15 +410,16 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
         }
 
         int damage = currentEnemy.attack;
-        if (PlayerStats.Instance != null)
+        var stats = PlayerStats.Instance ?? FindFirstObjectByType<PlayerStats>();
+        if (stats != null)
         {
             // Calculate final damage after Ryo's defense to match what's actually subtracted
-            int finalDamage = Mathf.Max(damage - PlayerStats.Instance.defense, 1);
+            int finalDamage = Mathf.Max(damage - stats.defense, 1);
             
-            PlayerStats.Instance.TakeDamage(damage);
+            stats.TakeDamage(damage);
             DamagePopup.Create(playerPos.position + Vector3.up, finalDamage, damageFont);
             StartCoroutine(PlayHurtAnimation(playerPos)); 
-            BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+            BattleUI.Instance.UpdatePlayerHP((float)stats.currentHealth / stats.maxHealth, stats.currentHealth, stats.maxHealth);
         }
 
         yield return new WaitForSeconds(0.5f); 
@@ -468,6 +471,9 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
     {
         if (state == BattleState.WON)
         {
+            // Immediately hide enemy visual
+            if (enemyPos != null) enemyPos.gameObject.SetActive(false);
+
             ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
             
             // Story Progress: Unlock bridge if boss was defeated
@@ -479,11 +485,21 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
             if (PlayerStats.Instance != null)
             {
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);
+                // Reward 50 Gold
+                PlayerGold goldMgr = PlayerGold.GetInstance();
+                if (goldMgr != null)
+                {
+                    goldMgr.AddGold(50);
+                    Debug.Log($"BattleManager: Gained 50 Gold. Total: {goldMgr.currentGold}");
+                }
             }
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f); // Increased wait time for dialogue
+            
+            if (BattleUI.Instance != null) BattleUI.Instance.HideActionMessage();
+
             if (GameManager.Instance != null) GameManager.Instance.LoadScene("Temple", "BossDefeatedSpawn"); 
             else UnityEngine.SceneManagement.SceneManager.LoadScene("Temple");
-}
+        }
         else
         {
             ShowBattleMessage("Niederlage...");
@@ -507,11 +523,17 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
     {
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", message, 0.4f);
+            DialogueUI.Instance.ShowMessage("Ryo", message, 1.5f); // Increased visibility
+        }
+        else if (BattleUI.Instance != null)
+        {
+            // Fallback to BattleUI if DialogueUI is missing from scene
+            BattleUI.Instance.ShowActionMessage("Ryo", message);
+            Debug.Log("BATTLE MSG (BattleUI): " + message);
         }
         else
         {
-            Debug.Log("BATTLE MSG: " + message);
+            Debug.Log("BATTLE MSG (Console Only): " + message);
         }
     }
     }

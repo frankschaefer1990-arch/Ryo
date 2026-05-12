@@ -45,9 +45,9 @@ public class BattleUI : MonoBehaviour
 
     [Header("Smooth Animation")]
     public float lerpSpeed = 2f;
-    private float targetPlayerHP = 1f;
-    private float targetEnemyHP = 1f;
-    private float targetPlayerMana = 1f;
+    public float targetPlayerHP = 1f;
+    public float targetEnemyHP = 1f;
+    public float targetPlayerMana = 1f;
 
     [Header("GameOver")]
     public GameObject gameOverPanel;
@@ -93,6 +93,7 @@ public class BattleUI : MonoBehaviour
 
     private void Start() 
     { 
+        Debug.Log("BattleUI: Start called.");
         ResetAllUI(); 
     }
 
@@ -100,22 +101,39 @@ public class BattleUI : MonoBehaviour
     {
         // Use a more robust interpolation that ensures we eventually reach the target
         if (playerHPFill != null) 
+        {
+            float prev = playerHPFill.fillAmount;
             playerHPFill.fillAmount = Mathf.Lerp(playerHPFill.fillAmount, targetPlayerHP, Time.deltaTime * lerpSpeed);
+            if (Mathf.Abs(playerHPFill.fillAmount - targetPlayerHP) < 0.001f) playerHPFill.fillAmount = targetPlayerHP;
+            
+            if (Mathf.Abs(prev - playerHPFill.fillAmount) > 0.0001f && Time.frameCount % 60 == 0)
+                Debug.Log($"BattleUI: Animating Player HP {prev:F3} -> {playerHPFill.fillAmount:F3} (Target: {targetPlayerHP:F3})");
+        }
         
         if (enemyHPFill != null) 
+        {
+            float prev = enemyHPFill.fillAmount;
             enemyHPFill.fillAmount = Mathf.Lerp(enemyHPFill.fillAmount, targetEnemyHP, Time.deltaTime * lerpSpeed);
+            if (Mathf.Abs(enemyHPFill.fillAmount - targetEnemyHP) < 0.001f) enemyHPFill.fillAmount = targetEnemyHP;
+            
+            if (Mathf.Abs(prev - enemyHPFill.fillAmount) > 0.0001f && Time.frameCount % 60 == 0)
+                Debug.Log($"BattleUI: Animating Enemy HP {prev:F3} -> {enemyHPFill.fillAmount:F3} (Target: {targetEnemyHP:F3})");
+        }
         
         if (playerManaFill != null) 
+        {
+            float prev = playerManaFill.fillAmount;
             playerManaFill.fillAmount = Mathf.Lerp(playerManaFill.fillAmount, targetPlayerMana, Time.deltaTime * lerpSpeed);
-
-        // Snap to target if very close to avoid infinite lerping
-        if (playerHPFill != null && Mathf.Abs(playerHPFill.fillAmount - targetPlayerHP) < 0.001f) playerHPFill.fillAmount = targetPlayerHP;
-        if (enemyHPFill != null && Mathf.Abs(enemyHPFill.fillAmount - targetEnemyHP) < 0.001f) enemyHPFill.fillAmount = targetEnemyHP;
-        if (playerManaFill != null && Mathf.Abs(playerManaFill.fillAmount - targetPlayerMana) < 0.001f) playerManaFill.fillAmount = targetPlayerMana;
+            if (Mathf.Abs(playerManaFill.fillAmount - targetPlayerMana) < 0.001f) playerManaFill.fillAmount = targetPlayerMana;
+            
+            if (Mathf.Abs(prev - playerManaFill.fillAmount) > 0.0001f && Time.frameCount % 60 == 0)
+                Debug.Log($"BattleUI: Animating Player Mana {prev:F3} -> {playerManaFill.fillAmount:F3} (Target: {targetPlayerMana:F3})");
+        }
     }
 
     public void ResetAllUI()
     {
+        Debug.Log("BattleUI: Resetting All UI.");
         if (qteRoot != null) qteRoot.SetActive(false);
         HideAllSubPanels();
         HideActionMessage();
@@ -123,24 +141,27 @@ public class BattleUI : MonoBehaviour
         if (commandPanel != null) 
         { 
             commandPanel.SetActive(true); 
-            // Ensure interactable is true
             foreach(var b in commandPanel.GetComponentsInChildren<Button>()) b.interactable = true;
         }
 
         // Initialize targets and SNAP bars to current player state immediately
-        if (PlayerStats.Instance != null)
+        var stats = PlayerStats.Instance ?? FindFirstObjectByType<PlayerStats>();
+        if (stats != null)
         {
-            targetPlayerHP = (float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth;
-            targetPlayerMana = (float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana;
+            targetPlayerHP = stats.maxHealth > 0 ? (float)stats.currentHealth / stats.maxHealth : 1f;
+            targetPlayerMana = stats.maxMana > 0 ? (float)stats.currentMana / stats.maxMana : 1f;
             
             if (playerHPFill != null) playerHPFill.fillAmount = targetPlayerHP;
             if (playerManaFill != null) playerManaFill.fillAmount = targetPlayerMana;
             
-            if (playerHPText != null) playerHPText.text = PlayerStats.Instance.currentHealth + " / " + PlayerStats.Instance.maxHealth;
-            if (playerManaText != null) playerManaText.text = PlayerStats.Instance.currentMana + " / " + PlayerStats.Instance.maxMana;
+            if (playerHPText != null) playerHPText.text = stats.currentHealth + " / " + stats.maxHealth;
+            if (playerManaText != null) playerManaText.text = stats.currentMana + " / " + stats.maxMana;
+            
+            Debug.Log($"BattleUI: Initialized from stats. HP: {targetPlayerHP}, Mana: {targetPlayerMana}");
         }
         else
         {
+            Debug.LogWarning("BattleUI: PlayerStats not found during ResetAllUI.");
             if (playerHPFill != null) targetPlayerHP = playerHPFill.fillAmount;
             if (playerManaFill != null) targetPlayerMana = playerManaFill.fillAmount;
         }
@@ -157,12 +178,11 @@ public class BattleUI : MonoBehaviour
         else Debug.LogWarning("BattleUI: enemyNameText is not assigned!");
     }
 
-    public void ShowAttackPanel() { HideAllSubPanels(); if (commandPanel != null) commandPanel.SetActive(false); if (attackPanel != null) attackPanel.SetActive(true); }
-    public void ShowSpellPanel() { HideAllSubPanels(); if (commandPanel != null) commandPanel.SetActive(false); if (spellPanel != null) spellPanel.SetActive(true); }
+    public void ShowAttackPanel() { HideAllSubPanels(); if (attackPanel != null) attackPanel.SetActive(true); }
+    public void ShowSpellPanel() { HideAllSubPanels(); if (spellPanel != null) spellPanel.SetActive(true); }
     public void ShowItemPanel()
     {
         HideAllSubPanels();
-        if (commandPanel != null) commandPanel.SetActive(false);
         if (itemPanel != null) {
             itemPanel.SetActive(true);
             int count = 0;
@@ -227,21 +247,27 @@ public class BattleUI : MonoBehaviour
     }
 
     public void UpdatePlayerHP(float ratio, int curr, int max) { 
+        Debug.Log($"BattleUI: Updating Player HP to {ratio} ({curr}/{max})");
         targetPlayerHP = ratio; 
+        if (playerHPFill != null) playerHPFill.fillAmount = ratio; // Direct update
         if (playerHPText != null) {
             playerHPText.text = curr + " / " + max; 
         }
     }
 
     public void UpdatePlayerMana(float ratio, int curr, int max) { 
+        Debug.Log($"BattleUI: Updating Player Mana to {ratio} ({curr}/{max})");
         targetPlayerMana = ratio; 
+        if (playerManaFill != null) playerManaFill.fillAmount = ratio; // Direct update
         if (playerManaText != null) {
             playerManaText.text = curr + " / " + max; 
         }
     }
 
     public void UpdateEnemyHP(float ratio, int curr, int max) { 
+        Debug.Log($"BattleUI: Updating Enemy HP to {ratio} ({curr}/{max})");
         targetEnemyHP = ratio; 
+        if (enemyHPFill != null) enemyHPFill.fillAmount = ratio; // Direct update
         if (enemyHPText != null) {
             enemyHPText.text = curr + " / " + max; 
         }

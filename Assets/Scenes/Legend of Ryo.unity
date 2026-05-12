@@ -5277,7 +5277,7 @@ Transform:
   m_GameObject: {fileID: 1994339190}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.12, y: 0.107, z: 0}
+  m_LocalPosition: {x: -0.587, y: 0.107, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -5333,7 +5333,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8373487517909220761, guid: 51e1e704ab553f44a80fa74a7d6f6c7c, type: 3}
+  m_Sprite: {fileID: -4095249983650453324, guid: 0bed84161cf1fb849a5685fdaa802604, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5420,7 +5420,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 6.3, y: 3.85}
+    oldSize: {x: 4.69, y: 4.66}
     newSize: {x: 6.2, y: 6.18}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -6101,9 +6101,9 @@ RectTransform:
   m_Father: {fileID: 2838062554922280318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.4000244, y: -1.2999878}
-  m_SizeDelta: {x: 600, y: 120}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &394515508392037068
 CanvasRenderer:
@@ -8220,7 +8220,6 @@ GameObject:
   m_Component:
   - component: {fileID: 391022496004084777}
   - component: {fileID: 2235192760520237044}
-  - component: {fileID: 3296582520858930679}
   - component: {fileID: 1895961367846320234}
   m_Layer: 5
   m_Name: LockedDoorPopup
@@ -10616,26 +10615,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &3296582520858930679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798772491985852980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0127944ae60f1614ab8c9b3173c5f862, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueUI
-  DialogueFrameNew: {fileID: 6206357946924134791}
-  popupTextObject: {fileID: 6648937044584124624}
-  popupText: {fileID: 4512420647695270483}
-  legacyPopupText: {fileID: 0}
-  speakerNameObject: {fileID: 4666962007765987706}
-  speakerNameText: {fileID: 6149613309982306672}
-  defaultSpeakerName: Ryo
-  letterDelay: 0.04
 --- !u!114 &3310027658644403086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12682,7 +12661,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 999
   m_TargetDisplay: 0
 --- !u!222 &4588887747347780638
 CanvasRenderer:
@@ -12960,7 +12939,6 @@ MonoBehaviour:
   player: {fileID: 856322200}
   canvas: {fileID: 8754876628636350652}
   eventSystem: {fileID: 214271207}
-  mainCamera: {fileID: 0}
   questManager: {fileID: 0}
   spawnPointName: 
 --- !u!224 &4899806090026527162
@@ -14889,8 +14867,8 @@ RectTransform:
   m_GameObject: {fileID: 5766152425824559761}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1.4}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2985337795017147199}
   - {fileID: 8417436667135603279}
@@ -15232,7 +15210,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &6276492777750527950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18057,7 +18035,7 @@ RectTransform:
   m_GameObject: {fileID: 8252434345931498319}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8155709916043720825}
@@ -18442,7 +18420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &8304410660759560052
 GameObject:
   m_ObjectHideFlags: 0
@@ -19010,7 +18988,7 @@ RectTransform:
   m_Father: {fileID: 575733926295688188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -19447,11 +19425,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueUI
   DialogueFrameNew: {fileID: 6206357946924134791}
-  popupTextObject: {fileID: 0}
-  popupText: {fileID: 0}
+  popupTextObject: {fileID: 6648937044584124624}
+  popupText: {fileID: 4512420647695270483}
   legacyPopupText: {fileID: 0}
-  speakerNameObject: {fileID: 0}
-  speakerNameText: {fileID: 0}
+  speakerNameObject: {fileID: 4030581487910426321}
+  speakerNameText: {fileID: 3471108982541422618}
   defaultSpeakerName: Ryo
   letterDelay: 0.05
 --- !u!225 &8766689397377798417
@@ -20003,7 +19981,7 @@ RectTransform:
   m_Father: {fileID: 4022874183810042293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -20112,6 +20090,7 @@ MonoBehaviour:
   introSeen: 0
   visitedTemple: 0
   defeatedTempleBoss: 0
+  finishedTempleSequence: 0
   nextBattleEnemy: {fileID: 0}
 --- !u!114 &9094325262632626781
 MonoBehaviour:

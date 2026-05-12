@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy_Skelettkrieger
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Skelettkrieger
-  maxHP: 3000
+  maxHP: 2000
   attack: 17
   defense: 5
   xpReward: 30

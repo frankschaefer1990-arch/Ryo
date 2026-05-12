@@ -14,6 +14,8 @@ public class ComboSystem : MonoBehaviour
 
     [Header("QTE Settings")]
     public AudioClip qteHintSound;
+    [Range(0f, 1f)]
+    public float qteVolume = 1.0f; // New volume control
     public float pauseDuration = 0.15f;
     public float perfectScale = 1.0f;
     private bool hintPlayed = false;
@@ -50,7 +52,7 @@ public class ComboSystem : MonoBehaviour
                 hintPlayed = true;
                 if (qteHintSound != null && BattleManager.Instance != null && BattleManager.Instance.audioSource != null)
                 {
-                    BattleManager.Instance.audioSource.PlayOneShot(qteHintSound, 0.5f);
+                    BattleManager.Instance.audioSource.PlayOneShot(qteHintSound, qteVolume);
                 }
             }
 

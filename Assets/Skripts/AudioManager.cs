@@ -78,12 +78,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // Initial check in case scene was already loaded before subscription
+        UpdateMusicForScene();
+    }
+
     private void UpdateMusicForScene()
     {
         string newScene = SceneManager.GetActiveScene().name;
+        Debug.Log($"AudioManager: Updating music for scene [{newScene}]. Current track for: [{currentSceneName}]");
         
         // Prevent restarting the same music when reloading or transitioning to same scene
-        if (newScene == currentSceneName) return;
+        if (newScene == currentSceneName) 
+        {
+            Debug.Log("AudioManager: Scene unchanged, keeping current music.");
+            return;
+        }
         currentSceneName = newScene;
 
         AudioClip clipToPlay = null;

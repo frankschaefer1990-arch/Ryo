@@ -8,6 +8,7 @@ public class QuestManager : MonoBehaviour
     public bool introSeen = false;
     public bool visitedTemple = false;
     public bool defeatedTempleBoss = false;
+    public bool finishedTempleSequence = false;
 
     [Header("Battle Setup")]
     public EnemyData nextBattleEnemy;

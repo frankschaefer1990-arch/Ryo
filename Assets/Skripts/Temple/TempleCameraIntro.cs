@@ -160,16 +160,11 @@ public class TempleCameraIntro : MonoBehaviour
         }
 
         // =========================
-        // MOVEMENT UNLOCK + DIALOG
+        // MOVEMENT UNLOCK
         // =========================
         if (pm != null)
         {
             pm.canMove = true;
-        }
-
-        if (DialogueUI.Instance != null)
-        {
-            DialogueUI.Instance.ShowMessage("Oh nein, Meister!!!");
         }
 
         introRunning = false;

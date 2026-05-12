@@ -11,255 +11,305 @@ public class TempleIntroController : MonoBehaviour
     
     [Header("Cutscene References")]
     public Transform skeleton;
+    public Transform meister;
+    public GameObject soulBallObject; 
     public EnemyData bossData;
+    public AudioClip templeMusic;
 
     private bool hasStartedBattle = false;
 
     private void Awake()
-{
-        // Auto-assign if missing (Searching including inactive)
-        if (introCam == null)
-        {
-            var cams = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    {
+        Debug.Log("TempleIntroController: Awake.");
+        
+        // Lock UI early to prevent triggers firing before cutscene starts
+        if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
+        if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
+
+        if (introCam == null) {
+            var cams = Object.FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var c in cams) if (c.name == "CM_Intro") { introCam = c; break; }
         }
-        if (playerCam == null)
-        {
-            var cams = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if (playerCam == null) {
+            var cams = Object.FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var c in cams) if (c.name == "CM_Player") { playerCam = c; break; }
         }
         
-        // Find skeleton if not assigned
-        if (skeleton == null)
-        {
-            GameObject skelObj = GameObject.Find("Skelett Krieger");
-            if (skelObj == null) skelObj = GameObject.Find("Skeleton");
-            if (skelObj != null) skeleton = skelObj.transform;
+        FindSkeleton();
+
+        if (meister == null) {
+            var all = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var obj in all) {
+                if ((obj.name == "Toter Meister" || obj.name == "Meister") && obj.scene.isLoaded) { 
+                    meister = obj.transform; break; 
+                }
+            }
         }
 
-        // Disable conflicting legacy TempleCutscene
+        if (soulBallObject == null) {
+            var all = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var obj in all) if (obj.name == "SoulBall" && obj.scene.isLoaded) { soulBallObject = obj; break; }
+        }
+
+        if (soulBallObject != null) {
+            soulBallObject.transform.localScale = new Vector3(0.2f, 0.2f, 1f);
+            soulBallObject.SetActive(false);
+        }
+
         var cutscene = GetComponent<TempleCutscene>();
         if (cutscene != null) cutscene.enabled = false;
     }
 
+    private void FindSkeleton()
+    {
+        if (skeleton != null && skeleton.gameObject != null) return;
+        string[] possibleNames = { "Skelett Krieger", "Skeleton", "Enemy", "Boss" };
+        var allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        foreach (string n in possibleNames) {
+            foreach (var obj in allObjects) {
+                if (obj.name == n && obj.scene.isLoaded) { skeleton = obj.transform; return; }
+            }
+        }
+        GameObject tagged = GameObject.FindGameObjectWithTag("Enemy");
+        if (tagged != null) skeleton = tagged.transform;
+    }
+
     private void Start()
     {
-        // Enable CinemachineBrain for this cutscene
+        Debug.Log("TempleIntroController: Start.");
+        
+        if (AudioManager.Instance != null && templeMusic != null) AudioManager.Instance.PlayOverrideMusic(templeMusic);
+        
         var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
         if (brain != null) brain.enabled = true;
 
-        // Disable legacy scripts that fight for control
         Camera main = Camera.main;
-        if (main != null)
-        {
+        if (main != null) {
             var follow = main.GetComponent("CameraFollow");
             if (follow != null) (follow as MonoBehaviour).enabled = false;
-            
             var intro = main.GetComponent("TempleCameraIntro");
             if (intro != null) (intro as MonoBehaviour).enabled = false;
-
             main.backgroundColor = Color.black;
             main.clearFlags = CameraClearFlags.SolidColor;
         }
 
-        if (introCam == null || playerCam == null)
-        {
-            Debug.LogError("TempleIntroController: Cameras are not assigned!");
-            return;
+        if (soulBallObject != null) {
+            soulBallObject.transform.localScale = new Vector3(0.2f, 0.2f, 1f);
+            soulBallObject.SetActive(false);
         }
 
-        StartCoroutine(IntroSequence());
-    }
-
-    private void Update()
-    {
-        // Ensure background stays black
-        Camera main = Camera.main;
-        if (Time.timeSinceLevelLoad < 3f && main != null)
-        {
-            main.backgroundColor = Color.black;
-            main.clearFlags = CameraClearFlags.SolidColor;
+        if (QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss && !QuestManager.Instance.finishedTempleSequence)
+            StartCoroutine(PostBattleSequence());
+        else if (QuestManager.Instance != null && !QuestManager.Instance.visitedTemple)
+            StartCoroutine(IntroSequence());
+        else {
+            Debug.Log("TempleIntroController: Visit flags don't match sequence conditions. Enabling Free Play.");
+            EnableFreePlay();
         }
     }
 
     private IEnumerator IntroSequence()
     {
-        // 1. Lock Player Movement (search for player first)
-        GameObject player = null;
-        if (GameManager.Instance != null && GameManager.Instance.player != null)
-        {
-            player = GameManager.Instance.player;
-        }
-
-        while (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-            if (player == null) player = GameObject.Find("Player");
-            if (player == null) player = GameObject.Find("Ryo");
-            if (player != null) break;
-            yield return null; 
-        }
-
-        Debug.Log($"TempleIntroController: Player found: {player.name} at {player.transform.position}. Assigning to playerCam.");
-        
+        Debug.Log("TempleIntroController: IntroSequence started.");
+        GameObject player = GetPlayer();
+        while (player == null) { player = GetPlayer(); yield return null; }
         PlayerMovement pm = player.GetComponent<PlayerMovement>();
-        if (pm != null) 
-        {
-            pm.canMove = false;
-            pm.ResetMovementState(); 
-        }
+        if (pm != null) { pm.canMove = false; pm.ResetMovementState(); }
 
-        if (MyUIManager.Instance != null)
-        {
-            MyUIManager.Instance.CloseAllPanels();
-            MyUIManager.Instance.isLocked = true;
-        }
+        if (MyUIManager.Instance != null) { MyUIManager.Instance.CloseAllPanels(); MyUIManager.Instance.isLocked = true; }
+        if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
 
-        // Ensure zoom levels are identical and closer
-        float targetZoom = 5f;
-        var introLens = introCam.Lens;
-        introLens.OrthographicSize = targetZoom;
-        introCam.Lens = introLens;
-
-        var playerLens = playerCam.Lens;
-        playerLens.OrthographicSize = targetZoom;
-        playerCam.Lens = playerLens;
-
-        // 2. Focus Skeleton first
-        if (skeleton != null)
-        {
-            introCam.Follow = skeleton;
-            introCam.LookAt = skeleton;
-        }
-        
-        introCam.Priority.Value = 30;
-        playerCam.Priority.Value = 10;
-        playerCam.Follow = player.transform; 
-        playerCam.LookAt = player.transform;
-
-        // Wait at skeleton
+        if (skeleton != null) { introCam.Follow = skeleton; introCam.LookAt = skeleton; }
+        introCam.Priority.Value = 30; playerCam.Priority.Value = 10;
+        playerCam.Follow = player.transform; playerCam.LookAt = player.transform;
         yield return new WaitForSeconds(waitAtSkeleton);
-
-        // 3. Switch to Player (This triggers the Cinemachine pan)
-        introCam.Priority.Value = 5;
-        playerCam.Priority.Value = 40; 
-
-        // Wait for pan to finish (based on CinemachineBrain blend time)
+        introCam.Priority.Value = 5; playerCam.Priority.Value = 40; 
         yield return new WaitForSeconds(2.0f);
 
-        // 4. Dialogues
-        DialogueUI di = null;
-        float timeout = 3f;
-        while (di == null && timeout > 0)
-        {
-            di = DialogueUI.Instance;
-            if (di == null)
-            {
-                yield return new WaitForSeconds(0.1f);
-                timeout -= 0.1f;
-            }
+        DialogueUI di = DialogueUI.Instance;
+        while (di == null) { di = DialogueUI.Instance; yield return null; }
+        
+        Debug.Log("TempleIntroController: Playing Intro Dialogues.");
+        di.ShowMessage("Ryo", "Meister!?"); yield return WaitForDialogue(di);
+        di.ShowMessage("Meister", "Lauf Ryo...!"); yield return WaitForDialogue(di);
+        di.ShowMessage("Ryo", "Der Meister hat ihn geschwächt, jetzt ist meine Stunde!"); yield return WaitForDialogue(di);
+
+        if (pm != null && skeleton != null) {
+            Debug.Log("TempleIntroController: Ryo walking to skeleton.");
+            yield return StartCoroutine(WalkToTarget(player, skeleton.position + (player.transform.position - skeleton.position).normalized * 1.5f));
         }
 
-        if (di != null)
-        {
-            Debug.Log("TempleIntroController: Starting sequence.");
-            
-            // 1. Ryo: Meister!?
-            di.ShowMessage("Ryo", "Meister!?");
-            yield return new WaitForSeconds(0.3f); 
-            float dTimeout = 5f;
-            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
-            yield return new WaitForSeconds(0.5f);
-
-            // 2. Meister: Lauf Ryo...!
-            di.ShowMessage("Meister", "Lauf Ryo...!");
-            yield return new WaitForSeconds(0.3f);
-            dTimeout = 5f;
-            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
-            yield return new WaitForSeconds(0.5f);
-
-            // 3. Ryo: Der Meister hat ihn geschwächt...
-            di.ShowMessage("Ryo", "Der Meister hat ihn geschwächt, jetzt ist meine Stunde!");
-            yield return new WaitForSeconds(0.3f);
-            dTimeout = 5f;
-            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
-            yield return new WaitForSeconds(0.5f);
-            
-            Debug.Log("TempleIntroController: First part of dialogue finished. Player walking.");
-
-            // 4. Player walk to skeleton
-            if (pm != null && skeleton != null)
-            {
-                float walkTime = 3.0f;
-                float elapsed = 0;
-                Vector3 startPos = pm.transform.position;
-                Vector3 targetPos = skeleton.position + (startPos - skeleton.position).normalized * 1.5f;
-                
-                Animator anim = pm.GetComponentInChildren<Animator>();
-                if (anim != null)
-                {
-                    anim.SetBool("isMoving", true);
-                    Vector3 dir = (targetPos - startPos).normalized;
-                    anim.SetFloat("MoveX", dir.x);
-                    anim.SetFloat("MoveY", dir.y);
-                    // Check if state exists would be better but try-catch or just Play is okay if handled by Unity
-                    try { anim.Play("Walk Up"); } catch {}
-                }
-
-                while (elapsed < walkTime)
-                {
-                    elapsed += Time.deltaTime;
-                    pm.transform.position = Vector3.Lerp(startPos, targetPos, elapsed / walkTime);
-                    yield return null;
-                }
-
-                if (anim != null) 
-                {
-                    anim.SetBool("isMoving", false);
-                    anim.SetFloat("MoveY", 1);
-                }
-            }
-
-            // 5. Skelett: Sirb du Wurm!
-            di.ShowMessage("Skelettkrieger", "Sirb du Wurm!");
-            yield return new WaitForSeconds(0.3f);
-            dTimeout = 5f;
-            while (di.IsDialogueActive() && dTimeout > 0) { dTimeout -= Time.deltaTime; yield return null; }
-            
-            Debug.Log("TempleIntroController: Dialogue sequence finished. Starting battle.");
-            }
-            else
-            {
-            Debug.LogError("TempleIntroController: DialogueUI konnte nicht gefunden werden!");
-            }
- 
-            // 6. Transition to Battle
-            if (hasStartedBattle) yield break;
-            hasStartedBattle = true;
- 
-            if (QuestManager.Instance != null)
-            {
-                QuestManager.Instance.visitedTemple = true;
-                if (bossData != null) 
-                {
-                    QuestManager.Instance.nextBattleEnemy = bossData;
-                    Debug.Log($"TempleIntroController: Assigned boss data '{bossData.enemyName}' to QuestManager.");
-                }
-                else 
-                {
-                    Debug.LogWarning("TempleIntroController: bossData is NULL!");
-                }
-            }
- 
-        Debug.Log("TempleIntroController: Loading BattleTestScene...");
+        di.ShowMessage("Skelettkrieger", "Sirb du Wurm!"); yield return WaitForDialogue(di);
         
-        // Disable Cinemachine brain briefly to stop calculations during unload
-        var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
-        if (brain != null) brain.enabled = false;
+        if (hasStartedBattle) yield break;
+        hasStartedBattle = true;
         
-        yield return null; // Let it settle
-
+        Debug.Log("TempleIntroController: Loading Battle Scene.");
+        if (QuestManager.Instance != null) { QuestManager.Instance.visitedTemple = true; QuestManager.Instance.nextBattleEnemy = bossData; }
         if (GameManager.Instance != null) GameManager.Instance.LoadScene("BattleScene");
         else SceneManager.LoadScene("BattleScene");
+    }
+
+    private IEnumerator PostBattleSequence()
+    {
+        Debug.Log("TempleIntroController: PostBattleSequence started.");
+        GameObject player = GetPlayer();
+        while (player == null) { player = GetPlayer(); yield return null; }
+        PlayerMovement pm = player.GetComponent<PlayerMovement>();
+        if (pm != null) { pm.canMove = false; pm.ResetMovementState(); }
+
+        if (MyUIManager.Instance != null) { MyUIManager.Instance.CloseAllPanels(); MyUIManager.Instance.isLocked = true; }
+        if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
+
+        playerCam.Priority.Value = 40; playerCam.Follow = player.transform; playerCam.LookAt = player.transform;
+        yield return new WaitForSeconds(1.0f);
+
+        FindSkeleton();
+        if (soulBallObject == null) {
+            var all = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var obj in all) if (obj.name == "SoulBall" && obj.scene.isLoaded) { soulBallObject = obj; break; }
         }
+
+        DialogueUI di = DialogueUI.Instance;
+        while (di == null) { di = DialogueUI.Instance; yield return null; }
+
+        di.ShowMessage("Ryo", "Ich... habe gewonnen...?", 1.5f); yield return WaitForDialogue(di);
+
+        if (skeleton != null) {
+            di.ShowMessage("Skelettkrieger", "Du... bist... der...", 2.5f); yield return WaitForDialogue(di);
+            
+            yield return StartCoroutine(FadeOutSkeleton(4.0f));
+            
+            if (soulBallObject != null) {
+                soulBallObject.transform.SetParent(null);
+                soulBallObject.transform.position = skeleton.position + Vector3.up;
+                soulBallObject.transform.localScale = new Vector3(0.2f, 0.2f, 1f); 
+                soulBallObject.SetActive(true);
+            }
+            skeleton.gameObject.SetActive(false);
+            
+            di.ShowMessage("Ryo", "Was ist das?", 1.5f); yield return WaitForDialogue(di);
+            
+            yield return new WaitForSeconds(1.0f);
+            yield return StartCoroutine(SoulAbsorptionEffect(player.transform));
         }
+
+        di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di);
+        di.ShowMessage("Ryo", "WER SPRICHT?!", 1.5f); yield return WaitForDialogue(di);
+
+        if (pm != null && meister != null) {
+            Vector3 targetPos = meister.position + Vector3.down * 1.5f;
+            Vector3 intermediatePos = new Vector3(targetPos.x, player.transform.position.y, player.transform.position.z);
+            yield return StartCoroutine(WalkToTarget(player, intermediatePos));
+            yield return StartCoroutine(WalkToTarget(player, targetPos));
+        }
+
+        if (meister != null) {
+            di.ShowMessage("Meister", "Sie suchen... den Seelenverschlinger...", 2.5f); yield return WaitForDialogue(di);
+            di.ShowMessage("Meister", "Ryo... du... bi...", 2.5f); yield return WaitForDialogue(di);
+            SpriteRenderer msr = meister.GetComponentInChildren<SpriteRenderer>();
+            if (msr != null) msr.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+        }
+
+        if (QuestManager.Instance != null) QuestManager.Instance.finishedTempleSequence = true;
+        EnableFreePlay();
+    }
+
+    private IEnumerator FadeOutSkeleton(float duration)
+    {
+        if (skeleton == null) yield break;
+        SpriteRenderer[] renderers = skeleton.GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (var sr in renderers) { if (sr != null) { Color c = sr.color; c.a = 1f; sr.color = c; } }
+        float elapsed = 0;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            foreach (var sr in renderers) if (sr != null) { Color c = sr.color; c.a = alpha; sr.color = c; }
+            yield return null;
+        }
+    }
+
+    private void EnableFreePlay()
+    {
+        Debug.Log("TempleIntroController: Enabling Free Play.");
+        GameObject player = GetPlayer();
+        if (player != null) { PlayerMovement pm = player.GetComponent<PlayerMovement>(); if (pm != null) pm.canMove = true; }
+        if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
+        var brain = Object.FindAnyObjectByType<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null) brain.enabled = false;
+
+        CameraFollow follow = Object.FindAnyObjectByType<CameraFollow>(FindObjectsInactive.Include);
+        if (follow == null && Camera.main != null) follow = Camera.main.GetComponent<CameraFollow>();
+        if (follow != null) {
+            follow.enabled = true;
+            if (player != null) {
+                follow.player = player.transform;
+                follow.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, follow.transform.position.z);
+            }
+            follow.UpdateBounds(); 
+        }
+        Camera c = Camera.main;
+        if (c != null) { c.clearFlags = CameraClearFlags.Skybox; c.backgroundColor = Color.black; }
+        if (skeleton != null && QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss)
+            skeleton.gameObject.SetActive(false);
+    }
+
+    private IEnumerator SoulAbsorptionEffect(Transform target)
+    {
+        GameObject ball = soulBallObject;
+        if (ball == null) yield break;
+        ball.SetActive(true);
+        Vector3 startPos = ball.transform.position;
+        Vector3 startScale = new Vector3(0.2f, 0.2f, 1f);
+        Vector3 targetScale = startScale * 0.5f; 
+        float duration = 2.0f; float elapsed = 0;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime; float t = elapsed / duration;
+            Vector3 currentPos = Vector3.Lerp(startPos, target.position + Vector3.up, t);
+            currentPos.y += Mathf.Sin(t * Mathf.PI) * 1.5f; 
+            ball.transform.position = currentPos;
+            ball.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+            yield return null;
+        }
+        ball.SetActive(false);
+    }
+
+    private IEnumerator WalkToTarget(GameObject p, Vector3 targetPos)
+    {
+        float speed = 3.5f; Vector3 startPos = p.transform.position;
+        float distance = Vector3.Distance(startPos, targetPos);
+        if (distance < 0.05f) yield break;
+        float walkTime = distance / speed; float elapsed = 0;
+        Animator anim = p.GetComponentInChildren<Animator>();
+        if (anim != null) {
+            anim.SetBool("isMoving", true);
+            Vector3 dir = (targetPos - startPos).normalized;
+            anim.SetFloat("MoveX", dir.x); anim.SetFloat("MoveY", dir.y);
+        }
+        while (elapsed < walkTime) {
+            elapsed += Time.deltaTime;
+            p.transform.position = Vector3.Lerp(startPos, targetPos, elapsed / walkTime);
+            yield return null;
+        }
+        p.transform.position = targetPos;
+        if (anim != null) anim.SetBool("isMoving", false);
+    }
+
+    private IEnumerator WaitForDialogue(DialogueUI di)
+    {
+        yield return new WaitForSeconds(0.4f);
+        float timeout = 12f;
+        while (di.IsDialogueActive() && timeout > 0) { timeout -= Time.deltaTime; yield return null; }
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    private GameObject GetPlayer()
+    {
+        GameObject p = null;
+        if (GameManager.Instance != null && GameManager.Instance.player != null) p = GameManager.Instance.player;
+        if (p == null) p = GameObject.FindGameObjectWithTag("Player");
+        if (p == null) p = GameObject.Find("Player");
+        if (p == null) p = GameObject.Find("Ryo");
+        return p;
+    }
+}

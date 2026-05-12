@@ -34,15 +34,24 @@ public class TempleSpawnManager : MonoBehaviour
         // =========================
         // PLAYER POSITION SETZEN
         // =========================
-        if (templeSpawnPoint != null)
-        {
-            playerObject.transform.position = templeSpawnPoint.position;
+        // ONLY set position if GameManager doesn't have a specific spawn point name set (returning from battle, etc.)
+        bool hasGlobalSpawn = GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.spawnPointName);
 
-            Debug.Log("Player korrekt im Tempel gespawnt.");
+        if (!hasGlobalSpawn)
+        {
+            if (templeSpawnPoint != null)
+            {
+                playerObject.transform.position = templeSpawnPoint.position;
+                Debug.Log("Player korrekt im Tempel gespawnt (Default).");
+            }
+            else
+            {
+                Debug.LogError("TempleSpawnPoint fehlt!");
+            }
         }
         else
         {
-            Debug.LogError("TempleSpawnPoint fehlt!");
+            Debug.Log($"TempleSpawnManager: Respecting GameManager spawn point '{GameManager.Instance.spawnPointName}'. Skipping default spawn.");
         }
 
         // =========================
