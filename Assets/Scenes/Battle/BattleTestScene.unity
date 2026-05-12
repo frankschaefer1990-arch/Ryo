@@ -4318,7 +4318,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 861644948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 2004626557}
+  m_Script: {fileID: 11500000, guid: c7558ff3b19f2c542a0d18bf9683dfa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TooltipTrigger
   content: 
@@ -4945,7 +4945,7 @@ MonoBehaviour:
 
     Schaden: 30 Dmg
 
-    Kosten: 10 Mana
+    Kosten: 20 Mana
 
 
     <i>Ein
@@ -7638,6 +7638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComboSystem
   qteHintSound: {fileID: 8300000, guid: 6699c1e0437dc91428ea9b9d1a85da30, type: 3}
+  qteVolume: 1
   pauseDuration: 0.15
   perfectScale: 1
 --- !u!114 &1538556067
@@ -7724,6 +7725,9 @@ MonoBehaviour:
   qteSuccessColor: {r: 0, g: 1, b: 0, a: 1}
   qteFailColor: {r: 1, g: 0, b: 0, a: 1}
   lerpSpeed: 5
+  targetPlayerHP: 1
+  targetEnemyHP: 1
+  targetPlayerMana: 1
   gameOverPanel: {fileID: 70688338}
 --- !u!114 &1538556070
 MonoBehaviour:
@@ -10294,21 +10298,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
---- !u!115 &2004626557
-MonoScript:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 7
-  m_DefaultReferences: {}
-  m_Icon: {fileID: 0}
-  m_Type: 0
-  m_ExecutionOrder: 0
-  m_ClassName: TooltipTrigger
-  m_Namespace: 
-  m_AssemblyName: Assembly-CSharp
 --- !u!1 &2052865404
 GameObject:
   m_ObjectHideFlags: 0

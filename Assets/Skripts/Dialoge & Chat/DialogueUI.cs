@@ -79,44 +79,76 @@ public class DialogueUI : MonoBehaviour
 
     public void LocalReconnect()
     {
-        // Only search for a new frame if our current one is missing or destroyed
-        if (DialogueFrameNew != null && DialogueFrameNew.gameObject != null && DialogueFrameNew.scene.isLoaded)
+        // Only search for a new frame if our current one is missing or belongs to a scene that is not loaded
+        if (DialogueFrameNew != null && DialogueFrameNew.scene.isLoaded)
         {
-            // Already connected to a valid, loaded frame. No need to search.
+            // Already connected to a valid frame.
             return;
         }
 
-        var allFrames = Resources.FindObjectsOfTypeAll<GameObject>();
+        Debug.Log("DialogueUI: Reconnecting to scene UI...");
+        
+        // Find all objects named DialogueFrameNew or Chatbox in loaded scenes
         GameObject foundFrame = null;
-        foreach(var obj in allFrames) {
-            if ((obj.name == "DialogueFrameNew" || obj.name == "Chatbox") && obj.scene.isLoaded) {
-                foundFrame = obj;
-                break;
+        
+        // Search in all loaded scenes
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+            if (!s.isLoaded) continue;
+            
+            foreach (GameObject root in s.GetRootGameObjects())
+            {
+                if (root.name == "DialogueFrameNew" || root.name == "Chatbox")
+                {
+                    foundFrame = root;
+                    break;
+                }
+                
+                // Check children
+                foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (t.name == "DialogueFrameNew" || t.name == "Chatbox")
+                    {
+                        foundFrame = t.gameObject;
+                        break;
+                    }
+                }
+                if (foundFrame != null) break;
             }
+            if (foundFrame != null) break;
         }
 
         if (foundFrame != null) {
             DialogueFrameNew = foundFrame;
+            Debug.Log($"DialogueUI: Connected to frame '{foundFrame.name}' in scene '{foundFrame.scene.name}'");
         }
 
         if (DialogueFrameNew != null) {
             frameCanvasGroup = DialogueFrameNew.GetComponent<CanvasGroup>();
             if (frameCanvasGroup == null) frameCanvasGroup = DialogueFrameNew.AddComponent<CanvasGroup>();
 
-            popupTextObject = FindDeepChild(DialogueFrameNew.transform, "PopupText");
-            if (popupTextObject == null) popupTextObject = FindDeepChild(DialogueFrameNew.transform, "Text");
-            if (popupTextObject == null) popupTextObject = FindDeepChild(DialogueFrameNew.transform, "DialogueText");
-            
-            if (popupTextObject != null) {
-                popupText = popupTextObject.GetComponent<TextMeshProUGUI>();
+            // Use GetComponentsInChildren(true) which is more reliable for finding inactive UI elements
+            popupTextObject = null;
+            foreach (Transform t in DialogueFrameNew.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "PopupText" || t.name == "Text" || t.name == "DialogueText")
+                {
+                    popupTextObject = t.gameObject;
+                    popupText = t.GetComponent<TextMeshProUGUI>();
+                    break;
+                }
             }
 
-            speakerNameObject = FindDeepChild(DialogueFrameNew.transform, "TextPlayerName");
-            if (speakerNameObject == null) speakerNameObject = FindDeepChild(DialogueFrameNew.transform, "SpeakerNameText");
-            if (speakerNameObject == null) speakerNameObject = FindDeepChild(DialogueFrameNew.transform, "Name");
-
-            if (speakerNameObject != null) {
-                speakerNameText = speakerNameObject.GetComponent<TextMeshProUGUI>();
+            speakerNameObject = null;
+            foreach (Transform t in DialogueFrameNew.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "TextPlayerName" || t.name == "SpeakerNameText" || t.name == "Name")
+                {
+                    speakerNameObject = t.gameObject;
+                    speakerNameText = t.GetComponent<TextMeshProUGUI>();
+                    break;
+                }
             }
         }
     }

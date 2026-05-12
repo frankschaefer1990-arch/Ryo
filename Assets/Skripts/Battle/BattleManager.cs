@@ -474,7 +474,7 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
             // Immediately hide enemy visual
             if (enemyPos != null) enemyPos.gameObject.SetActive(false);
 
-            ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP erhalten.");
+            ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP und 50 Gold erhalten.");
             
             // Story Progress: Unlock bridge if boss was defeated
             if (currentEnemy.isBoss && QuestManager.Instance != null)
@@ -489,8 +489,13 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
                 PlayerGold goldMgr = PlayerGold.GetInstance();
                 if (goldMgr != null)
                 {
+                    Debug.Log($"BattleManager: Gold before reward: {goldMgr.currentGold}");
                     goldMgr.AddGold(50);
                     Debug.Log($"BattleManager: Gained 50 Gold. Total: {goldMgr.currentGold}");
+                }
+                else
+                {
+                    Debug.LogError("BattleManager: PlayerGold instance not found!");
                 }
             }
             yield return new WaitForSeconds(3f); // Increased wait time for dialogue

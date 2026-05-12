@@ -29,9 +29,17 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log("InventoryManager: PotionSprite an persistente Instanz übertragen.");
             }
             
-            Destroy(this); 
+            // If this is a duplicate on a Player object, destroy the whole object.
+            if (gameObject.CompareTag("Player"))
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(this);
+            }
             return; 
-        }
+            }
         
         Instance = this;
         if (transform.parent != null) transform.SetParent(null); 

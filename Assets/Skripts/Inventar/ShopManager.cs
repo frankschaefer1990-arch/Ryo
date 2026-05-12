@@ -212,6 +212,7 @@ public class ShopManager : MonoBehaviour
 
         // Sicherstellen, dass Referenzen da sind (nach Szenenwechsel)
         ReconnectShop();
+        UpdateGoldUI();
 
         // Auswahl reset
         potionSelected = false;

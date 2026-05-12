@@ -15,19 +15,14 @@ public class PlayerGold : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.Log("PlayerGold: Duplikat zerstört.");
+            Debug.Log($"PlayerGold: Duplikat auf {gameObject.name} zerstört. Bestehendes Gold: {Instance.currentGold}");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
-        Debug.Log("PlayerGold: Instanz gesetzt.");
-
-        // Wenn wir kein Parent haben (lose im Raum), werden wir persistent
-        if (transform.parent == null)
-        {
-            DontDestroyOnLoad(gameObject);
-        }
+        transform.SetParent(null); // Sicherstellen, dass es ein Root-Objekt ist
+        DontDestroyOnLoad(gameObject);
         
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -98,8 +93,7 @@ public class PlayerGold : MonoBehaviour
         }
 
         currentGold += amount;
-
-        Debug.Log("Gold erhalten: +" + amount + " | Gesamt: " + currentGold);
+        Debug.Log($"PlayerGold: {amount} Gold hinzugefügt. Neuer Stand: {currentGold}");
     }
 
     // =========================

@@ -2121,6 +2121,10 @@ PrefabInstance:
       value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 3251340061327877529, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3251340061327877529, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
       propertyPath: m_ActiveFontFeatures.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -2180,6 +2184,14 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: -145752403905637412, guid: 4883362467f707c458ad41fe1dde921c, type: 2}
+    - target: {fileID: 5216046932006208755, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5216046932006208755, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6857318591877443991, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2436,6 +2448,7 @@ GameObject:
   - component: {fileID: 1355217184}
   - component: {fileID: 1355217183}
   - component: {fileID: 1355217187}
+  - component: {fileID: 1355217188}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2593,6 +2606,24 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1355217188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355217182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfb60c210c96dbe48b9aba6dca2b3921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
+  player: {fileID: 0}
+  boundsCollider: {fileID: 1227850956}
+  minX: -17
+  maxX: 17
+  minY: -17
+  maxY: 17
 --- !u!1 &1374038349
 GameObject:
   m_ObjectHideFlags: 0

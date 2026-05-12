@@ -109,6 +109,18 @@ public class GameManager : MonoBehaviour
             }
 
             ReconnectSystems();
+            
+            // Cleanup duplicate Players in the scene
+            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject p in allPlayers)
+            {
+                if (player != null && p != player)
+                {
+                    Debug.Log($"GameManager: Destroying duplicate Player object '{p.name}' in scene '{scene.name}'");
+                    Destroy(p);
+                }
+            }
+
             MovePlayerToSpawn();
 
             Invoke(nameof(NotifySystemsReady), 0.2f);

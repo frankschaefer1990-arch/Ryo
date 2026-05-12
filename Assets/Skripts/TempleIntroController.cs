@@ -195,7 +195,7 @@ public class TempleIntroController : MonoBehaviour
         }
 
         di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di);
-        di.ShowMessage("Ryo", "WER SPRICHT?!", 1.5f); yield return WaitForDialogue(di);
+        di.ShowMessage("Ryo", "Wer ist da?!", 1.5f); yield return WaitForDialogue(di);
 
         if (pm != null && meister != null) {
             Vector3 targetPos = meister.position + Vector3.down * 1.5f;

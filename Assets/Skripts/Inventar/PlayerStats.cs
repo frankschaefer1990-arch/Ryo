@@ -52,8 +52,16 @@ public class PlayerStats : MonoBehaviour
         }
         else if (Instance != this)
         {
-            // Just destroy the duplicate script, don't nuke the GameObject (which might be the Player!)
-            Destroy(this);
+            // If this is a duplicate on a Player object, destroy the whole object.
+            // If it's just a UI container (like BattleTest), only destroy this script instance.
+            if (gameObject.CompareTag("Player"))
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(this);
+            }
         }
     }
 
