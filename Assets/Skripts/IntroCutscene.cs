@@ -52,12 +52,14 @@ public class IntroCutscene : MonoBehaviour
             if (playerMove != null) playerMove.canMove = false;
         }
 
+        /*
         if (FadeManager.Instance != null)
         {
             yield return StartCoroutine(FadeManager.Instance.PlayRealisticBlink());
         }
 
         yield return new WaitForSeconds(0.5f);
+        */
 
         CameraFollow camFollow = FindFirstObjectByType<CameraFollow>();
         Transform playerTransform = null;

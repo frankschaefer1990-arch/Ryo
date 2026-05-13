@@ -35,11 +35,18 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
         SceneManager.sceneLoaded += OnSceneLoaded;
+        Debug.Log("GameManager: Initialized and persistent.");
     }
 
     private void Start()
     {
         InitializePersistentSystems();
+        
+        if (SceneManager.GetActiveScene().name == "SplashScreen")
+        {
+            Debug.Log("GameManager: Starting from SplashScreen.");
+        }
+
         OnSystemsReady?.Invoke();
     }
 
@@ -55,28 +62,20 @@ public class GameManager : MonoBehaviour
             EventSystem es = FindAnyObjectByType<EventSystem>();
             if (es != null) eventSystem = es.gameObject;
         }
+        
         if (eventSystem != null) {
             eventSystem.transform.SetParent(null);
             DontDestroyOnLoad(eventSystem);
-        }
-
-        if (questManager == null) {
-            QuestManager qm = FindAnyObjectByType<QuestManager>();
-            if (qm != null) questManager = qm.gameObject;
-        }
-        if (questManager != null) {
-            questManager.transform.SetParent(null);
-            DontDestroyOnLoad(questManager);
         }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         try {
-            Debug.Log($"GameManager: Scene Loaded [{scene.name}]. Pruning duplicates...");
+            Debug.Log($"GameManager: Scene Loaded [{scene.name}]. Pruning duplicates and reconnecting...");
             isSceneLoading = false;
 
-            // 1. Ensure only ONE EventSystem exists.
+            // 1. EventSystem Cleanup
             var allEventSystems = Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var es in allEventSystems)
             {
@@ -87,7 +86,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            // 2. Ensure only ONE AudioListener is active
+            // 2. AudioListener Cleanup
             var allListeners = Object.FindObjectsByType<AudioListener>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             bool listenerSet = false;
             foreach (var l in allListeners)
@@ -96,7 +95,24 @@ public class GameManager : MonoBehaviour
                 else if (listenerSet) l.enabled = false;
             }
 
-            // 3. Player State Reset
+            // 3. Player Finding and Spawning
+            GameObject scenePlayer = GameObject.FindGameObjectWithTag("Player");
+            if (scenePlayer == null) {
+                GameObject pObj = GameObject.Find("Player");
+                if (pObj != null) scenePlayer = pObj;
+            }
+
+            if (player == null && scenePlayer != null) {
+                player = scenePlayer;
+                player.transform.SetParent(null); // CRITICAL: Must be root for DontDestroyOnLoad
+                DontDestroyOnLoad(player);
+                Debug.Log($"GameManager: Found player in scene '{scene.name}', detached and marked persistent.");
+            }
+            else if (player != null && scenePlayer != null && player != scenePlayer) {
+                Debug.Log($"GameManager: Destroying duplicate scene player '{scenePlayer.name}' because persistent player exists.");
+                Destroy(scenePlayer);
+            }
+
             if (player != null)
             {
                 var pm = player.GetComponent<PlayerMovement>();
@@ -106,23 +122,14 @@ public class GameManager : MonoBehaviour
                 }
                 var rb = player.GetComponent<Rigidbody2D>();
                 if (rb != null) rb.linearVelocity = Vector2.zero;
+                
+                MovePlayerToSpawn();
+            }
+            else {
+                Debug.LogWarning("GameManager: No player found in scene or persistence!");
             }
 
             ReconnectSystems();
-            
-            // Cleanup duplicate Players in the scene
-            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject p in allPlayers)
-            {
-                if (player != null && p != player)
-                {
-                    Debug.Log($"GameManager: Destroying duplicate Player object '{p.name}' in scene '{scene.name}'");
-                    Destroy(p);
-                }
-            }
-
-            MovePlayerToSpawn();
-
             Invoke(nameof(NotifySystemsReady), 0.2f);
         }
         catch (System.Exception e) {
@@ -163,14 +170,30 @@ public class GameManager : MonoBehaviour
                 BoxCollider2D b = bounds.GetComponent<BoxCollider2D>();
                 if (b != null) { follow.boundsCollider = b; follow.UpdateBounds(); }
             }
+            Debug.Log("GameManager: Camera reconnected to player.");
         }
     }
 
     void MovePlayerToSpawn()
     {
-        if (string.IsNullOrEmpty(spawnPointName) || player == null) return;
-        GameObject spawn = GameObject.Find(spawnPointName);
-        if (spawn != null) player.transform.position = spawn.transform.position;
+        if (player == null) return;
+        
+        GameObject spawn = null;
+        if (!string.IsNullOrEmpty(spawnPointName))
+        {
+            spawn = GameObject.Find(spawnPointName);
+        }
+        
+        if (spawn == null)
+        {
+            spawn = GameObject.Find("PlayerSpawn");
+        }
+
+        if (spawn != null)
+        {
+            player.transform.position = spawn.transform.position;
+            Debug.Log($"GameManager: Player moved to {spawn.name} at {spawn.transform.position}");
+        }
     }
 
     private void OnDestroy() { SceneManager.sceneLoaded -= OnSceneLoaded; }

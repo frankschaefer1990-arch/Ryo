@@ -12,6 +12,13 @@ public class SplashScreenLoader : MonoBehaviour
 
     void LoadNextScene()
     {
-        SceneManager.LoadScene("Legend of Ryo");
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LoadScene("Legend of Ryo");
+        }
+        else
+        {
+            SceneManager.LoadScene("Legend of Ryo");
+        }
     }
 }

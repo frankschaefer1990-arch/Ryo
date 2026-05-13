@@ -6,7 +6,7 @@ public class PlayerGold : MonoBehaviour
     public static PlayerGold Instance;
 
     [Header("Gold System")]
-    public int currentGold = 100;
+    public int currentGold = 10;
 
     // =========================
     // SINGLETON + PERSISTENT
@@ -15,14 +15,17 @@ public class PlayerGold : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.Log($"PlayerGold: Duplikat auf {gameObject.name} zerstört. Bestehendes Gold: {Instance.currentGold}");
-            Destroy(gameObject);
+            Debug.Log($"PlayerGold: Duplicate script on {gameObject.name} removed.");
+            Destroy(this); // Only destroy this script instance
             return;
         }
 
         Instance = this;
-        transform.SetParent(null); // Sicherstellen, dass es ein Root-Objekt ist
-        DontDestroyOnLoad(gameObject);
+        // Only persist if we are a root object or specifically part of persistent systems
+        if (transform.parent == null)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
         
         SceneManager.sceneLoaded += OnSceneLoaded;
     }

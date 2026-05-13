@@ -22,35 +22,21 @@ public class InventoryManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) 
         {
-            // Falls die persistente Instanz kein Sprite hat, nimm es von dieser (Szenen-)Instanz
             if (Instance.potionSprite == null && this.potionSprite != null)
             {
                 Instance.potionSprite = this.potionSprite;
-                Debug.Log("InventoryManager: PotionSprite an persistente Instanz übertragen.");
             }
-            
-            // If this is a duplicate on a Player object, destroy the whole object.
-            if (gameObject.CompareTag("Player"))
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Destroy(this);
-            }
+            Debug.Log($"InventoryManager: Duplicate script on {gameObject.name} removed.");
+            Destroy(this);
             return; 
-            }
+        }
         
         Instance = this;
-        if (transform.parent != null) transform.SetParent(null); 
-        DontDestroyOnLoad(gameObject);
+        if (transform.parent == null) DontDestroyOnLoad(gameObject);
         
-        // Initialisiere slotOccupied mit einer Standard-Kapazität, falls es noch nicht existiert
         if (slotOccupied == null || slotOccupied.Length == 0)
         {
-            int count = (backpackPanel != null) ? backpackPanel.childCount : 10;
-            if (count == 0) count = 10;
-            slotOccupied = new bool[count];
+            slotOccupied = new bool[10]; // Default
         }
     }
 
@@ -68,7 +54,10 @@ public class InventoryManager : MonoBehaviour
 
     private void ReconnectBackpackPanel()
     {
-        GameObject target = (GameManager.Instance != null && GameManager.Instance.canvas != null) ? GameManager.Instance.canvas : null;
+        if (backpackPanel != null && backpackPanel.gameObject.scene.name == "DontDestroyOnLoad") return;
+
+        GameObject target = null;
+        if (GameManager.Instance != null && GameManager.Instance.canvas != null) target = GameManager.Instance.canvas;
         
         if (target == null) {
             Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -86,9 +75,7 @@ public class InventoryManager : MonoBehaviour
         if (backpackPanel == null) backpackPanel = FindChildRecursive(target.transform, "Backpack");
         
         if (backpackPanel != null) {
-            Debug.Log($"InventoryManager: BackpackPanel gefunden auf {backpackPanel.name}");
-        } else {
-            Debug.LogWarning("InventoryManager: BackpackPanel konnte nicht gefunden werden!");
+            Debug.Log($"InventoryManager: BackpackPanel found on {backpackPanel.name}");
         }
     }
 
@@ -108,12 +95,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        if (backpackPanel == null) { 
-            inventorySlots = new Image[0]; 
-            slotBackgrounds = new Image[0]; 
-            if (slotOccupied == null) slotOccupied = new bool[10];
-            return; 
-        }
+        if (backpackPanel == null) return;
         
         int count = backpackPanel.childCount;
         inventorySlots = new Image[count];
@@ -155,7 +137,7 @@ public class InventoryManager : MonoBehaviour
         if (idx < 0 || idx >= slotOccupied.Length || !slotOccupied[idx]) selectedSlotIndex = -1;
         else {
             selectedSlotIndex = idx;
-            ShopManager shop = FindAnyObjectByType<ShopManager>();
+            ShopManager shop = FindFirstObjectByType<ShopManager>();
             if (shop != null) shop.DeselectShopItem();
         }
         UpdateSlotHighlights();
@@ -173,59 +155,27 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddPotion()
     {
-        Debug.Log("InventoryManager: AddPotion wurde aufgerufen.");
-        
         if (slotOccupied == null || slotOccupied.Length == 0) {
-            Debug.LogWarning("InventoryManager: slotOccupied war null/leer, initialisiere...");
             int count = (backpackPanel != null) ? backpackPanel.childCount : 10;
-            if (count == 0) count = 10;
             slotOccupied = new bool[count];
         }
 
-        // Sprite Recovery (Sehr aggressiv für Build)
         if (potionSprite == null) {
-            Debug.LogWarning("InventoryManager: PotionSprite fehlt! Suche in allen Objekten...");
-            // 1. Suche in anderen InventoryManagern
             var allManagers = FindObjectsByType<InventoryManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach(var mgr in allManagers) {
-                if (mgr != this && mgr.potionSprite != null) {
-                    potionSprite = mgr.potionSprite;
-                    break;
-                }
-            }
-            // 2. Suche in PotionItem Komponenten (die liegen oft auf Buttons/Slots)
-            if (potionSprite == null) {
-                var allPotions = FindObjectsByType<PotionItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                foreach(var p in allPotions) {
-                    var img = p.GetComponent<UnityEngine.UI.Image>();
-                    if (img != null && img.sprite != null) {
-                        potionSprite = img.sprite;
-                        break;
-                    }
-                }
-            }
+            foreach(var mgr in allManagers) if (mgr != this && mgr.potionSprite != null) { potionSprite = mgr.potionSprite; break; }
         }
 
-        if (potionSprite == null) {
-            Debug.LogError("InventoryManager: KAUF ABGEBROCHEN - PotionSprite konnte nirgendwo gefunden werden!");
-            return false;
-        }
+        if (potionSprite == null) return false;
 
-        // Sicherstellen dass UI verknüpft ist
-        if (inventorySlots == null || inventorySlots.Length == 0 || inventorySlots[0] == null) {
-            RefreshInventory();
-        }
+        if (inventorySlots == null || inventorySlots.Length == 0 || inventorySlots[0] == null) RefreshInventory();
 
         for (int i = 0; i < slotOccupied.Length; i++) {
             if (!slotOccupied[i]) { 
                 slotOccupied[i] = true; 
-                Debug.Log($"InventoryManager: Trank erfolgreich zu Slot {i} hinzugefügt.");
                 RestoreInventoryVisuals(); 
                 return true; 
             }
         }
-        
-        Debug.LogWarning("InventoryManager: Inventar ist voll!");
         return false;
     }
 
@@ -268,7 +218,6 @@ public class InventoryManager : MonoBehaviour
     private void RestoreVisualsInternal()
     {
         if (inventorySlots == null || slotOccupied == null) return;
-        
         for (int i = 0; i < inventorySlots.Length; i++) {
             if (inventorySlots[i] == null) continue;
             if (i < slotOccupied.Length && slotOccupied[i]) { 

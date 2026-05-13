@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ShopManager : MonoBehaviour
 {
@@ -336,11 +337,11 @@ public class ShopManager : MonoBehaviour
 
     public void BuyPotion()
     {
-        Debug.Log("ShopManager: Kaufversuch gestartet...");
+        Debug.Log("ShopManager: BuyPotion clicked.");
 
         if (!potionSelected)
         {
-            Debug.LogWarning("ShopManager: Kein Item im Shop ausgewählt!");
+            Debug.LogWarning("ShopManager: No item selected in shop.");
             return;
         }
 
@@ -348,7 +349,14 @@ public class ShopManager : MonoBehaviour
 
         if (gold == null)
         {
-            Debug.LogError("ShopManager: PlayerGold Instance fehlt!");
+            // Try one last time to find it
+            gold = Object.FindAnyObjectByType<PlayerGold>();
+            if (gold != null) PlayerGold.Instance = gold;
+        }
+
+        if (gold == null)
+        {
+            Debug.LogError("ShopManager: PlayerGold Instance missing! Current scene: " + SceneManager.GetActiveScene().name);
             return;
         }
 
