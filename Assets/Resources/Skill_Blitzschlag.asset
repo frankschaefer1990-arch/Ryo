@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
+  m_Name: Skill_Blitzschlag
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
+  skillId: blitzschlag
+  skillName: Blitzschlag
+  icon: {fileID: 21300000, guid: 3866aeb48eaf33f418fb24cf27215a36, type: 3}
+  description: "Ein konzentrierter Strahl aus wei\xDFer Energie."
+  category: 1
+  levelRequirement: 1
+  prerequisiteSkill: {fileID: 0}
+  maxLevel: 5
+  hitCount: 1
+  damageMultiplier: 1
+  isSpell: 1
+  manaCost: 10
+  effectColor: {r: 0, g: 1, b: 1, a: 1}
+  skillSound: {fileID: 8300000, guid: 397bc8e3f24e97b48b5d6b55c47e14e4, type: 3}
+  hasCombo: 0
+  baseQteSpeed: 1
+  qteSpeedIncreasePerLevel: 0.1
+  hitsPerLevel: 0
+  damageMultiplierPerLevel: 0.2
+  manaIncreasePerLevel: 5

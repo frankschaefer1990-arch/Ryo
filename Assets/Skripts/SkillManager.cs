@@ -36,14 +36,7 @@ public class SkillManager : MonoBehaviour
 
     private void Update()
     {
-        // DEBUG: Press 'K' to add 5 skill points
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            AddPoints(5);
-            var ui = FindFirstObjectByType<SkillUI>();
-            if (ui != null) ui.RefreshUI();
-            Debug.Log("SkillManager: Debug - Added 5 skill points.");
-        }
+        // Debug functionality removed to avoid conflict with UI keys
     }
 
     public int GetSkillLevel(BattleSkill skill)

@@ -19,6 +19,7 @@ public class MyUIManager : MonoBehaviour
     public KeyCode backpackKey = KeyCode.B;
     public KeyCode inventoryKey = KeyCode.I;
     public KeyCode attributeKey = KeyCode.T;
+    public KeyCode skillKey = KeyCode.K;
 
     [Header("Cursor Settings")]
     public float cursorSize = 40f;
@@ -99,8 +100,9 @@ public class MyUIManager : MonoBehaviour
         }
         if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
+        if (Input.GetKeyDown(skillKey)) ToggleSkills();
         if (Input.GetKeyDown(KeyCode.Escape)) CloseAllPanels();
-    }
+        }
 
     private bool IsInBattleScene()
     {
@@ -177,10 +179,11 @@ public class MyUIManager : MonoBehaviour
         bool bpOpen = backpackPanel != null && backpackPanel.activeInHierarchy;
         bool invOpen = inventoryPanel != null && inventoryPanel.activeInHierarchy;
         bool attrOpen = attributePanel != null && attributePanel.activeInHierarchy;
+        bool skillOpen = skillPanel != null && skillPanel.activeInHierarchy;
         bool shopOpen = shopPanel != null && shopPanel.activeInHierarchy;
         bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
 
-        bool anyPanelOpen = bpOpen || invOpen || attrOpen || shopOpen || lockOpen;
+        bool anyPanelOpen = bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen;
 
         if (anyPanelOpen || inBattle) {
             Cursor.visible = true;
@@ -204,6 +207,7 @@ public class MyUIManager : MonoBehaviour
             backpackPanel = FindChildRecursive(inventoryPanel.transform, "BackpackPanel");
         }
         attributePanel = FindChildRecursive(targetCanvas.transform, "AttributePanel");
+        skillPanel = FindChildRecursive(targetCanvas.transform, "SkillPanel");
         shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel");
         lockedDoorPopup = FindChildRecursive(targetCanvas.transform, "LockedDoorPopup");
 

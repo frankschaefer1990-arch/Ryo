@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
+  m_Name: Skill_Basic_8
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
+  skillId: basic_8
+  skillName: "Basic F\xE4higkeit 8"
+  icon: {fileID: 0}
+  description: 
+  category: 0
+  levelRequirement: 1
+  prerequisiteSkill: {fileID: 11400000, guid: cf53b4927cdabe147829cd2cf5754d5b, type: 2}
+  maxLevel: 5
+  hitCount: 1
+  damageMultiplier: 1
+  isSpell: 0
+  manaCost: 0
+  skillSound: {fileID: 0}
+  hasCombo: 1
+  customSlashEffect: {fileID: 0}
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  baseQteSpeed: 1
+  qteSpeedIncreasePerLevel: 0.1
+  hitsPerLevel: 0
+  damageMultiplierPerLevel: 0.2
+  manaIncreasePerLevel: 0
