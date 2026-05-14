@@ -181,4 +181,12 @@ public class AudioManager : MonoBehaviour
         if (clip == null) return;
         StartCoroutine(CrossfadeMusic(clip));
     }
-}
+
+    public void StopAllMusic()
+    {
+        StopAllCoroutines();
+        if (audioSourceA != null) audioSourceA.Stop();
+        if (audioSourceB != null) audioSourceB.Stop();
+        isCrossfading = false;
+    }
+    }

@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
-  m_Name: Skill_Blitzstrahl
+  m_Name: "Wilde Schl\xE4ge"
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
-  skillId: blitzschlag
-  skillName: Blitzstrahl
-  icon: {fileID: 21300000, guid: 3866aeb48eaf33f418fb24cf27215a36, type: 3}
-  description: "Ein konzentrierter Strahl aus wei\xDFer Energie."
-  category: 1
+  skillId: 
+  skillName: 
+  icon: {fileID: 2275044974782154939, guid: ac42e5971cd64d14eb1b1bb400535cd8, type: 3}
+  description: 
+  category: 0
   levelRequirement: 1
   prerequisiteSkill: {fileID: 0}
   maxLevel: 5
   hitCount: 1
-  damageMultiplier: 1.75
-  isSpell: 1
-  manaCost: 20
-  effectColor: {r: 0, g: 1, b: 1, a: 1}
-  skillSound: {fileID: 8300000, guid: 397bc8e3f24e97b48b5d6b55c47e14e4, type: 3}
-  hasCombo: 0
+  damageMultiplier: 1
+  isSpell: 0
+  manaCost: 0
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  skillSound: {fileID: 0}
+  hasCombo: 1

@@ -9,6 +9,9 @@ public class MyUIManager : MonoBehaviour
     public GameObject backpackPanel;
     public GameObject inventoryPanel;
     public GameObject attributePanel;
+    public GameObject skillPanel;
+    public GameObject mainMenuPanel;
+    public GameObject bottomMenuPanel;
     public GameObject lockedDoorPopup;
     public GameObject shopPanel;
 
@@ -71,8 +74,21 @@ public class MyUIManager : MonoBehaviour
     private void Update()
     {
         bool inBattle = IsInBattleScene();
+        bool isSplash = SceneManager.GetActiveScene().name == "SplashScreen";
+
         UpdateCursorState(inBattle);
         UpdateSoftwareCursor();
+
+        // Update BottomMenuPanel visibility
+        if (bottomMenuPanel != null)
+        {
+            // Deactivate in Battle, SplashScreen, or during Cutscenes (isLocked)
+            bool shouldBeVisible = !inBattle && !isSplash && !isLocked;
+            if (bottomMenuPanel.activeSelf != shouldBeVisible)
+            {
+                bottomMenuPanel.SetActive(shouldBeVisible);
+            }
+        }
 
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
         if (isLocked || dialogueActive || inBattle) return;
@@ -359,22 +375,62 @@ public class MyUIManager : MonoBehaviour
 
     public void ToggleAttributes() { if (isLocked) return; if (attributePanel != null) attributePanel.SetActive(!attributePanel.activeSelf); }
 
+    public void ToggleSkills() { if (isLocked) return; if (skillPanel != null) skillPanel.SetActive(!skillPanel.activeSelf); }
+
+    public void ToggleMainMenu()
+{
+        if (isLocked) return;
+        if (mainMenuPanel != null)
+        {
+            bool state = !mainMenuPanel.activeSelf;
+            mainMenuPanel.SetActive(state);
+            
+            if (state) {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
+    }
+
+    public void SaveGame()
+    {
+        Debug.Log("Speichern: Funktion wird später implementiert.");
+    }
+
+    public void LoadGame()
+    {
+        Debug.Log("Laden: Funktion wird später implementiert.");
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("Spiel beenden.");
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        Application.Quit();
+    #endif
+    }
+
     public void CloseAllPanels()
     {
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         if (backpackPanel != null) backpackPanel.SetActive(false);
         if (attributePanel != null) attributePanel.SetActive(false);
+        if (skillPanel != null) skillPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         
         if (shopPanel != null) {
-            ShopManager shop = FindFirstObjectByType<ShopManager>();
+ShopManager shop = FindFirstObjectByType<ShopManager>();
             if (shop != null) shop.CloseShop();
             else shopPanel.SetActive(false);
         }
         
         if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
+        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
 
         bool inBattle = IsInBattleScene();
-        Cursor.visible = inBattle;
+Cursor.visible = inBattle;
         Cursor.lockState = inBattle ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }

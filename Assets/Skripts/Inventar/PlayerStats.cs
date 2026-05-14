@@ -149,7 +149,18 @@ public class PlayerStats : MonoBehaviour
         {
             GainXP(5);
         }
-    }
+
+        // 4 = Skill Points
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            if (SkillManager.Instance != null)
+            {
+                SkillManager.Instance.AddPoints(1);
+                var ui = FindFirstObjectByType<SkillUI>();
+                if (ui != null) ui.RefreshUI();
+            }
+        }
+        }
 
     // =========================
     // STATS BERECHNEN
@@ -283,6 +294,7 @@ public class PlayerStats : MonoBehaviour
         level++;
 
         attributePoints += 3;
+        if (SkillManager.Instance != null) SkillManager.Instance.AddPoints(1);
 
         xpToNextLevel += 5;
 

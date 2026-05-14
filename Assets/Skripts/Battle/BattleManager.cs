@@ -79,9 +79,15 @@ public class BattleManager : MonoBehaviour
     {
         Debug.Log("BattleManager: Setting up battle...");
         
+        // Stop any background music from AudioManager
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopAllMusic();
+        }
+
         // Wait a frame to ensure all Awake/Starts are done
         yield return null;
-        
+
         try {
             // Use boss data from QuestManager if it exists
             if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
