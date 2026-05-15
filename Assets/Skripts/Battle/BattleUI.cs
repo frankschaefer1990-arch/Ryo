@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
 public class BattleUI : MonoBehaviour
 {
     public static BattleUI Instance;
 
     [Header("HP Bars")]
+    // ... rest of header ...
     public Image playerHPFill;
     public TMP_Text playerHPText;
     public Image enemyHPFill;
@@ -51,6 +54,9 @@ public class BattleUI : MonoBehaviour
 
     [Header("GameOver")]
     public GameObject gameOverPanel;
+
+    [Header("Skill Assets")]
+    public List<BattleSkill> allSkills;
 
     public void ShowGameOver(bool show)
     {
@@ -196,52 +202,107 @@ public class BattleUI : MonoBehaviour
         if (attackPanel != null) attackPanel.SetActive(false);
         if (spellPanel != null) spellPanel.SetActive(false);
         if (itemPanel != null) itemPanel.SetActive(false);
-        if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
+        if (BattleTooltipManager.Instance != null) BattleTooltipManager.Instance.HideTooltip();
     }
 
     public void SetupSubButtons(BattleManager manager)
     {
-        Debug.Log("BattleUI: Setting up sub buttons...");
-        if (attackPanel != null) {
-            Button[] buttons = attackPanel.GetComponentsInChildren<Button>(true);
-            foreach (var b in buttons) {
-                var text = b.GetComponentInChildren<TMP_Text>();
-                if (text != null && text.text.Contains("Wilde Schläge")) {
-                    b.onClick.RemoveAllListeners();
-                    b.onClick.AddListener(() => {
-                        Debug.Log("BattleUI: Wilde Schläge button clicked!");
-                        manager.UseSkill(manager.wildeSchlaege);
-                    });
-                    Debug.Log("BattleUI: Linked Wilde Schläge button.");
+        Debug.Log("BattleUI: Setting up sub buttons dynamically...");
+
+        // Get all learned skills and filter by unique ID to avoid duplicates appearing multiple times
+        Dictionary<string, BattleSkill> uniqueLearnedSkills = new Dictionary<string, BattleSkill>();
+        
+        if (SkillManager.Instance != null && allSkills != null)
+        {
+            foreach (var s in allSkills)
+            {
+                if (s == null || string.IsNullOrEmpty(s.skillId)) continue;
+                if (SkillManager.Instance.GetSkillLevel(s) > 0)
+                {
+                    if (!uniqueLearnedSkills.ContainsKey(s.skillId))
+                    {
+                        uniqueLearnedSkills.Add(s.skillId, s);
+                    }
                 }
             }
         }
-        if (spellPanel != null) {
-            Button[] buttons = spellPanel.GetComponentsInChildren<Button>(true);
-            foreach (var b in buttons) {
-                var text = b.GetComponentInChildren<TMP_Text>();
-                if (text != null && text.text.Contains("Blitzstrahl")) {
-                    b.onClick.RemoveAllListeners();
-                    b.onClick.AddListener(() => {
-                        Debug.Log("BattleUI: Blitzstrahl button clicked!");
-                        manager.UseSkill(manager.blitzstrahl);
-                    });
-                    Debug.Log("BattleUI: Linked Blitzstrahl button.");
-                }
-            }
+        else
+        {
+            Debug.LogWarning("BattleUI: SkillManager or allSkills list is missing!");
+            // Fallback: use skills currently in manager if they exist
+            if (manager.wildeSchlaege != null) uniqueLearnedSkills[manager.wildeSchlaege.skillId] = manager.wildeSchlaege;
+            if (manager.blitzstrahl != null) uniqueLearnedSkills[manager.blitzstrahl.skillId] = manager.blitzstrahl;
         }
-        if (itemPanel != null) {
-            Button[] buttons = itemPanel.GetComponentsInChildren<Button>(true);
-            foreach (var b in buttons) {
-                var text = b.GetComponentInChildren<TMP_Text>();
-                if (text != null && text.text.Contains("Heiltrank")) {
-                    b.onClick.RemoveAllListeners();
-                    b.onClick.AddListener(() => {
-                        Debug.Log("BattleUI: Potion button clicked!");
-                        manager.UsePotionInBattle();
-                    });
-                    Debug.Log("BattleUI: Linked Potion button.");
-                }
+
+        List<BattleSkill> learnedSkillsList = uniqueLearnedSkills.Values.ToList();
+
+        // Sort by learned order from SkillManager
+        if (SkillManager.Instance != null && SkillManager.Instance.learnedOrder != null)
+        {
+            learnedSkillsList = learnedSkillsList.OrderBy(s => {
+                int index = SkillManager.Instance.learnedOrder.IndexOf(s.skillId);
+                return index >= 0 ? index : int.MaxValue;
+            }).ToList();
+        }
+
+        // Separate learned skills into Basic/Verflucht (Attack) and Zauber (Spell)
+        List<BattleSkill> attacks = learnedSkillsList.Where(s => !s.isSpell).ToList();
+        List<BattleSkill> spells = learnedSkillsList.Where(s => s.isSpell).ToList();
+
+        PopulatePanel(attackPanel, attacks, manager);
+        PopulatePanel(spellPanel, spells, manager);
+
+        // ... Item Panel ...
+    }
+
+    private void PopulatePanel(GameObject panel, List<BattleSkill> skills, BattleManager manager)
+    {
+        if (panel == null) return;
+        
+        Transform content = panel.transform.Find("Viewport/Content");
+        if (content == null) content = panel.transform;
+
+        // Hide ALL children first to ensure "only learned are visible"
+        foreach (Transform child in content)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+        // Get only direct children buttons
+        List<Button> buttons = new List<Button>();
+        foreach (Transform child in content)
+        {
+            Button b = child.GetComponent<Button>();
+            if (b != null) buttons.Add(b);
+        }
+        
+        Debug.Log($"BattleUI: Populating {panel.name} with {skills.Count} skills. Available buttons: {buttons.Count}");
+
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (i < skills.Count)
+            {
+                // Local copy to avoid closure issues in lambda
+                BattleSkill currentSkill = skills[i];
+                Debug.Log($"BattleUI: Assigning skill {currentSkill.skillName} to button {i} in {panel.name}");
+                buttons[i].gameObject.SetActive(true);
+                buttons[i].interactable = true; // Ensure button is interactable
+                
+                // Update text
+                var text = buttons[i].GetComponentInChildren<TMP_Text>();
+                if (text != null) text.text = currentSkill.skillName;
+
+                // Update listener
+                buttons[i].onClick.RemoveAllListeners();
+                buttons[i].onClick.AddListener(() => {
+                    Debug.Log($"BattleUI: Button clicked for {currentSkill.skillName} (ID: {currentSkill.skillId}) in {panel.name}");
+                    if (manager != null) manager.UseSkill(currentSkill);
+                });
+
+                // Setup Tooltip
+                BattleSkillTooltip tooltip = buttons[i].gameObject.GetComponent<BattleSkillTooltip>();
+                if (tooltip == null) tooltip = buttons[i].gameObject.AddComponent<BattleSkillTooltip>();
+                tooltip.skill = currentSkill;
             }
         }
     }

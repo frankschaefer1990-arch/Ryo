@@ -10,7 +10,18 @@ public class TooltipManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+        
+        if (transform.parent == null)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
         if (tooltipPanel != null) tooltipPanel.SetActive(false);
     }
 

@@ -28,9 +28,10 @@ public class BattleManager : MonoBehaviour
 
     public BattleState state;
     private int enemyCurrentHP;
+    private bool enemyIsStunned = false; // New: Tracks if enemy skips next turn
 
     [Header("Audio")]
-    public AudioClip battleMusic;
+public AudioClip battleMusic;
 
     private void Awake()
     {
@@ -42,10 +43,22 @@ public class BattleManager : MonoBehaviour
         Debug.Log("BattleManager: Start called. Waiting for scene stabilization...");
         state = BattleState.START;
         
+        // Auto-assign missing effect references if they exist on the same object
+        if (slashEffect == null) slashEffect = GetComponent<ProceduralSlash>();
+        if (lightningEffect == null) lightningEffect = GetComponent<ProceduralSlash>();
+        
+        // If still null, add one to ensure basic functionality
+        if (slashEffect == null)
+        {
+            Debug.Log("BattleManager: Adding missing ProceduralSlash component.");
+            slashEffect = gameObject.AddComponent<ProceduralSlash>();
+            if (lightningEffect == null) lightningEffect = slashEffect;
+        }
+
         // Ensure ALL visual effect objects are hidden at start
         if (blitzAnimationObject != null) blitzAnimationObject.SetActive(false);
         if (enemyAttackVisual != null) enemyAttackVisual.SetActive(false);
-        
+
         // Fix: Check if the effect is on the same GameObject to prevent self-deactivation
         if (slashEffect != null && slashEffect.gameObject != gameObject) slashEffect.gameObject.SetActive(false);
         if (lightningEffect != null && lightningEffect.gameObject != gameObject) lightningEffect.gameObject.SetActive(false);
@@ -70,6 +83,15 @@ public class BattleManager : MonoBehaviour
     private IEnumerator ShowEffectBriefly(GameObject effect, float duration)
     {
         if (effect == null) yield break;
+        
+        // Safety: never deactivate the BattleManager object itself
+        if (effect == gameObject)
+        {
+            // If the effect is on the manager, just ensure components are working
+            // (ProceduralSlash handles its own internal visibility)
+            yield break;
+        }
+
         effect.SetActive(true);
         yield return new WaitForSeconds(duration);
         effect.SetActive(false);
@@ -193,18 +215,32 @@ public class BattleManager : MonoBehaviour
     // Call this from the actual skill buttons inside panels
     public void UseSkill(BattleSkill skill)
     {
-        Debug.Log("BattleManager: UseSkill called for " + (skill != null ? skill.skillName : "null"));
-        if (state != BattleState.PLAYERTURN) return;
+        if (skill == null) { Debug.LogError("BattleManager: UseSkill called with null skill!"); return; }
+        Debug.Log($"BattleManager: UseSkill TRIGGERED for {skill.skillName} (ID: {skill.skillId})");
+        
+        if (state != BattleState.PLAYERTURN) {
+            Debug.LogWarning($"BattleManager: Cannot use skill {skill.skillName}, state is {state}");
+            return;
+        }
+
+        int level = SkillManager.Instance != null ? SkillManager.Instance.GetSkillLevel(skill) : 1;
+        if (level < 1) {
+            Debug.LogWarning($"BattleManager: Skill {skill.skillName} level is {level}. Forcing level 1 for usage.");
+            level = 1;
+        }
 
         // Mana check
-        if (skill.isSpell && PlayerStats.Instance != null && PlayerStats.Instance.currentMana < skill.manaCost)
+        int manaCost = skill.GetManaCost(level);
+        if (skill.isSpell && PlayerStats.Instance != null && PlayerStats.Instance.currentMana < manaCost)
         {
+            Debug.Log($"BattleManager: Not enough mana for {skill.skillName}. Cost: {manaCost}, Current: {PlayerStats.Instance.currentMana}");
             ShowBattleMessage("Nicht genug Mana!");
             return;
         }
 
+        Debug.Log($"BattleManager: Pre-Execute checks passed for {skill.skillName}. Starting Coroutine.");
         BattleUI.Instance.ToggleCommandPanel(false); // Hides all
-        StartCoroutine(ExecuteSkill(skill));
+        StartCoroutine(ExecuteSkill(skill, level));
     }
 
     public void OnRunButton()
@@ -272,14 +308,34 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
-    private IEnumerator ExecuteSkill(BattleSkill skill)
+    private Vector3 GetEffectCenter(Transform target)
     {
+        if (target == null) return Vector3.zero;
+        
+        // Try to find a sprite renderer to get the center of the visual
+        SpriteRenderer sr = target.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            return sr.bounds.center;
+        }
+        
+        // Fallback: just use the position plus a bit of height
+        return target.position + new Vector3(0, 1.0f, 0);
+    }
+
+    private IEnumerator ExecuteSkill(BattleSkill skill, int level)
+    {
+        Debug.Log($"BattleManager: ExecuteSkill STARTED for {skill.skillName} (Lvl {level})");
         state = BattleState.BUSY;
+
+        Vector3 effectCenter = GetEffectCenter(enemyPos);
 
         // Mana Deduction
         if (skill.isSpell && PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.UseMana(skill.manaCost);
+            int cost = skill.GetManaCost(level);
+            Debug.Log($"BattleManager: Deducting {cost} mana for {skill.skillName}");
+            PlayerStats.Instance.UseMana(cost);
             BattleUI.Instance.UpdatePlayerMana((float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
         }
 
@@ -297,31 +353,67 @@ public class BattleManager : MonoBehaviour
             audioSource.PlayOneShot(skill.skillSound);
         }
 
-        for (int i = 0; i < skill.hitCount; i++)
+        int actualHitCount = skill.GetHitCount(level);
+        Debug.Log($"BattleManager: Total hit count for {skill.skillName}: {actualHitCount}");
+
+        for (int i = 0; i < actualHitCount; i++)
         {
-            Debug.Log($"BattleManager: Starting hit {i+1} of {skill.hitCount} for {skill.skillName}");
+            Debug.Log($"BattleManager: Processing hit {i+1} of {actualHitCount} for {skill.skillName}");
             bool hitSuccess = true;
 
             if (skill.hasCombo)
             {
                 yield return new WaitForSeconds(0.2f);
 
-                bool qteResult = false;
-                bool waiting = true;
-                ComboSystem.Instance.StartQTE((result) => {
-                    qteResult = result;
-                    waiting = false;
-                    Debug.Log($"BattleManager: QTE Result for hit {i+1}: {result}");
-                });
+                if (ComboSystem.Instance == null)
+                {
+                    Debug.LogWarning("BattleManager: ComboSystem.Instance is NULL! Skipping QTE and granting success.");
+                    hitSuccess = true;
+                }
+                else
+                {
+                    bool qteResult = false;
+                    bool waiting = true;
+                    float timeout = 5f; // Safety timeout
+                    float startTime = Time.time;
 
-                while (waiting) yield return null;
-                hitSuccess = qteResult;
-            }
+                    Debug.Log($"BattleManager: Starting QTE for hit {i+1} with time limit {skill.GetQTETimeLimit(level)}");
+                    ComboSystem.Instance.StartQTE((result) => {
+                        qteResult = result;
+                        waiting = false;
+                        Debug.Log($"BattleManager: QTE Callback received for hit {i+1}. Result: {result}");
+                    }, skill.GetQTETimeLimit(level));
 
-            if (hitSuccess)
-            {
-                // Play sound for every hit
-                if (audioSource != null && skill.skillSound != null)
+                    while (waiting) 
+                    {
+                        if (Time.time - startTime > timeout)
+                        {
+                            Debug.LogError("BattleManager: QTE TIMEOUT reached! Forcing success to prevent soft-lock.");
+                            waiting = false;
+                            qteResult = true;
+                        }
+                        yield return null;
+                    }
+                    hitSuccess = qteResult;
+                    }
+                    }
+
+                    if (hitSuccess)
+                    {
+                    // Stun logic: check chance on every successful hit of a stun skill
+                    if (skill.canStun)
+                    {
+                    float stunRoll = Random.value;
+                    float chance = skill.GetStunChance(level);
+                    if (stunRoll <= chance)
+                    {
+                        enemyIsStunned = true;
+                        Debug.Log($"BattleManager: {skill.skillName} STUNNED the enemy!");
+                    }
+                    }
+
+                    // Play sound for every hit
+    if (audioSource != null && skill.skillSound != null)
                 {
                     audioSource.PlayOneShot(skill.skillSound);
                 }
@@ -329,39 +421,88 @@ public class BattleManager : MonoBehaviour
                 // Damage calculation
                 int playerStrength = (PlayerStats.Instance != null) ? PlayerStats.Instance.strength : 1;
                 int baseDamage = skill.hasCombo ? 15 : 30; 
-                int totalDamage = baseDamage + playerStrength;
+                int totalDamage = (int)((baseDamage + playerStrength) * skill.GetDamageMultiplier(level));
                 
                 Debug.Log($"BattleManager: Hit {i+1} Success! Damage: {totalDamage}");
                 
                 enemyCurrentHP -= totalDamage;
                 if (enemyCurrentHP < 0) enemyCurrentHP = 0;
 
+                // Healing logic for Soulream or other life-steal skills
+                float healMult = skill.GetHealMultiplier(level);
+                if (healMult > 0 && PlayerStats.Instance != null)
+                {
+                    int healAmount = (int)(totalDamage * healMult);
+                    if (healAmount > 0)
+                    {
+                        Debug.Log($"BattleManager: {skill.skillName} healing player for {healAmount}");
+                        PlayerStats.Instance.Heal(healAmount);
+                        BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+                    }
+                }
+
                 // Spawn Damage Popup
-DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), baseDamage, playerStrength, damageFont);
+            DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), (int)(baseDamage * skill.GetDamageMultiplier(level)), (int)(playerStrength * skill.GetDamageMultiplier(level)), damageFont);
                 
                 // Visuals
-                if (skill.isSpell && blitzAnimationObject != null)
+                // If the skill has a custom sprite, always use the ProceduralSlash system
+                if (skill.customSlashSprite != null)
+                {
+                    ProceduralSlash effectToUse = skill.isSpell ? lightningEffect : slashEffect;
+                    if (effectToUse == null) effectToUse = GetComponent<ProceduralSlash>();
+                    
+                    // If it's a combo, try to use a specialized strike object
+                    if (skill.hasCombo && comboStrikeObjects != null && comboStrikeObjects.Length > 0)
+                    {
+                        GameObject strikeObj = comboStrikeObjects[i % comboStrikeObjects.Length];
+                        if (strikeObj != null)
+                        {
+                            StartCoroutine(ShowEffectBriefly(strikeObj, Mathf.Max(0.5f, skill.slashDuration + 0.1f)));
+                            ProceduralSlash ps = strikeObj.GetComponent<ProceduralSlash>();
+                            if (ps != null) effectToUse = ps;
+                        }
+                    }
+                    
+                    if (effectToUse != null)
+                    {
+                        // Ensure the GameObject is active (if it's not the manager)
+                        if (effectToUse.gameObject != gameObject) 
+                            StartCoroutine(ShowEffectBriefly(effectToUse.gameObject, skill.slashDuration + 0.1f));
+                            
+                        effectToUse.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
+                    }
+                }
+                else if (skill.isSpell && blitzAnimationObject != null)
                 {
                     StartCoroutine(ShowEffectBriefly(blitzAnimationObject, 0.3f));
                 }
-                else if (skill.hasCombo && comboStrikeObjects != null && i < comboStrikeObjects.Length)
+                else if (skill.hasCombo && comboStrikeObjects != null && comboStrikeObjects.Length > 0)
                 {
-                    GameObject strikeObj = comboStrikeObjects[i];
+                    GameObject strikeObj = comboStrikeObjects[i % comboStrikeObjects.Length];
                     if (strikeObj != null)
                     {
-                        // Always activate the object so children (animations) are visible
                         StartCoroutine(ShowEffectBriefly(strikeObj, 0.5f));
                         
                         ProceduralSlash ps = strikeObj.GetComponent<ProceduralSlash>();
-                        if (ps != null) ps.PlaySlash(enemyPos.position, skill.effectColor);
+                        if (ps != null) ps.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
+                    }
+                    else if (slashEffect != null)
+                    {
+                        slashEffect.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
                     }
                 }
                 else
                 {
                     ProceduralSlash effectToUse = skill.isSpell ? lightningEffect : slashEffect;
+                    if (effectToUse == null) effectToUse = GetComponent<ProceduralSlash>();
+
                     if (effectToUse != null)
                     {
-                        effectToUse.PlaySlash(enemyPos.position, skill.effectColor);
+                        // Ensure the main effect object is active
+                        if (effectToUse.gameObject != gameObject)
+                            StartCoroutine(ShowEffectBriefly(effectToUse.gameObject, skill.slashDuration + 0.1f));
+                            
+                        effectToUse.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
                     }
                 }
 
@@ -372,6 +513,7 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
             }
             else
             {
+                Debug.Log($"BattleManager: Hit {i+1} FAILED (Combo broken)");
                 ShowBattleMessage("Combo unterbrochen!");
                 break;
             }
@@ -398,8 +540,19 @@ DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.
         state = BattleState.BUSY;
         yield return new WaitForSeconds(1.0f);
 
+        if (enemyIsStunned)
+        {
+            enemyIsStunned = false; // Reset for next time
+            Debug.Log("BattleManager: Enemy is STUNNED! Skipping turn.");
+            ShowBattleMessage(currentEnemy.enemyName + " ist betäubt!");
+            yield return new WaitForSeconds(1.5f);
+            state = BattleState.PLAYERTURN;
+            PlayerTurn();
+            yield break;
+        }
+
         BattleUI.Instance.ShowActionMessage(currentEnemy.enemyName, "greift an!");
-        yield return new WaitForSeconds(1.0f);
+yield return new WaitForSeconds(1.0f);
         BattleUI.Instance.HideActionMessage();
 
         Vector3 enemyOriginalPos = enemyPos.position;

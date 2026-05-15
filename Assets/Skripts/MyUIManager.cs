@@ -102,6 +102,18 @@ public class MyUIManager : MonoBehaviour
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
         if (Input.GetKeyDown(skillKey)) ToggleSkills();
         if (Input.GetKeyDown(KeyCode.Escape)) CloseAllPanels();
+
+        // Cheat: Press '5' to add 5 skill points
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            if (SkillManager.Instance != null)
+            {
+                SkillManager.Instance.AddPoints(5);
+                var ui = FindAnyObjectByType<SkillUI>();
+                if (ui != null) ui.RefreshUI();
+                Debug.Log("MyUIManager: Cheat - Added 5 skill points.");
+            }
+        }
         }
 
     private bool IsInBattleScene()

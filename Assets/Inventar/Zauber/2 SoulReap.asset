@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
+  m_Name: 2 SoulReap
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
+  skillId: soulreap
+  skillName: Soul Reap
+  icon: {fileID: 6274226013689949594, guid: 8af38e43b9b92f6438ef02f1ac8b60e4, type: 3}
+  description: "Entrei\xDFt dem Gegner einen Teil seiner Seele, verursacht dunklen
+    Fluchschaden und absorbiert Lebensenergie f\xFCr den Anwender."
+  category: 1
+  levelRequirement: 1
+  prerequisiteSkill: {fileID: 11400000, guid: dfd21bc05a903cc45bfd02cf41349fba, type: 2}
+  maxLevel: 5
+  hitCount: 1
+  damageMultiplier: 1.2
+  isSpell: 1
+  manaCost: 30
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: -6502822895034048904, guid: 1beab591dbd52154887d0159a2c89d64, type: 3}
+  slashDuration: 0.4
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 0.5, y: 0.5, z: 1}
+  randomRotation: 1
+  skillSound: {fileID: 8300000, guid: 97a2524433ffc704d890abc56f921bef, type: 3}
+  hasCombo: 0
+  healMultiplier: 0.5
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

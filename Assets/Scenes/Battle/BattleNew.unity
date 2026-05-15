@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComboSystem
   qteHintSound: {fileID: 0}
+  qteVolume: 1
   pauseDuration: 0.15
   perfectScale: 1
 --- !u!114 &261052459
@@ -352,7 +353,48 @@ MonoBehaviour:
   qteSuccessColor: {r: 0, g: 1, b: 0, a: 1}
   qteFailColor: {r: 1, g: 0, b: 0, a: 1}
   lerpSpeed: 5
+  targetPlayerHP: 1
+  targetEnemyHP: 1
+  targetPlayerMana: 1
   gameOverPanel: {fileID: 2935972808751881371}
+  allSkills:
+  - {fileID: 11400000, guid: ba6298e6348a6364fb66bd8e9c4df39a, type: 2}
+  - {fileID: 11400000, guid: 5a80e4afa245c8549bd7c58288a83667, type: 2}
+  - {fileID: 11400000, guid: c1b8f489006282a42b8b94088f66fd1a, type: 2}
+  - {fileID: 11400000, guid: 01e5039001794c847a3cc9747ddb8b57, type: 2}
+  - {fileID: 11400000, guid: df72fba8afbc7ec49aa4c4cfb2415c49, type: 2}
+  - {fileID: 11400000, guid: 7bebbc29f415a8c42b4c18b3df7c90bc, type: 2}
+  - {fileID: 11400000, guid: 1538304213e0be74c9da206157248f79, type: 2}
+  - {fileID: 11400000, guid: cf53b4927cdabe147829cd2cf5754d5b, type: 2}
+  - {fileID: 11400000, guid: 936f0ec969b41d24ebc9d523c56772b1, type: 2}
+  - {fileID: 11400000, guid: 78c59d57c5cb4754daeda1b35ed929e2, type: 2}
+  - {fileID: 11400000, guid: d7d41796649fe4344bd8fc7f1e04e4bc, type: 2}
+  - {fileID: 11400000, guid: cbfb11274f7c7da4e90cee1d74b28515, type: 2}
+  - {fileID: 11400000, guid: d835ae71b4a4002418aa33a6c730afce, type: 2}
+  - {fileID: 11400000, guid: 6369c28a65f77a645b99ce9fbe688514, type: 2}
+  - {fileID: 11400000, guid: 003ac5d1050c1944fb19dfa71e880858, type: 2}
+  - {fileID: 11400000, guid: 20f8bd9733bf9a145a1430de7766d915, type: 2}
+  - {fileID: 11400000, guid: 0a9b89cb25552534abaaec339a9fe1b3, type: 2}
+  - {fileID: 11400000, guid: 137709f56cca86748beb028247e341e2, type: 2}
+  - {fileID: 11400000, guid: 677fac5cc20905740a78491368f17e47, type: 2}
+  - {fileID: 11400000, guid: 01183053d4fbf04468ac271a178cba75, type: 2}
+  - {fileID: 11400000, guid: 708bc58d28061764dbef163fd00e5812, type: 2}
+  - {fileID: 11400000, guid: c74616999476c0e438ed9e9487a0233e, type: 2}
+  - {fileID: 11400000, guid: 6d3db098417b2cb4eb235b461d685c78, type: 2}
+  - {fileID: 11400000, guid: b9404a7b19451fe40acb08ffd9867c3d, type: 2}
+  - {fileID: 11400000, guid: dfd21bc05a903cc45bfd02cf41349fba, type: 2}
+  - {fileID: 11400000, guid: d9c2b927b38af54489b6a754c960f916, type: 2}
+  - {fileID: 11400000, guid: abe9f6ee760e119409f982fa5a380271, type: 2}
+  - {fileID: 11400000, guid: 21f98daa041e94e4597f24af6b383657, type: 2}
+  - {fileID: 11400000, guid: 5a16e858b0987d949909e54333dd7d71, type: 2}
+  - {fileID: 11400000, guid: 6b19086e2283c7442a96ecece3d47f86, type: 2}
+  - {fileID: 11400000, guid: a6bdd8eb147d0e5408e9e671135a9f50, type: 2}
+  - {fileID: 11400000, guid: a4310cf0f51578541933524a45c102e0, type: 2}
+  - {fileID: 11400000, guid: b02e1565b39972d42850e3458a8e235c, type: 2}
+  - {fileID: 11400000, guid: 8a1326075ac8536419cc3a663abe4bab, type: 2}
+  - {fileID: 11400000, guid: 62aff626684ad974685bcfda9cb3313e, type: 2}
+  - {fileID: 11400000, guid: 10c46178a135e6b4d946d4de282d1f77, type: 2}
+  - {fileID: 11400000, guid: 509ecddafa515d44c8361a076134bb41, type: 2}
 --- !u!114 &261052462
 MonoBehaviour:
   m_ObjectHideFlags: 0

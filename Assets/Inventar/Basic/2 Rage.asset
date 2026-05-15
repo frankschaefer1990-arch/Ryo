@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
-  m_Name: Skill_Basic_2
+  m_Name: 2 Rage
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: rage
   skillName: Rage
@@ -22,16 +22,20 @@ MonoBehaviour:
   prerequisiteSkill: {fileID: 11400000, guid: d835ae71b4a4002418aa33a6c730afce, type: 2}
   maxLevel: 5
   hitCount: 4
-  baseDamage: 20
   damageMultiplier: 1.2
   isSpell: 0
   manaCost: 0
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 1252925344713892335, guid: 703c7aa47aeb1e447994ed6ae18bf437, type: 3}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}
   hasCombo: 1
-  customSlashEffect: {fileID: 0}
-  effectColor: {r: 1, g: 1, b: 1, a: 1}
-  baseQteSpeed: 1.1
-  qteSpeedIncreasePerLevel: 0.2
-  hitsPerLevel: 1
-  damageMultiplierPerLevel: 0.2
-  manaIncreasePerLevel: 0
+  healMultiplier: 0
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.15

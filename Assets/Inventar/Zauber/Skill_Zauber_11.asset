@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: 
   category: 1
-  levelRequirement: 1
+  levelRequirement: 10
   prerequisiteSkill: {fileID: 11400000, guid: 8a1326075ac8536419cc3a663abe4bab, type: 2}
   maxLevel: 5
   hitCount: 1
@@ -25,5 +25,16 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 0}
   hasCombo: 0
+  healMultiplier: 0
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

@@ -1866,7 +1866,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 62aff626684ad974685bcfda9cb3313e, type: 2}
   skillIcon: {fileID: 1620189962}
   levelText: {fileID: 557346657}
   lockOverlay: {fileID: 224551764}
@@ -3278,7 +3278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 8a1326075ac8536419cc3a663abe4bab, type: 2}
   skillIcon: {fileID: 135070994}
   levelText: {fileID: 2037834583}
   lockOverlay: {fileID: 458634743}
@@ -5571,7 +5571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: cbfb11274f7c7da4e90cee1d74b28515, type: 2}
   skillIcon: {fileID: 572645030}
   levelText: {fileID: 1867857543}
   lockOverlay: {fileID: 1950201612}
@@ -6237,7 +6237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 936f0ec969b41d24ebc9d523c56772b1, type: 2}
   skillIcon: {fileID: 1795359335}
   levelText: {fileID: 767732318}
   lockOverlay: {fileID: 1200525435}
@@ -6905,7 +6905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: d7d41796649fe4344bd8fc7f1e04e4bc, type: 2}
   skillIcon: {fileID: 1677659729}
   levelText: {fileID: 1334259175}
   lockOverlay: {fileID: 157326170}
@@ -8428,7 +8428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 01183053d4fbf04468ac271a178cba75, type: 2}
   skillIcon: {fileID: 734154269}
   levelText: {fileID: 632265937}
   lockOverlay: {fileID: 237566576}
@@ -9713,7 +9713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 20f8bd9733bf9a145a1430de7766d915, type: 2}
   skillIcon: {fileID: 1891881256}
   levelText: {fileID: 997704156}
   lockOverlay: {fileID: 1697321453}
@@ -9853,7 +9853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: c74616999476c0e438ed9e9487a0233e, type: 2}
   skillIcon: {fileID: 1540819340}
   levelText: {fileID: 734255177}
   lockOverlay: {fileID: 53916139}
@@ -10132,7 +10132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: d9c2b927b38af54489b6a754c960f916, type: 2}
   skillIcon: {fileID: 89139232}
   levelText: {fileID: 1423265110}
   lockOverlay: {fileID: 1515697240}
@@ -11162,7 +11162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 18, y: -105}
+  m_AnchoredPosition: {x: 18.000061, y: -104.99997}
   m_SizeDelta: {x: 769.8691, y: 61.4074}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &637749247
@@ -13020,7 +13020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 78c59d57c5cb4754daeda1b35ed929e2, type: 2}
   skillIcon: {fileID: 1964401213}
   levelText: {fileID: 1853920468}
   lockOverlay: {fileID: 404650545}
@@ -14332,7 +14332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 0a9b89cb25552534abaaec339a9fe1b3, type: 2}
   skillIcon: {fileID: 708589692}
   levelText: {fileID: 2079633118}
   lockOverlay: {fileID: 1723213526}
@@ -14837,7 +14837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 5a16e858b0987d949909e54333dd7d71, type: 2}
   skillIcon: {fileID: 1097689438}
   levelText: {fileID: 1717271375}
   lockOverlay: {fileID: 2125048433}
@@ -15448,7 +15448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 708bc58d28061764dbef163fd00e5812, type: 2}
   skillIcon: {fileID: 1112118614}
   levelText: {fileID: 565265331}
   lockOverlay: {fileID: 344305798}
@@ -17009,7 +17009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: c1b8f489006282a42b8b94088f66fd1a, type: 2}
   skillIcon: {fileID: 768646143}
   levelText: {fileID: 1739916002}
   lockOverlay: {fileID: 1480394748}
@@ -17149,7 +17149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 21f98daa041e94e4597f24af6b383657, type: 2}
   skillIcon: {fileID: 269201044}
   levelText: {fileID: 981862169}
   lockOverlay: {fileID: 121279918}
@@ -18601,7 +18601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 7bebbc29f415a8c42b4c18b3df7c90bc, type: 2}
   skillIcon: {fileID: 2054164609}
   levelText: {fileID: 776408808}
   lockOverlay: {fileID: 1395471513}
@@ -18891,6 +18891,7 @@ MonoBehaviour:
   backpackKey: 98
   inventoryKey: 105
   attributeKey: 116
+  skillKey: 107
   cursorSize: 40
   cursorSprite: {fileID: 0}
   softwareCursor: {fileID: 0}
@@ -19013,7 +19014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 003ac5d1050c1944fb19dfa71e880858, type: 2}
   skillIcon: {fileID: 1956882344}
   levelText: {fileID: 445062963}
   lockOverlay: {fileID: 528184341}
@@ -20058,7 +20059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 6d3db098417b2cb4eb235b461d685c78, type: 2}
   skillIcon: {fileID: 1881151623}
   levelText: {fileID: 1526613120}
   lockOverlay: {fileID: 108560277}
@@ -20273,7 +20274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 6369c28a65f77a645b99ce9fbe688514, type: 2}
   skillIcon: {fileID: 1277959006}
   levelText: {fileID: 626726600}
   lockOverlay: {fileID: 126349200}
@@ -22801,7 +22802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: b02e1565b39972d42850e3458a8e235c, type: 2}
   skillIcon: {fileID: 234751863}
   levelText: {fileID: 1832626761}
   lockOverlay: {fileID: 597268778}
@@ -23709,7 +23710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 137709f56cca86748beb028247e341e2, type: 2}
   skillIcon: {fileID: 186335322}
   levelText: {fileID: 575136521}
   lockOverlay: {fileID: 1801129206}
@@ -24531,7 +24532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: a6bdd8eb147d0e5408e9e671135a9f50, type: 2}
   skillIcon: {fileID: 1555759900}
   levelText: {fileID: 366554537}
   lockOverlay: {fileID: 1659354345}
@@ -27385,7 +27386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: b9404a7b19451fe40acb08ffd9867c3d, type: 2}
   skillIcon: {fileID: 1252789017}
   levelText: {fileID: 2115262935}
   lockOverlay: {fileID: 1101295249}
@@ -28733,7 +28734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: a4310cf0f51578541933524a45c102e0, type: 2}
   skillIcon: {fileID: 1901535123}
   levelText: {fileID: 217019608}
   lockOverlay: {fileID: 1010210949}
@@ -29705,7 +29706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: df72fba8afbc7ec49aa4c4cfb2415c49, type: 2}
   skillIcon: {fileID: 348858422}
   levelText: {fileID: 1849835117}
   lockOverlay: {fileID: 2028220335}
@@ -30692,7 +30693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 5bb1b202cad026f459250fc8ce5ffb17, type: 2}
   skillIcon: {fileID: 121221843}
   levelText: {fileID: 1258207540}
   lockOverlay: {fileID: 892364953}
@@ -31267,7 +31268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: cf53b4927cdabe147829cd2cf5754d5b, type: 2}
   skillIcon: {fileID: 1784976599}
   levelText: {fileID: 419933628}
   lockOverlay: {fileID: 556753801}
@@ -32800,6 +32801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillManager
   skillPoints: 0
+  learnedOrder: []
 --- !u!1 &2054164607
 GameObject:
   m_ObjectHideFlags: 0
@@ -32929,7 +32931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 1538304213e0be74c9da206157248f79, type: 2}
   skillIcon: {fileID: 1096982587}
   levelText: {fileID: 267280175}
   lockOverlay: {fileID: 731925918}
@@ -33623,7 +33625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: abe9f6ee760e119409f982fa5a380271, type: 2}
   skillIcon: {fileID: 709849981}
   levelText: {fileID: 1744645674}
   lockOverlay: {fileID: 1833513513}
@@ -33763,7 +33765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 677fac5cc20905740a78491368f17e47, type: 2}
   skillIcon: {fileID: 916716231}
   levelText: {fileID: 262721471}
   lockOverlay: {fileID: 1454929985}
@@ -34209,7 +34211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 0}
+  skill: {fileID: 11400000, guid: 6b19086e2283c7442a96ecece3d47f86, type: 2}
   skillIcon: {fileID: 1588541383}
   levelText: {fileID: 1518885983}
   lockOverlay: {fileID: 107015459}

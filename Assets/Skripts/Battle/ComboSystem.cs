@@ -25,13 +25,14 @@ public class ComboSystem : MonoBehaviour
         Instance = this;
     }
 
-    public void StartQTE(System.Action<bool> onResult)
+    public void StartQTE(System.Action<bool> onResult, float customTimeLimit = -1f)
     {
-        StartCoroutine(QTERoutine(onResult));
+        StartCoroutine(QTERoutine(onResult, customTimeLimit));
     }
 
-    private IEnumerator QTERoutine(System.Action<bool> onResult)
+    private IEnumerator QTERoutine(System.Action<bool> onResult, float customTimeLimit)
     {
+        float activeTimeLimit = customTimeLimit > 0 ? customTimeLimit : timeLimit;
         currentTargetKey = possibleKeys[Random.Range(0, possibleKeys.Length)];
         BattleUI.Instance.ShowComboPrompt(currentTargetKey.ToString());
         
@@ -41,9 +42,9 @@ public class ComboSystem : MonoBehaviour
         hintPlayed = false;
         bool hasSnapped = false;
 
-        while (timer < timeLimit)
+        while (timer < activeTimeLimit)
         {
-            float t = timer / timeLimit;
+            float t = timer / activeTimeLimit;
             float scale = Mathf.Lerp(5.0f, 0.0f, t);
 
             // 1. Sound Hint

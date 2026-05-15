@@ -10,26 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
-  m_Name: Skill_Basic_3
+  m_Name: 3 Skill_StunSchlag
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
-  skillId: basic_3
-  skillName: "Basic F\xE4higkeit 3"
+  skillId: stun_schlag
+  skillName: Stun Schlag
   icon: {fileID: 0}
-  description: 
+  description: "Ein wuchtiger Schlag, der den Gegner mit einer gewissen Wahrscheinlichkeit
+    bet\xE4uben kann."
   category: 0
-  levelRequirement: 1
+  levelRequirement: 3
   prerequisiteSkill: {fileID: 11400000, guid: c1b8f489006282a42b8b94088f66fd1a, type: 2}
   maxLevel: 5
   hitCount: 1
-  damageMultiplier: 1
+  damageMultiplier: 2
   isSpell: 0
   manaCost: 0
-  skillSound: {fileID: 0}
-  hasCombo: 1
-  customSlashEffect: {fileID: 0}
   effectColor: {r: 1, g: 1, b: 1, a: 1}
-  baseQteSpeed: 1
-  qteSpeedIncreasePerLevel: 0.1
-  hitsPerLevel: 0
-  damageMultiplierPerLevel: 0.2
-  manaIncreasePerLevel: 0
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 1
+  skillSound: {fileID: 0}
+  hasCombo: 0
+  healMultiplier: 0
+  canStun: 1
+  baseStunChance: 0.2
+  stunChancePerLevel: 0.1
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0
