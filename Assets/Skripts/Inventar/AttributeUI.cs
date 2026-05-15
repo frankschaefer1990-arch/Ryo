@@ -24,6 +24,9 @@ public class AttributeUI : MonoBehaviour
     public Slider hpBar;
     public Slider expBar;
 
+    [Header("EXP Ring")]
+    public Image expRing;
+
     [Header("Attribute Buttons")]
     public Button strengthButton;
     public Button vitalityButton;
@@ -133,7 +136,7 @@ public class AttributeUI : MonoBehaviour
             hpText.text = playerStats.currentHealth + " / " + playerStats.maxHealth;
 
         if (expText != null)
-            expText.text = playerStats.currentXP + " / " + playerStats.xpToNextLevel;
+            expText.text = playerStats.currentMana + " / " + playerStats.maxMana;
 
         if (attributePointsText != null)
             attributePointsText.text = playerStats.attributePoints.ToString();
@@ -164,13 +167,24 @@ public class AttributeUI : MonoBehaviour
         }
 
         // =========================
-        // EXP BAR
+        // EXP BAR (NOW MANA BAR)
         // =========================
         if (expBar != null)
         {
             expBar.minValue = 0;
-            expBar.maxValue = playerStats.xpToNextLevel;
-            expBar.value = playerStats.currentXP;
+            expBar.maxValue = playerStats.maxMana;
+            expBar.value = playerStats.currentMana;
+        }
+
+        // =========================
+        // EXP RING
+        // =========================
+        if (expRing != null)
+        {
+            expRing.type = Image.Type.Filled;
+            expRing.fillMethod = Image.FillMethod.Radial360;
+            expRing.fillOrigin = (int)Image.Origin360.Top;
+            expRing.fillAmount = (float)playerStats.currentXP / playerStats.xpToNextLevel;
         }
 
         // =========================
@@ -272,22 +286,28 @@ public class AttributeUI : MonoBehaviour
     }
 
     // =========================
-    // ARMOR
+    // ARMOR -> INTELLIGENCE
     // =========================
     public void AddArmor()
     {
         if (playerStats == null) return;
         if (!playerStats.UseAttributePoint()) return;
 
+        int oldMaxMana = playerStats.maxMana;
         playerStats.defense += 1;
+        playerStats.RecalculateStats(); // Update Mana
 
-        Debug.Log("DEF erhöht auf: " + playerStats.defense);
+        // Increase current mana by the amount the max mana increased (10)
+        int manaGain = playerStats.maxMana - oldMaxMana;
+        playerStats.currentMana += manaGain;
+
+        Debug.Log("INT erhöht auf: " + playerStats.defense);
 
         playerStats.UpdateUI();
     }
 
     // =========================
-    // SPEED
+    // SPEED -> CURSE
     // =========================
     public void AddSpeed()
     {
@@ -296,7 +316,7 @@ public class AttributeUI : MonoBehaviour
 
         playerStats.agility += 1;
 
-        Debug.Log("AGI erhöht auf: " + playerStats.agility);
+        Debug.Log("CURSE erhöht auf: " + playerStats.agility);
 
         playerStats.UpdateUI();
     }

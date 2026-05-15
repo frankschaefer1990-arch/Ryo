@@ -170,8 +170,14 @@ public class PlayerStats : MonoBehaviour
         // Vitality 1 = 100 HP
         maxHealth = baseHealth + ((vitality - 1) * 10);
 
+        // Intelligence (defense) 1 = 50 Mana baseline, then +10 per point
+        maxMana = 50 + (defense * 10);
+
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
+        
+        if (currentMana > maxMana)
+            currentMana = maxMana;
     }
 
     // =========================
@@ -189,6 +195,8 @@ public class PlayerStats : MonoBehaviour
         if (manaText != null)
             manaText.text = currentMana + " / " + maxMana;
 
+        // Note: AttributeUI handles the expBar (Mana) and expRing (XP) 
+        // but we update the raw text here if connected
         if (expText != null)
             expText.text = currentXP + " / " + xpToNextLevel;
 
@@ -203,10 +211,10 @@ public class PlayerStats : MonoBehaviour
             vitalityText.text = vitality.ToString();
 
         if (defenseText != null)
-            defenseText.text = defense.ToString();
+            defenseText.text = defense.ToString(); // intelligence
 
         if (agilityText != null)
-            agilityText.text = agility.ToString();
+            agilityText.text = agility.ToString(); // curse
     }
 
     // =========================

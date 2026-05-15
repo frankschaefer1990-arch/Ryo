@@ -89,8 +89,31 @@ public class BattleSkill : ScriptableObject
         
         if (isSpell) info += $"Mana: {GetManaCost(level)}\n";
         
+        // Calculate dynamic bonus damage for display
+        int bonusDmg = 0;
+        if (PlayerStats.Instance != null)
+        {
+            if (category == SkillCategory.Basic)
+                bonusDmg = PlayerStats.Instance.strength;
+            else
+                bonusDmg = PlayerStats.Instance.defense * 2; // defense is Intelligence
+        }
+
+        string bonusStr = bonusDmg > 0 ? $" <color=#00FF00>+{bonusDmg}</color>" : "";
+
         if (skillId == "wilde_schlaege" || skillId == "rage" || skillId == "soulreap") info += $"Schläge: {GetHitCount(level)}\n";
-        else info += $"Schaden: x{GetDamageMultiplier(level):F1}\n";
+        else info += $"Schaden: x{GetDamageMultiplier(level):F1}{bonusStr}\n";
+
+        if (category == SkillCategory.Basic && bonusDmg > 0)
+        {
+             // For skills with hit count, the bonus applies per hit, but let's just show it generically
+             if (skillId == "wilde_schlaege" || skillId == "rage")
+                 info += $"Bonus Schaden pro Schlag: <color=#00FF00>+{bonusDmg}</color>\n";
+        }
+        else if (bonusDmg > 0)
+        {
+             info += $"Bonus Schaden: <color=#00FF00>+{bonusDmg}</color>\n";
+        }
 
         if (GetHealMultiplier(level) > 0)
         {

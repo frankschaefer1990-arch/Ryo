@@ -356,6 +356,8 @@ public AudioClip battleMusic;
         int actualHitCount = skill.GetHitCount(level);
         Debug.Log($"BattleManager: Total hit count for {skill.skillName}: {actualHitCount}");
 
+        float currentQTELimit = skill.GetQTETimeLimit(level);
+
         for (int i = 0; i < actualHitCount; i++)
         {
             Debug.Log($"BattleManager: Processing hit {i+1} of {actualHitCount} for {skill.skillName}");
@@ -377,12 +379,22 @@ public AudioClip battleMusic;
                     float timeout = 5f; // Safety timeout
                     float startTime = Time.time;
 
-                    Debug.Log($"BattleManager: Starting QTE for hit {i+1} with time limit {skill.GetQTETimeLimit(level)}");
+                    // Specific logic for Rage: get faster with each hit
+                    float hitSpecificLimit = currentQTELimit;
+                    if (skill.skillId == "rage")
+                    {
+                        // Reduce time by 10% for each subsequent hit
+                        hitSpecificLimit = currentQTELimit * Mathf.Pow(0.9f, i);
+                        // Clamp to a minimum speed to keep it playable
+                        hitSpecificLimit = Mathf.Max(hitSpecificLimit, 0.35f); 
+                    }
+
+                    Debug.Log($"BattleManager: Starting QTE for hit {i+1} with time limit {hitSpecificLimit}");
                     ComboSystem.Instance.StartQTE((result) => {
                         qteResult = result;
                         waiting = false;
                         Debug.Log($"BattleManager: QTE Callback received for hit {i+1}. Result: {result}");
-                    }, skill.GetQTETimeLimit(level));
+                    }, hitSpecificLimit);
 
                     while (waiting) 
                     {
@@ -413,18 +425,36 @@ public AudioClip battleMusic;
                     }
 
                     // Play sound for every hit
-    if (audioSource != null && skill.skillSound != null)
+        if (audioSource != null && skill.skillSound != null)
                 {
                     audioSource.PlayOneShot(skill.skillSound);
                 }
 
                 // Damage calculation
                 int playerStrength = (PlayerStats.Instance != null) ? PlayerStats.Instance.strength : 1;
+                int playerIntelligence = (PlayerStats.Instance != null) ? PlayerStats.Instance.defense : 1; // defense is intelligence
                 int baseDamage = skill.hasCombo ? 15 : 30; 
-                int totalDamage = (int)((baseDamage + playerStrength) * skill.GetDamageMultiplier(level));
                 
-                Debug.Log($"BattleManager: Hit {i+1} Success! Damage: {totalDamage}");
+                // Specific logic for Rage: damage grows with each hit
+                float totalMultiplier = skill.GetDamageMultiplier(level);
+                if (skill.skillId == "rage")
+                {
+                    // Increase damage multiplier by 15% for each successful hit in the chain
+                    totalMultiplier *= (1.0f + (i * 0.15f));
+                }
+
+                // Stats influence: Strength for Basic (+1 per point), Intelligence for others (+2 per point)
+                // NO Strength bonus for spells, NO Intelligence bonus for basics.
+                int bonusDmg = 0;
+                if (skill.category == SkillCategory.Basic) 
+                    bonusDmg = playerStrength;
+                else 
+                    bonusDmg = playerIntelligence * 2;
+
+                int totalDamage = (int)((baseDamage + bonusDmg) * totalMultiplier);
                 
+                Debug.Log($"BattleManager: Hit {i+1} Success! Damage: {totalDamage} (Mult: {totalMultiplier:F2}, Bonus: {bonusDmg})");
+
                 enemyCurrentHP -= totalDamage;
                 if (enemyCurrentHP < 0) enemyCurrentHP = 0;
 

@@ -22,7 +22,7 @@ MonoBehaviour:
   prerequisiteSkill: {fileID: 11400000, guid: d835ae71b4a4002418aa33a6c730afce, type: 2}
   maxLevel: 5
   hitCount: 4
-  damageMultiplier: 1.2
+  damageMultiplier: 1.4
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
