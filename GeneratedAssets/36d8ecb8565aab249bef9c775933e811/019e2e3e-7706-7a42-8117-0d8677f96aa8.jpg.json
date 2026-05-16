@@ -1,0 +1,28 @@
+{
+    "asset": "36d8ecb8565aab249bef9c775933e811",
+    "fileName": "019e2e3e-7706-7a42-8117-0d8677f96aa8.jpg",
+    "prompt": "A medieval shield icon, metallic with gold trim, defensive stance, cartoonish UI style, bold colors, high contrast.",
+    "negativePrompt": "",
+    "model": "game-ui-essentials-2",
+    "modelName": "Game UI Essentials 2.0",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 2048,
+        "height": 2048
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

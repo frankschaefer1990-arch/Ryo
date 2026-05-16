@@ -24,15 +24,19 @@ public class BattleSkill : ScriptableObject
     public Color effectColor = Color.white;
     
     [Header("Custom Visual Settings")]
-    public Sprite customSlashSprite; // New: Custom image for the slash effect
-    public float slashDuration = 0.2f; // New: Duration for the custom effect
-    public Vector3 visualOffset = Vector3.zero; // New: Manual offset from target
-    public Vector3 visualScale = Vector3.one; // New: Manual scale for the sprite
-    public bool randomRotation = true; // New: Whether to rotate the sprite randomly
+    public Sprite customSlashSprite; 
+    public float slashDuration = 0.2f; 
+    public Vector3 visualOffset = Vector3.zero; 
+    public Vector3 visualScale = Vector3.one; 
+    public bool randomRotation = true; 
     
     public AudioClip skillSound;
     public bool hasCombo = false;
-    public float healMultiplier = 0f; // New: Multiplier for healing based on damage
+    public float healMultiplier = 0f; 
+
+    [Header("Curse System")]
+    public bool isCurseUnlocker = false; // "Dunkler Keim"
+    public bool isPassiveCurse = false;  // Skills 2-11
 
     [Header("Special Effects")]
     public bool canStun = false;
@@ -40,8 +44,8 @@ public class BattleSkill : ScriptableObject
     public float stunChancePerLevel = 0.05f;
     
     [Header("QTE Settings")]
-    public float baseTimeLimit = 1.2f; // Time for the QTE ring to shrink
-    public float timeLimitReductionPerLevel = 0.05f; // Makes it harder per level
+    public float baseTimeLimit = 1.2f; 
+    public float timeLimitReductionPerLevel = 0.05f; 
 
     // Scaling Methods
     public int GetHitCount(int level) 
@@ -84,19 +88,28 @@ public class BattleSkill : ScriptableObject
 
     public string GetTooltipInfo(int level)
     {
-        string info = $"<color=#FFD700>{skillName}</color> (Lvl {level})\n";
+        string info = $"<color=#FFD700>{skillName}</color>";
+        if (!isPassiveCurse) info += $" (Lvl {level})";
+        info += "\n";
+        
         info += $"{description}\n\n";
         
+        if (isCurseUnlocker)
+        {
+            info += "<color=#800080>SYSTEM-FREISCHALTUNG</color>\n";
+            info += "Schaltet das Fluchsystem frei.\n";
+            info += "Fluch steigt durch Aktionen im Kampf.\n";
+            info += "25: Passiva aktiv | 50: Aura\n75: Tint | 100: Shinigami-Form\n";
+            return info;
+        }
+
         if (isSpell) info += $"Mana: {GetManaCost(level)}\n";
         
-        // Calculate dynamic bonus damage for display
         int bonusDmg = 0;
         if (PlayerStats.Instance != null)
         {
-            if (category == SkillCategory.Basic)
-                bonusDmg = PlayerStats.Instance.strength;
-            else
-                bonusDmg = PlayerStats.Instance.defense * 2; // defense is Intelligence
+            if (category == SkillCategory.Basic) bonusDmg = PlayerStats.Instance.strength;
+            else bonusDmg = PlayerStats.Instance.defense * 2; 
         }
 
         string bonusStr = bonusDmg > 0 ? $" <color=#00FF00>+{bonusDmg}</color>" : "";
@@ -106,7 +119,6 @@ public class BattleSkill : ScriptableObject
 
         if (category == SkillCategory.Basic && bonusDmg > 0)
         {
-             // For skills with hit count, the bonus applies per hit, but let's just show it generically
              if (skillId == "wilde_schlaege" || skillId == "rage")
                  info += $"Bonus Schaden pro Schlag: <color=#00FF00>+{bonusDmg}</color>\n";
         }
@@ -115,42 +127,23 @@ public class BattleSkill : ScriptableObject
              info += $"Bonus Schaden: <color=#00FF00>+{bonusDmg}</color>\n";
         }
 
-        if (GetHealMultiplier(level) > 0)
-        {
-            info += $"Heilung: {GetHealMultiplier(level) * 100:F0}% des Schadens\n";
-        }
+        if (GetHealMultiplier(level) > 0) info += $"Heilung: {GetHealMultiplier(level) * 100:F0}% des Schadens\n";
+        if (canStun) info += $"Stun Chance: {GetStunChance(level) * 100:F0}%\n";
 
-        if (canStun)
-        {
-            info += $"Stun Chance: {GetStunChance(level) * 100:F0}%\n";
-        }
-
-        if (level < maxLevel)
+        if (level < maxLevel && !isPassiveCurse)
         {
             int nextLevelCost = level + 1;
             info += $"\n<color=#00FF00>Nächste Stufe (Kosten: {nextLevelCost}):</color>\n";
-            
-            if (skillId == "wilde_schlaege" || skillId == "rage") 
-                info += $"Schläge: {GetHitCount(level + 1)}\n";
-            
-            if (skillId == "blitzschlag") 
-                info += $"Schaden: x{GetDamageMultiplier(level + 1):F1} (Mana: {GetManaCost(level + 1)})\n";
-            else if (skillId == "soulreap") 
-                info += $"Heilung: {GetHealMultiplier(level + 1) * 100:F0}% (Mana: {GetManaCost(level + 1)})\n";
-            else if (!isSpell) 
-                info += $"Schaden: x{GetDamageMultiplier(level + 1):F1}\n";
-
-            if (canStun)
-                info += $"Stun Chance: {GetStunChance(level + 1) * 100:F0}%\n";
-            
-            if (hasCombo && skillId == "rage")
-                info += $"QTE Tempo: +{(1.0f - GetQTETimeLimit(level+1)/GetQTETimeLimit(level))*100:F0}%\n";
+            if (skillId == "wilde_schlaege" || skillId == "rage") info += $"Schläge: {GetHitCount(level + 1)}\n";
+            if (skillId == "blitzschlag") info += $"Schaden: x{GetDamageMultiplier(level + 1):F1} (Mana: {GetManaCost(level + 1)})\n";
+            else if (skillId == "soulreap") info += $"Heilung: {GetHealMultiplier(level + 1) * 100:F0}% (Mana: {GetManaCost(level + 1)})\n";
+            else if (!isSpell) info += $"Schaden: x{GetDamageMultiplier(level + 1):F1}\n";
+            if (canStun) info += $"Stun Chance: {GetStunChance(level + 1) * 100:F0}%\n";
+            if (hasCombo && skillId == "rage") info += $"QTE Tempo: +{(1.0f - GetQTETimeLimit(level+1)/GetQTETimeLimit(level))*100:F0}%\n";
         }
-        else
-        {
-            info += "\n<color=#FF4500>Maximalstufe erreicht</color>";
-        }
+        else if (isPassiveCurse) info += "\n<color=#FF4500>Passiver Effekt</color>";
+        else info += "\n<color=#FF4500>Maximalstufe erreicht</color>";
 
         return info;
-        }
-        }
+    }
+}

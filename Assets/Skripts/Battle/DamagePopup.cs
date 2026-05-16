@@ -19,11 +19,11 @@ public class DamagePopup : MonoBehaviour
         return damagePopup;
     }
 
-    public static DamagePopup Create(Vector3 position, int totalAmount, TMP_FontAsset font)
+    public static DamagePopup Create(Vector3 position, int totalAmount, TMP_FontAsset font, Color? overrideColor = null)
     {
         GameObject damagePopupTransform = new GameObject("DamagePopup", typeof(DamagePopup), typeof(TextMeshPro));
         DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
-        damagePopup.Setup(totalAmount, font);
+        damagePopup.Setup(totalAmount, font, overrideColor);
         damagePopup.transform.position = position;
         return damagePopup;
     }
@@ -55,7 +55,7 @@ public class DamagePopup : MonoBehaviour
         moveVector = new Vector3(0, 1.5f) * 1.5f;
     }
 
-    public void Setup(int totalAmount, TMP_FontAsset font)
+    public void Setup(int totalAmount, TMP_FontAsset font, Color? overrideColor = null)
     {
         if (textMesh == null) textMesh = GetComponent<TextMeshPro>();
         if (textMesh == null) textMesh = gameObject.AddComponent<TextMeshPro>();
@@ -67,9 +67,10 @@ public class DamagePopup : MonoBehaviour
         textMesh.sortingOrder = 500;
 
         textMesh.text = totalAmount.ToString() + " Dmg";
-        textMesh.color = Color.red;
         
-        textColor = Color.red;
+        Color c = overrideColor ?? Color.red;
+        textMesh.color = c;
+        textColor = c;
         disappearTimer = 1f;
 
         moveVector = new Vector3(0, 1.5f) * 1.5f;

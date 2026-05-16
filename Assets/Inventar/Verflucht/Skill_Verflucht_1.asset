@@ -13,17 +13,31 @@ MonoBehaviour:
   m_Name: Skill_Verflucht_1
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_1
-  skillName: "Verflucht F\xE4higkeit 1"
+  skillName: Dunkler Keim
   icon: {fileID: 0}
-  description: 
+  description: Die Saat der Dunkelheit wird in dein Herz gepflanzt. Schaltet das
+    Fluchsystem permanent frei.
   category: 2
-  levelRequirement: 10
+  levelRequirement: 1
   prerequisiteSkill: {fileID: 0}
-  maxLevel: 5
+  maxLevel: 1
   hitCount: 1
   damageMultiplier: 1
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 0}
   hasCombo: 0
+  healMultiplier: 0
+  isCurseUnlocker: 1
+  isPassiveCurse: 0
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

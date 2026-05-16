@@ -1,0 +1,15 @@
+{
+    "asset": "3a96aa7a8dc982548acfa1dad608eb96",
+    "fileName": "019e2e3c-6a1a-7ff6-a02e-556ca19c25e1.wav",
+    "prompt": "A heavy metallic clang sound, block sound, impact on shield, medieval battle effect.",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 2.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

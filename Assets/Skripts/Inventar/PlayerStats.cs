@@ -15,8 +15,8 @@ public class PlayerStats : MonoBehaviour
     [Header("Core Attributes")]
     public int strength = 1;
     public int vitality = 1;
-    public int defense = 1;
-    public int agility = 1;
+    public int defense = 1; // Used as Intelligence
+    public int agility = 1; // Used as Curse
 
     [Header("Health / Mana")]
     public int baseHealth = 100;
@@ -25,6 +25,11 @@ public class PlayerStats : MonoBehaviour
 
     public int maxMana = 50;
     public int currentMana = 50;
+
+    [Header("Curse System")]
+    public bool isCurseSystemUnlocked = false;
+    public int curseValue = 0;
+    public int maxCurseValue = 100;
 
     [Header("UI References")]
     public TextMeshProUGUI levelText;
@@ -39,9 +44,6 @@ public class PlayerStats : MonoBehaviour
     public TextMeshProUGUI defenseText;
     public TextMeshProUGUI agilityText;
 
-    // =========================
-    // SINGLETON + PERSISTENT
-    // =========================
     private void Awake()
     {
         if (Instance == null)
@@ -51,7 +53,6 @@ public class PlayerStats : MonoBehaviour
         }
         else if (Instance != this)
         {
-            Debug.Log($"PlayerStats: Duplicate script on {gameObject.name} removed.");
             Destroy(this);
         }
     }
@@ -69,270 +70,166 @@ public class PlayerStats : MonoBehaviour
     private void ReconnectAndUpdateUI()
     {
         ReconnectUI();
-        
-        // Reset health if dead when switching scenes or reloading
         if (currentHealth <= 0)
         {
             currentHealth = maxHealth;
             currentMana = maxMana;
         }
-        
         UpdateUI();
     }
 
-    private void OnDestroy()
-    {
-        // Keine Listener mehr nötig
-    }
-
-    // =========================
-    // START
-    // =========================
     private void Start()
     {
         RecalculateStats();
-
-        if (currentHealth <= 0)
-            currentHealth = maxHealth;
-
+        if (currentHealth <= 0) currentHealth = maxHealth;
         UpdateUI();
     }
 
-    // ... (rest of the file)
-
-
-    // =========================
-    // UI AUTOMATISCH NEU VERBINDEN
-    // =========================
     private void ReconnectUI()
     {
         AttributeUI attributeUI = FindFirstObjectByType<AttributeUI>();
-
         if (attributeUI != null)
         {
             levelText = attributeUI.levelText;
             healthText = attributeUI.hpText;
             expText = attributeUI.expText;
             attributePointsText = attributeUI.attributePointsText;
-
             strengthText = attributeUI.strengthText;
             vitalityText = attributeUI.vitalityText;
             defenseText = attributeUI.armorText;
             agilityText = attributeUI.speedText;
         }
-
-        Debug.Log("PlayerStats UI neu verbunden.");
     }
 
-    private void Update()
-    {
-        // =========================
-        // DEBUG KEYS
-        // =========================
-
-        // 1 = Stärke +
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            strength++;
-            Debug.Log("STR: " + strength);
-            UpdateUI();
-        }
-
-        // 2 = Schaden
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            TakeDamage(10);
-        }
-
-        // 3 = EXP
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            GainXP(5);
-        }
-
-        // 4 = Skill Points
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            if (SkillManager.Instance != null)
-            {
-                SkillManager.Instance.AddPoints(1);
-                var ui = FindFirstObjectByType<SkillUI>();
-                if (ui != null) ui.RefreshUI();
-            }
-        }
-        }
-
-    // =========================
-    // STATS BERECHNEN
-    // =========================
     public void RecalculateStats()
     {
-        // Vitality 1 = 100 HP
         maxHealth = baseHealth + ((vitality - 1) * 10);
-
-        // Intelligence (defense) 1 = 50 Mana baseline, then +10 per point
         maxMana = 50 + (defense * 10);
-
-        if (currentHealth > maxHealth)
-            currentHealth = maxHealth;
-        
-        if (currentMana > maxMana)
-            currentMana = maxMana;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        if (currentMana > maxMana) currentMana = maxMana;
     }
 
-    // =========================
-    // UI UPDATE
-    // =========================
     public void UpdateUI()
     {
-        // MAIN
-        if (levelText != null)
-            levelText.text = level.ToString();
-
-        if (healthText != null)
-            healthText.text = currentHealth + " / " + maxHealth;
-
-        if (manaText != null)
-            manaText.text = currentMana + " / " + maxMana;
-
-        // Note: AttributeUI handles the expBar (Mana) and expRing (XP) 
-        // but we update the raw text here if connected
-        if (expText != null)
-            expText.text = currentXP + " / " + xpToNextLevel;
-
-        if (attributePointsText != null)
-            attributePointsText.text = attributePoints.ToString();
-
-        // ATTRIBUTES
-        if (strengthText != null)
-            strengthText.text = strength.ToString();
-
-        if (vitalityText != null)
-            vitalityText.text = vitality.ToString();
-
-        if (defenseText != null)
-            defenseText.text = defense.ToString(); // intelligence
-
-        if (agilityText != null)
-            agilityText.text = agility.ToString(); // curse
+        if (levelText != null) levelText.text = level.ToString();
+        if (healthText != null) healthText.text = currentHealth + " / " + maxHealth;
+        if (manaText != null) manaText.text = currentMana + " / " + maxMana;
+        if (expText != null) expText.text = currentXP + " / " + xpToNextLevel;
+        if (attributePointsText != null) attributePointsText.text = attributePoints.ToString();
+        if (strengthText != null) strengthText.text = strength.ToString();
+        if (vitalityText != null) vitalityText.text = vitality.ToString();
+        if (defenseText != null) defenseText.text = defense.ToString();
+        if (agilityText != null) agilityText.text = agility.ToString();
     }
 
-    // =========================
-    // DAMAGE
-    // =========================
+    public bool HasCursePassive(int skillIndex)
+    {
+        if (SkillManager.Instance == null) return false;
+        return SkillManager.Instance.GetSkillLevelById("verflucht_" + skillIndex) > 0;
+    }
+
+    public void ChangeCurseValue(int amount)
+    {
+        if (!isCurseSystemUnlocked) return;
+        
+        // Fluchfokus (Skill 3): Increase gain by 50%
+        if (amount > 0 && HasCursePassive(3)) amount = (int)(amount * 1.5f);
+
+        curseValue = Mathf.Clamp(curseValue + amount, 0, maxCurseValue);
+        UpdateUI();
+        if (BattleUI.Instance != null) BattleUI.Instance.UpdateCurseBar();
+    }
+
+    public int GetCurseForm()
+    {
+        if (!isCurseSystemUnlocked) return 0;
+        if (curseValue >= 100) return 3; 
+        if (curseValue >= 75) return 2;  
+        if (curseValue >= 50) return 1;  
+        return 0;
+    }
+
+    public bool IsCursePassiveActive()
+    {
+        return isCurseSystemUnlocked && curseValue >= 25;
+    }
+
     public void TakeDamage(int amount)
     {
-        int finalDamage = Mathf.Max(amount - defense, 1);
+        // Finsterschritt (Skill 9): 15% Dodge chance if curse active
+        if (IsCursePassiveActive() && HasCursePassive(9))
+        {
+            if (Random.value < 0.15f)
+            {
+                Debug.Log("DODGED! (Finsterschritt)");
+                return;
+            }
+        }
+
+        int defValue = defense;
+        int finalDamage = Mathf.Max(amount - defValue, 1);
+        
+        // Schattengunst (Skill 2): 20% Damage reduction if curse active
+        if (IsCursePassiveActive() && HasCursePassive(2))
+        {
+            finalDamage = (int)(finalDamage * 0.8f);
+            if (finalDamage < 1) finalDamage = 1;
+        }
 
         currentHealth -= finalDamage;
-
-        if (currentHealth < 0)
-            currentHealth = 0;
-
-        Debug.Log("Damage: -" + finalDamage);
-
+        if (currentHealth < 0) currentHealth = 0;
         UpdateUI();
-
-        if (currentHealth <= 0)
-            Die();
+        if (currentHealth <= 0) Die();
     }
 
-    // =========================
-    // HEAL
-    // =========================
     public void Heal(int amount)
     {
         currentHealth += amount;
-
-        if (currentHealth > maxHealth)
-            currentHealth = maxHealth;
-
-        Debug.Log("Heal: +" + amount);
-
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
         UpdateUI();
     }
 
-    // =========================
-    // MANA
-    // =========================
     public void UseMana(int amount)
     {
         currentMana -= amount;
-
-        if (currentMana < 0)
-            currentMana = 0;
-
+        if (currentMana < 0) currentMana = 0;
         UpdateUI();
     }
 
     public void RestoreMana(int amount)
     {
         currentMana += amount;
-
-        if (currentMana > maxMana)
-            currentMana = maxMana;
-
+        if (currentMana > maxMana) currentMana = maxMana;
         UpdateUI();
     }
 
-    // =========================
-    // XP
-    // =========================
     public void GainXP(int amount)
     {
         currentXP += amount;
-
-        Debug.Log("XP: +" + amount);
-
-        while (currentXP >= xpToNextLevel)
-        {
-            LevelUp();
-        }
-
+        while (currentXP >= xpToNextLevel) LevelUp();
         UpdateUI();
     }
 
-    // =========================
-    // LEVEL UP
-    // =========================
     public void LevelUp()
     {
         currentXP -= xpToNextLevel;
-
         level++;
-
         attributePoints += 3;
         if (SkillManager.Instance != null) SkillManager.Instance.AddPoints(1);
-
         xpToNextLevel += 5;
-
-        Debug.Log("LEVEL UP!");
-
         UpdateUI();
     }
 
-    // =========================
-    // ATTRIBUTE POINT USE
-    // =========================
     public bool UseAttributePoint()
     {
         if (attributePoints > 0)
         {
             attributePoints--;
-
             UpdateUI();
-
             return true;
         }
-
         return false;
     }
 
-    // =========================
-    // DEATH
-    // =========================
-    private void Die()
-    {
-        Debug.Log("Spieler ist gestorben!");
-    }
+    private void Die() { Debug.Log("Spieler ist gestorben!"); }
 }

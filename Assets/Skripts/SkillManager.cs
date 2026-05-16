@@ -7,9 +7,7 @@ public class SkillManager : MonoBehaviour
 
     public int skillPoints = 0;
     
-    // Tracks current level of each skill. Skill ID -> Level
     private Dictionary<string, int> skillLevels = new Dictionary<string, int>();
-    // Tracks the order in which skills were learned
     public List<string> learnedOrder = new List<string>();
 
     private void Awake()
@@ -32,7 +30,6 @@ public class SkillManager : MonoBehaviour
 
     private void InitializeStartingSkills()
     {
-        // Ryo starts with these two
         skillLevels["wilde_schlaege"] = 1;
         skillLevels["blitzschlag"] = 1;
         
@@ -40,15 +37,16 @@ public class SkillManager : MonoBehaviour
         if (!learnedOrder.Contains("blitzschlag")) learnedOrder.Add("blitzschlag");
     }
 
-    private void Update()
+    public int GetSkillLevel(BattleSkill skill)
     {
-        // Debug functionality removed to avoid conflict with UI keys
+        if (skill == null) return 0;
+        return GetSkillLevelById(skill.skillId);
     }
 
-    public int GetSkillLevel(BattleSkill skill)
-{
-        if (skill == null) return 0;
-        if (skillLevels.ContainsKey(skill.skillId)) return skillLevels[skill.skillId];
+    public int GetSkillLevelById(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return 0;
+        if (skillLevels.ContainsKey(id)) return skillLevels[id];
         return 0;
     }
 
@@ -62,11 +60,9 @@ public class SkillManager : MonoBehaviour
         int nextLvl = currentLvl + 1;
         if (skillPoints < nextLvl) return false;
 
-        // Level Requirement
         if (PlayerStats.Instance != null && PlayerStats.Instance.level < skill.levelRequirement)
             return false;
 
-        // Prerequisite: Previous skill must be at least lvl 1
         if (skill.prerequisiteSkill != null)
         {
             if (GetSkillLevel(skill.prerequisiteSkill) < 1)
@@ -80,23 +76,33 @@ public class SkillManager : MonoBehaviour
     {
         if (CanLearnOrUpgrade(skill))
         {
-            int nextLvl = GetSkillLevel(skill) + 1;
+            int currentLvl = GetSkillLevel(skill);
+            int nextLvl = currentLvl + 1;
+            
+            if (skill.category == SkillCategory.Verflucht && skill.isPassiveCurse && currentLvl >= 1)
+            {
+                Debug.LogWarning("SkillManager: Passive curse skills can only be learned once.");
+                return;
+            }
+
             skillPoints -= nextLvl;
 
-            if (skillLevels.ContainsKey(skill.skillId))
-            {
-                skillLevels[skill.skillId]++;
-            }
+            if (skillLevels.ContainsKey(skill.skillId)) skillLevels[skill.skillId]++;
             else
             {
                 skillLevels[skill.skillId] = 1;
-                if (!learnedOrder.Contains(skill.skillId))
-                    learnedOrder.Add(skill.skillId);
+                if (!learnedOrder.Contains(skill.skillId)) learnedOrder.Add(skill.skillId);
             }
 
-            Debug.Log($"SkillManager: {skill.skillName} upgraded to Lvl {skillLevels[skill.skillId]} (Cost: {nextLvl})");
+            if (skill.isCurseUnlocker && PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.isCurseSystemUnlocked = true;
+                Debug.Log("SkillManager: CURSE SYSTEM UNLOCKED!");
+                PlayerStats.Instance.UpdateUI();
+            }
+
+            Debug.Log($"SkillManager: {skill.skillName} upgraded to Lvl {skillLevels[skill.skillId]}");
             
-            // Refresh UI
             var ui = FindFirstObjectByType<SkillUI>();
             if (ui != null) ui.RefreshUI();
         }

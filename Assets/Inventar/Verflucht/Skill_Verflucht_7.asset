@@ -13,17 +13,31 @@ MonoBehaviour:
   m_Name: Skill_Verflucht_7
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_7
-  skillName: "Verflucht F\xE4higkeit 7"
+  skillName: Seelenlast
   icon: {fileID: 0}
-  description: 
+  description: "Passiv: Je h\xF6her dein Fluch, desto langsamer verlieren Feinde
+    ihre Haltung."
   category: 2
-  levelRequirement: 10
+  levelRequirement: 1
   prerequisiteSkill: {fileID: 11400000, guid: 677fac5cc20905740a78491368f17e47, type: 2}
-  maxLevel: 5
+  maxLevel: 1
   hitCount: 1
   damageMultiplier: 1
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 0}
   hasCombo: 0
+  healMultiplier: 0
+  isCurseUnlocker: 0
+  isPassiveCurse: 1
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05
