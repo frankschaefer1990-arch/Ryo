@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_4
   skillName: Blutzoll
-  icon: {fileID: 0}
+  icon: {fileID: 4736937037353629489, guid: 106415bd8ed6196468beb4cb9103761b, type: 3}
   description: 'Passiv: Deine Angriffe heilen dich leicht, basierend auf deinem aktuellen
     Fluchwert.'
   category: 2

@@ -1,0 +1,15 @@
+{
+    "asset": "5acd600ddf32ac346a6856286925a9d4",
+    "fileName": "019e3247-f026-7fb6-8a58-5cb09b76820d.wav",
+    "prompt": "A deep ethereal ghostly sword slash, spectral blade swing, echoing dark energy, powerful shinigami attack sound.",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 2.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

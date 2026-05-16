@@ -101,6 +101,43 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        // Debug Keys
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            currentHealth = maxHealth;
+            currentMana = maxMana;
+            UpdateUI();
+            
+            // Also update Battle UI bars if present
+            if (BattleUI.Instance != null)
+            {
+                BattleUI.Instance.UpdatePlayerHP(1f, currentHealth, maxHealth);
+                BattleUI.Instance.UpdatePlayerMana(1f, currentMana, maxMana);
+            }
+            
+            Debug.Log("Debug: Spieler voll geheilt (HP/Mana)");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            LevelUp();
+            Debug.Log("Debug: Level Up ausgelöst");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            if (SkillManager.Instance != null)
+            {
+                SkillManager.Instance.AddPoints(5);
+                var ui = FindAnyObjectByType<SkillUI>();
+                if (ui != null) ui.RefreshUI();
+                Debug.Log("Debug: +5 Skillpunkte erhalten");
+            }
+        }
+    }
+
     public void RecalculateStats()
     {
         maxHealth = baseHealth + ((vitality - 1) * 10);

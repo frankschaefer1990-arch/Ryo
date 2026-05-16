@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_5
   skillName: Geisterzwang
-  icon: {fileID: 0}
+  icon: {fileID: -3511720466706149095, guid: 4bc78257fce5f1d488dd332ca7041584, type: 3}
   description: "Passiv: Feinde haben eine Chance, bei Kontakt mit deinem Fluch zur\xFCckzuweichen."
   category: 2
   levelRequirement: 1

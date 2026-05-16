@@ -27,6 +27,8 @@ public class BattleManager : MonoBehaviour
     public GameObject enemyAttackVisual;
     public GameObject playerAura; // New: Aura for Curse Form 1
     public Sprite shinigamiSprite; // New: Sprite for Curse Form 3
+    public Sprite shinigamiSlashSprite; // New: Special slash for Shinigami
+    public AudioClip shinigamiSlashSound; // New: Ghostly slash sound
     public GameObject blockVisual; // New: Shield visual
     public AudioClip blockSound; // New: Block sound effect
     private Sprite humanSprite; // Store original
@@ -271,8 +273,9 @@ public class BattleManager : MonoBehaviour
         state = BattleState.BUSY;
         Vector3 effectCenter = GetEffectCenter(enemyPos);
         var stats = PlayerStats.Instance;
+        int currentForm = stats != null ? stats.GetCurseForm() : 0;
 
-        if (skill.isSpell && stats != null)
+        if (stats != null && skill.isSpell)
         {
             stats.ChangeCurseValue(5);
             ApplyCurseVisuals();
@@ -287,7 +290,11 @@ public class BattleManager : MonoBehaviour
         Vector3 originalPos = playerPos.position;
         playerPos.position += new Vector3(0.5f, 0.5f, 0);
         
-        if (audioSource != null && skill.skillSound != null && !skill.hasCombo) audioSource.PlayOneShot(skill.skillSound);
+        if (audioSource != null && skill.skillSound != null && !skill.hasCombo)
+        {
+            AudioClip soundToPlay = (currentForm == 3 && skill.category == SkillCategory.Basic && shinigamiSlashSound != null) ? shinigamiSlashSound : skill.skillSound;
+            audioSource.PlayOneShot(soundToPlay);
+        }
 
         int actualHitCount = skill.GetHitCount(level);
         float currentQTELimit = skill.GetQTETimeLimit(level);
@@ -334,7 +341,8 @@ public class BattleManager : MonoBehaviour
 
                 if (Random.value <= stunChance) enemyIsStunned = true;
 
-                if (audioSource != null && skill.skillSound != null) audioSource.PlayOneShot(skill.skillSound);
+                AudioClip hitSound = (currentForm == 3 && skill.category == SkillCategory.Basic && shinigamiSlashSound != null) ? shinigamiSlashSound : skill.skillSound;
+                if (audioSource != null && hitSound != null) audioSource.PlayOneShot(hitSound);
 
                 int playerStrength = stats != null ? stats.strength : 1;
                 int playerIntelligence = stats != null ? stats.defense : 1;
@@ -394,8 +402,20 @@ public class BattleManager : MonoBehaviour
                     }
                 }
 
+                // Visual Overrides for Shinigami
+                Sprite slashSpriteToUse = (currentForm == 3 && skill.category == SkillCategory.Basic && shinigamiSlashSprite != null) ? shinigamiSlashSprite : skill.customSlashSprite;
+                Color effectColorToUse = skill.effectColor;
+                Vector3 scaleOverride = skill.visualScale;
+
+                if (currentForm == 3 && skill.isSpell)
+                {
+                    effectColorToUse = new Color(0.6f, 0f, 1f, 1f); // Vibrant Purple
+                    scaleOverride *= 1.3f;
+                }
+
                 ProceduralSlash effectToUse = skill.isSpell ? lightningEffect : slashEffect;
-                if (skill.customSlashSprite != null)
+                
+                if (slashSpriteToUse != null)
                 {
                     if (skill.hasCombo && comboStrikeObjects != null && comboStrikeObjects.Length > 0)
                     {
@@ -407,13 +427,16 @@ public class BattleManager : MonoBehaviour
                             if (ps != null) effectToUse = ps;
                         }
                     }
-                    if (effectToUse != null) effectToUse.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
+                    if (effectToUse != null) effectToUse.PlaySlash(effectCenter, effectColorToUse, slashSpriteToUse, skill.slashDuration, skill.visualOffset, scaleOverride, skill.randomRotation);
                 }
                 else if (skill.isSpell && blitzAnimationObject != null) StartCoroutine(ShowEffectBriefly(blitzAnimationObject, 0.3f));
-                else if (effectToUse != null) effectToUse.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, skill.visualOffset, skill.visualScale, skill.randomRotation);
+                else if (effectToUse != null)
+                {
+                    effectToUse.PlaySlash(effectCenter, effectColorToUse, slashSpriteToUse, skill.slashDuration, skill.visualOffset, scaleOverride, skill.randomRotation);
+                }
 
                 StartCoroutine(PlayHurtAnimation(enemyPos)); 
-                BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
                 if (enemyCurrentHP <= 0) break;
             }
             else { ShowBattleMessage("Combo unterbrochen!"); break; }

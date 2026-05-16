@@ -139,7 +139,7 @@ public class TempleIntroController : MonoBehaviour
             yield return StartCoroutine(WalkToTarget(player, skeleton.position + (player.transform.position - skeleton.position).normalized * 1.5f));
         }
 
-        di.ShowMessage("Skelettkrieger", "Sirb du Wurm!"); yield return WaitForDialogue(di);
+        di.ShowMessage("Skelettkrieger", "Stirb du Wurm!"); yield return WaitForDialogue(di);
         
         if (hasStartedBattle) yield break;
         hasStartedBattle = true;
@@ -192,9 +192,10 @@ public class TempleIntroController : MonoBehaviour
             
             yield return new WaitForSeconds(1.0f);
             yield return StartCoroutine(SoulAbsorptionEffect(player.transform));
-        }
+            di.ShowMessage("System", "Seele von Skelettkrieger wurde verschlungen... Ryo wurde verflucht!", 2.5f); yield return WaitForDialogue(di);
+            }
 
-        di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di);
+            di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di);
         di.ShowMessage("Ryo", "Wer ist da?!", 1.5f); yield return WaitForDialogue(di);
 
         if (pm != null && meister != null) {

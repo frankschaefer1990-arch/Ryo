@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Skill_Verflucht_6
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_6
-  skillName: Nachtmahr
-  icon: {fileID: 0}
+  skillName: Schatten
+  icon: {fileID: 1135253396783357292, guid: 246bfa56cf8333d4bbdb47a41e9bf61b, type: 3}
   description: "Passiv: Dein Schatten greift mit an und verursacht zus\xE4tzlichen
     Schaden."
   category: 2

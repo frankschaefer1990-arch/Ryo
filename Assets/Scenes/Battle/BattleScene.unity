@@ -7686,6 +7686,8 @@ MonoBehaviour:
   enemyAttackVisual: {fileID: 0}
   playerAura: {fileID: 1701191154}
   shinigamiSprite: {fileID: 21300000, guid: e6ed0245c745022499db6d0b20b5b373, type: 3}
+  shinigamiSlashSprite: {fileID: 7281993637674472309, guid: 28d06da6868985546ac5ab28aab4f27a, type: 3}
+  shinigamiSlashSound: {fileID: 8300000, guid: c3d515b511ae8f146b845c2550928bd0, type: 3}
   blockVisual: {fileID: 969033581}
   blockSound: {fileID: 8300000, guid: 3a96aa7a8dc982548acfa1dad608eb96, type: 3}
   state: 1
@@ -7776,7 +7778,7 @@ MonoBehaviour:
   targetPlayerHP: 1
   targetEnemyHP: 1
   targetPlayerMana: 1
-  gameOverPanel: {fileID: 0}
+  gameOverPanel: {fileID: 166075099}
   allSkills:
   - {fileID: 11400000, guid: ba6298e6348a6364fb66bd8e9c4df39a, type: 2}
   - {fileID: 11400000, guid: 5a80e4afa245c8549bd7c58288a83667, type: 2}

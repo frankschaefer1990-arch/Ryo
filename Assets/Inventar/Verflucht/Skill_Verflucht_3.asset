@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_3
   skillName: Fluchfokus
-  icon: {fileID: 0}
+  icon: {fileID: -7169747562131412658, guid: 8198bfe7588178646a195aaba03a3e99, type: 3}
   description: "Passiv: Erh\xF6ht den Fluchgewinn durch Zauber und Treffer."
   category: 2
   levelRequirement: 1

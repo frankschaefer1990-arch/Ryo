@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_2
   skillName: Schattengunst
-  icon: {fileID: 0}
+  icon: {fileID: -9063622062921334032, guid: ca2d318bed6c4ec43979edb7d36d5a0a, type: 3}
   description: "Passiv: Der Fluch sch\xFCtzt dich. Reduziert erlittenen Schaden,
     wenn der Fluch aktiv ist."
   category: 2

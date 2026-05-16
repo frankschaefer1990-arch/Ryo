@@ -1,0 +1,28 @@
+{
+    "asset": "cb80309676ccaf74593dbb5767f6e954",
+    "fileName": "019e3248-c263-7874-ac17-eec9410298ed.png",
+    "prompt": "A dark purple ghostly katana slash effect, energetic wisps of black and violet smoke, sharp curved blade trail, ethereal and powerful, transparent background, high quality game VFX sprite.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

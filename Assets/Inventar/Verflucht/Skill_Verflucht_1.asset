@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: verflucht_1
   skillName: Dunkler Keim
-  icon: {fileID: 0}
+  icon: {fileID: -5527646460052667300, guid: 58ac1ba5113732c439a540fd363e575d, type: 3}
   description: Die Saat der Dunkelheit wird in dein Herz gepflanzt. Schaltet das
     Fluchsystem permanent frei.
   category: 2
@@ -35,7 +35,7 @@ MonoBehaviour:
   hasCombo: 0
   healMultiplier: 0
   isCurseUnlocker: 1
-  isPassiveCurse: 0
+  isPassiveCurse: 1
   canStun: 0
   baseStunChance: 0.1
   stunChancePerLevel: 0.05
