@@ -8,13 +8,15 @@ public class PlayerDataManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            gameObject.SetActive(false);
             Destroy(gameObject);
             return;
         }
         Instance = this;
+        if (transform.parent != null) transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
     }
 
     // This manager serves as a central hub for persistent player data
     // existing scripts like PlayerStats and InventoryManager already handle most data.
-}
+    }

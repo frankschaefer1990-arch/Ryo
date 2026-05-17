@@ -91,10 +91,16 @@ public class ShopManager : MonoBehaviour
     {
         if (player == null)
         {
-            GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
-
-            if (foundPlayer != null)
-                player = foundPlayer.transform;
+            if (GameManager.Instance != null && GameManager.Instance.player != null)
+            {
+                player = GameManager.Instance.player.transform;
+            }
+            else
+            {
+                GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
+                if (foundPlayer != null)
+                    player = foundPlayer.transform;
+            }
         }
     }
 

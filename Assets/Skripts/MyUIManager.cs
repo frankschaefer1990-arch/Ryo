@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MyUIManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class MyUIManager : MonoBehaviour
     public GameObject bottomMenuPanel;
     public GameObject lockedDoorPopup;
     public GameObject shopPanel;
+    public TextMeshProUGUI backpackGoldText;
 
     [Header("Keys")]
     public KeyCode backpackKey = KeyCode.B;
@@ -76,6 +78,7 @@ public class MyUIManager : MonoBehaviour
     {
         bool inBattle = IsInBattleScene();
         bool isSplash = SceneManager.GetActiveScene().name == "SplashScreen";
+        bool isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
 
         UpdateCursorState(inBattle);
         UpdateSoftwareCursor();
@@ -83,8 +86,8 @@ public class MyUIManager : MonoBehaviour
         // Update BottomMenuPanel visibility
         if (bottomMenuPanel != null)
         {
-            // Deactivate in Battle, SplashScreen, or during Cutscenes (isLocked)
-            bool shouldBeVisible = !inBattle && !isSplash && !isLocked;
+            // Deactivate in Battle, SplashScreen, MainMenu, or during Cutscenes (isLocked)
+            bool shouldBeVisible = !inBattle && !isSplash && !isMainMenu && !isLocked;
             if (bottomMenuPanel.activeSelf != shouldBeVisible)
             {
                 bottomMenuPanel.SetActive(shouldBeVisible);
@@ -196,8 +199,9 @@ public class MyUIManager : MonoBehaviour
         bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
 
         bool anyPanelOpen = bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen;
+        bool isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
 
-        if (anyPanelOpen || inBattle) {
+        if (anyPanelOpen || inBattle || isMainMenu) {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         } else {
@@ -263,6 +267,13 @@ public class MyUIManager : MonoBehaviour
             ResetLayout();
             inventoryPanel.SetActive(true);
             backpackPanel.SetActive(true);
+            
+            // UPDATE GOLD DISPLAY
+            if (backpackGoldText != null && PlayerGold.Instance != null)
+            {
+                backpackGoldText.text = PlayerGold.Instance.currentGold.ToString();
+            }
+
             Debug.Log("MyUIManager: Set backpack and inventory to active.");
         }
         else
@@ -410,12 +421,64 @@ public class MyUIManager : MonoBehaviour
 
     public void SaveGame()
     {
-        Debug.Log("Speichern: Funktion wird später implementiert.");
+        if (SaveSystem.Instance != null)
+        {
+            SaveSystem.Instance.Save();
+            Debug.Log("MyUIManager: Spielstand gespeichert.");
+            
+            // Visual feedback
+            if (DialogueUI.Instance != null)
+            {
+                DialogueUI.Instance.ShowMessage("System", "Spielstand erfolgreich gespeichert!", 2.0f);
+            }
+        }
+        else
+        {
+            Debug.LogError("MyUIManager: SaveSystem nicht gefunden!");
+        }
+    }
+
+    public void OpenLoadPanelFromMenu()
+    {
+        // Toggle the load panel which should be in the MasterCanvas
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        
+        // Use the LoadPanel from MainMenuController logic or just find it
+        GameObject lp = FindChildRecursive(transform, "LoadPanel");
+        if (lp != null)
+        {
+            lp.SetActive(true);
+            lp.transform.SetAsLastSibling();
+            
+            // Refresh info if SaveSystem exists
+            if (SaveSystem.Instance != null)
+            {
+                var text = lp.GetComponentInChildren<TextMeshProUGUI>();
+                if (text != null && text.name == "SaveInfoText") 
+                    text.text = SaveSystem.Instance.GetSaveInfo();
+            }
+        }
+    }
+
+    public void CloseLoadPanel()
+    {
+        GameObject lp = FindChildRecursive(transform, "LoadPanel");
+        if (lp != null) lp.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true); // Return to main pause menu
     }
 
     public void LoadGame()
     {
-        Debug.Log("Laden: Funktion wird später implementiert.");
+        if (SaveSystem.Instance != null)
+        {
+            SaveSystem.Instance.Load();
+            Debug.Log("MyUIManager: Spielstand wird geladen.");
+            CloseAllPanels();
+        }
+        else
+        {
+            Debug.LogError("MyUIManager: SaveSystem nicht gefunden!");
+        }
     }
 
     public void QuitGame()

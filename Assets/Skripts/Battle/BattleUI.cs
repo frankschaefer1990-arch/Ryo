@@ -86,6 +86,14 @@ public class BattleUI : MonoBehaviour
             PlayerStats.Instance.currentMana = PlayerStats.Instance.maxMana;
             PlayerStats.Instance.UpdateUI();
         }
+
+        // Safety: Unparent player before reloading scene to ensure they survive
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            GameManager.Instance.player.transform.SetParent(null);
+            DontDestroyOnLoad(GameManager.Instance.player);
+        }
+
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
@@ -144,8 +152,8 @@ public class BattleUI : MonoBehaviour
                 if (ratio < 0.5f)
                     curseFill.color = Color.Lerp(new Color(0.3f, 0f, 0.5f), Color.red, ratio * 2f);
                 else
-                    curseFill.color = Color.Lerp(Color.red, Color.black, (ratio - 0.5f) * 2f);
-            }
+                    curseFill.color = Color.Lerp(Color.red, new Color(0.6f, 0f, 1f), (ratio - 0.5f) * 2f); // Vibrant Purple for high curse
+                }
         }
 
         if (curseValueText != null)
@@ -219,7 +227,7 @@ public class BattleUI : MonoBehaviour
             foreach (var s in allSkills)
             {
                 if (s == null || string.IsNullOrEmpty(s.skillId)) continue;
-                if (SkillManager.Instance.GetSkillLevel(s) > 0 && !s.isPassiveCurse)
+                if (SkillManager.Instance.GetSkillLevel(s) > 0 && !s.isPassiveCurse && !s.isCurseUnlocker)
                 {
                     if (!uniqueLearnedSkills.ContainsKey(s.skillId))
                     {
@@ -252,13 +260,31 @@ public class BattleUI : MonoBehaviour
         Transform content = panel.transform.Find("Viewport/Content");
         if (content == null) content = panel.transform;
 
-        foreach (Transform child in content) child.gameObject.SetActive(false);
-
+        // Collect existing buttons
         List<Button> buttons = new List<Button>();
         foreach (Transform child in content)
         {
             Button b = child.GetComponent<Button>();
-            if (b != null) buttons.Add(b);
+            if (b != null)
+            {
+                buttons.Add(b);
+                b.gameObject.SetActive(false); // Hide initially
+            }
+        }
+        
+        // If we don't have enough buttons, instantiate more using the first one as a template
+        if (buttons.Count > 0 && buttons.Count < skills.Count)
+        {
+            Button template = buttons[0];
+            int startCount = buttons.Count;
+            int needed = skills.Count - startCount;
+            for (int i = 0; i < needed; i++)
+            {
+                Button newButton = Instantiate(template, content);
+                newButton.name = "Button_" + (startCount + i);
+                newButton.gameObject.SetActive(false);
+                buttons.Add(newButton);
+            }
         }
         
         for (int i = 0; i < buttons.Count; i++)
@@ -280,6 +306,10 @@ public class BattleUI : MonoBehaviour
                 BattleSkillTooltip tooltip = buttons[i].gameObject.GetComponent<BattleSkillTooltip>();
                 if (tooltip == null) tooltip = buttons[i].gameObject.AddComponent<BattleSkillTooltip>();
                 tooltip.skill = currentSkill;
+            }
+            else
+            {
+                buttons[i].gameObject.SetActive(false);
             }
         }
     }

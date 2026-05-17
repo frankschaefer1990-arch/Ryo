@@ -6,9 +6,34 @@ public class SkillManager : MonoBehaviour
     public static SkillManager Instance;
 
     public int skillPoints = 0;
+
+    [Header("Skill Repository")]
+    public List<BattleSkill> allAvailableSkills = new List<BattleSkill>();
     
-    private Dictionary<string, int> skillLevels = new Dictionary<string, int>();
+    public Dictionary<string, int> skillLevels = new Dictionary<string, int>();
     public List<string> learnedOrder = new List<string>();
+
+    public void LoadSkillData(List<string> ids, List<int> levels, int points)
+    {
+        skillLevels.Clear();
+        learnedOrder.Clear();
+        
+        if (ids == null || ids.Count == 0)
+        {
+            InitializeStartingSkills();
+        }
+        else
+        {
+            for (int i = 0; i < ids.Count; i++)
+            {
+                skillLevels[ids[i]] = levels[i];
+                if (!learnedOrder.Contains(ids[i])) learnedOrder.Add(ids[i]);
+            }
+        }
+        skillPoints = points;
+    }
+
+    public Dictionary<string, int> GetSkillLevels() => skillLevels;
 
     private void Awake()
     {
@@ -21,6 +46,11 @@ public class SkillManager : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+
+        if (allAvailableSkills == null || allAvailableSkills.Count == 0)
+        {
+            allAvailableSkills = new List<BattleSkill>(Resources.LoadAll<BattleSkill>(""));
         }
 
         if (skillLevels == null) skillLevels = new Dictionary<string, int>();
@@ -112,4 +142,26 @@ public class SkillManager : MonoBehaviour
     {
         skillPoints += amount;
     }
-}
+
+    public void ForceLearnSkill(BattleSkill skill)
+    {
+        if (skill == null) return;
+        
+        if (!skillLevels.ContainsKey(skill.skillId))
+        {
+            skillLevels[skill.skillId] = 1;
+            if (!learnedOrder.Contains(skill.skillId)) learnedOrder.Add(skill.skillId);
+            
+            if (skill.isCurseUnlocker && PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.isCurseSystemUnlocked = true;
+                PlayerStats.Instance.UpdateUI();
+            }
+            
+            Debug.Log($"SkillManager: Force learned {skill.skillName}");
+            
+            var ui = FindFirstObjectByType<SkillUI>();
+            if (ui != null) ui.RefreshUI();
+        }
+    }
+    }

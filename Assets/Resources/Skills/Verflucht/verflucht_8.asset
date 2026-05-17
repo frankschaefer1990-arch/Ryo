@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95958c622ffcc6640b38e96f6dec5cfc, type: 3}
+  m_Name: verflucht_8
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
+  skillId: verflucht_8
+  skillName: Abgrundruf
+  icon: {fileID: -2364395789865481674, guid: 65e7ca49f63947b48b792d22ed8de98a, type: 3}
+  description: "Verst\xE4rkt die Macht deiner Zauber und Fl\xFCche."
+  category: 2
+  levelRequirement: 15
+  prerequisiteSkill: {fileID: 11400000, guid: 01183053d4fbf04468ac271a178cba75, type: 2}
+  maxLevel: 1
+  hitCount: 1
+  damageMultiplier: 1
+  isSpell: 0
+  manaCost: 0
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
+  skillSound: {fileID: 0}
+  hasCombo: 0
+  healMultiplier: 0
+  isCurseUnlocker: 0
+  isPassiveCurse: 1
+  effectSummary: 'CATEGORY: Verflucht
+
+    TYPE: Passive
+
+'
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

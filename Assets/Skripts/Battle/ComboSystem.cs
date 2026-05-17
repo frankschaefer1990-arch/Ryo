@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum QTEResult { FAIL, SUCCESS, PERFECT }
+
 public class ComboSystem : MonoBehaviour
 {
     public static ComboSystem Instance;
@@ -25,12 +27,12 @@ public class ComboSystem : MonoBehaviour
         Instance = this;
     }
 
-    public void StartQTE(System.Action<bool> onResult, float customTimeLimit = -1f)
+    public void StartQTE(System.Action<QTEResult> onResult, float customTimeLimit = -1f)
     {
         StartCoroutine(QTERoutine(onResult, customTimeLimit));
     }
 
-    private IEnumerator QTERoutine(System.Action<bool> onResult, float customTimeLimit)
+    private IEnumerator QTERoutine(System.Action<QTEResult> onResult, float customTimeLimit)
     {
         float activeTimeLimit = customTimeLimit > 0 ? customTimeLimit : timeLimit;
         currentTargetKey = possibleKeys[Random.Range(0, possibleKeys.Length)];
@@ -38,7 +40,7 @@ public class ComboSystem : MonoBehaviour
         
         isWaitingForInput = true;
         timer = 0f;
-        bool success = false;
+        QTEResult result = QTEResult.FAIL;
         hintPlayed = false;
         bool hasSnapped = false;
 
@@ -71,12 +73,12 @@ public class ComboSystem : MonoBehaviour
                     pauseTimer += Time.deltaTime;
                     if (Input.GetKeyDown(currentTargetKey))
                     {
-                        success = true;
+                        result = QTEResult.PERFECT;
                         break;
                     }
                     yield return null;
                 }
-                if (success) break;
+                if (result != QTEResult.FAIL) break;
             }
 
             // Update Visuals if not snapped or after snap
@@ -85,24 +87,23 @@ public class ComboSystem : MonoBehaviour
 
             if (Input.GetKeyDown(currentTargetKey))
             {
-                // User said: "wenn der qte_shrink_ring über den OuterRing drüber geht es als zuspät"
-                // If scale is already smaller than perfectScale, it's too late.
+                // If scale is already smaller than perfectScale, it's too late for Success.
                 if (scale > perfectScale)
                 {
                     // Allow a small window before the snap
-                    if (scale <= perfectScale + 0.4f) success = true;
-                    else success = false;
+                    if (scale <= perfectScale + 0.5f) result = QTEResult.SUCCESS;
+                    else result = QTEResult.FAIL;
                 }
                 else
                 {
-                    // Too late (already past the snap pause)
-                    success = false;
+                    // Too late
+                    result = QTEResult.FAIL;
                 }
                 break;
             }
             else if (Input.anyKeyDown && !Input.GetKeyDown(currentTargetKey))
             {
-                success = false;
+                result = QTEResult.FAIL;
                 break;
             }
 
@@ -110,10 +111,10 @@ public class ComboSystem : MonoBehaviour
             yield return null;
         }
 
-        BattleUI.Instance.SetQTEFeedback(success);
+        BattleUI.Instance.SetQTEFeedback(result != QTEResult.FAIL);
         yield return new WaitForSeconds(0.3f);
         BattleUI.Instance.HideComboPrompt();
         isWaitingForInput = false;
-        onResult?.Invoke(success);
+        onResult?.Invoke(result);
     }
     }

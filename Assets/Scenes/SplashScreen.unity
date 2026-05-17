@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &5111634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5111635}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 6 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5111635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5111634}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &14269455
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +164,7 @@ GameObject:
   - component: {fileID: 14269458}
   - component: {fileID: 14269457}
   m_Layer: 0
-  m_Name: Zauber_Slot_1
+  m_Name: '[Zauber] Blitzschlag | 20 MP (+0 Int-Dmg) | Ein konzentrierter Str...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -177,6 +208,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1054127340}
   levelText: {fileID: 985688950}
   lockOverlay: {fileID: 1140924749}
+  skillDescriptionPreview: "Ein konzentrierter Strahl aus wei\xDFer Energie."
 --- !u!114 &14269458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +400,74 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &28493575
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 28493576}
+  m_Layer: 0
+  m_Name: --- SKILL OVERVIEW ---
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &28493576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 28493575}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1638225909}
+  - {fileID: 668078786}
+  - {fileID: 1208665086}
+  - {fileID: 1577855187}
+  - {fileID: 1651804352}
+  - {fileID: 5111635}
+  - {fileID: 370147359}
+  - {fileID: 164012124}
+  - {fileID: 767159369}
+  - {fileID: 1711171241}
+  - {fileID: 1430867974}
+  - {fileID: 1976181303}
+  - {fileID: 1103182295}
+  - {fileID: 1654277056}
+  - {fileID: 1260218310}
+  - {fileID: 1423707253}
+  - {fileID: 1309523621}
+  - {fileID: 532075291}
+  - {fileID: 258086806}
+  - {fileID: 2030856434}
+  - {fileID: 306734157}
+  - {fileID: 1750012259}
+  - {fileID: 505221310}
+  - {fileID: 1675696582}
+  - {fileID: 2119210403}
+  - {fileID: 1503000123}
+  - {fileID: 1369801857}
+  - {fileID: 475021187}
+  - {fileID: 465017521}
+  - {fileID: 1564127311}
+  - {fileID: 263737369}
+  - {fileID: 567596675}
+  - {fileID: 895382196}
+  - {fileID: 928821649}
+  - {fileID: 541180001}
+  - {fileID: 1828658231}
+  - {fileID: 1139293470}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &39512102
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,7 +964,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 54425343}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &54425343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1826,7 +1938,7 @@ GameObject:
   - component: {fileID: 87068361}
   - component: {fileID: 87068360}
   m_Layer: 0
-  m_Name: Zauber_Slot_11
+  m_Name: '[Zauber] Hollow Judgment | 0 MP (+0 Int-Dmg) | Ein verheerender Richt...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1870,6 +1982,8 @@ MonoBehaviour:
   skillIcon: {fileID: 1620189962}
   levelText: {fileID: 557346657}
   lockOverlay: {fileID: 224551764}
+  skillDescriptionPreview: "Ein verheerender Richtschlag aus Hollow-Macht vernichtet
+    geschw\xE4chte Feinde."
 --- !u!114 &87068361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2112,6 +2226,7 @@ RectTransform:
   - {fileID: 1065755318}
   - {fileID: 61105826}
   - {fileID: 421260801}
+  - {fileID: 2008804469}
   m_Father: {fileID: 1131822479}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
@@ -2139,7 +2254,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c02e0f5645d76934facd6ad527d6a994, type: 3}
+  m_Sprite: {fileID: -5501415806546369261, guid: 93cae2d21abefdf47a14ef1c6389187c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3224,6 +3339,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157326170}
   m_CullTransparentMesh: 1
+--- !u!1 &164012123
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 164012124}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 8 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &164012124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 164012123}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &164293737
 GameObject:
   m_ObjectHideFlags: 0
@@ -3238,7 +3384,7 @@ GameObject:
   - component: {fileID: 164293740}
   - component: {fileID: 164293739}
   m_Layer: 0
-  m_Name: Zauber_Slot_10
+  m_Name: '[Zauber] Nachtkralle | 0 MP (+0 Int-Dmg) | Schattenhafte Klauen t...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3282,6 +3428,7 @@ MonoBehaviour:
   skillIcon: {fileID: 135070994}
   levelText: {fileID: 2037834583}
   lockOverlay: {fileID: 458634743}
+  skillDescriptionPreview: Schattenhafte Klauen treffen vitale Punkte.
 --- !u!114 &164293740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5243,6 +5390,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 245403070}
   m_CullTransparentMesh: 1
+--- !u!1 &258086805
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 258086806}
+  m_Layer: 0
+  m_Name: "[Verflucht] Abgrundruf | Passive | Passiv: Ein Ruf aus der Tiefe verst\xE4rkt
+    deine Fluch-Aura."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &258086806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258086805}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &262721469
 GameObject:
   m_ObjectHideFlags: 0
@@ -5380,6 +5559,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 262721469}
   m_CullTransparentMesh: 1
+--- !u!1 &263737368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 263737369}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 7 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &263737369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263737368}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &267280173
 GameObject:
   m_ObjectHideFlags: 0
@@ -5606,7 +5816,7 @@ GameObject:
   - component: {fileID: 285002657}
   - component: {fileID: 285002656}
   m_Layer: 0
-  m_Name: Basic_Slot_11
+  m_Name: '[Basic] Seelenklinge | x1 Dmg (+0 Str-Dmg) | Schwert und Seele vers...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5650,6 +5860,8 @@ MonoBehaviour:
   skillIcon: {fileID: 572645030}
   levelText: {fileID: 1867857543}
   lockOverlay: {fileID: 1950201612}
+  skillDescriptionPreview: "Schwert und Seele verschmelzen f\xFCr einen verfluchten
+    Pr\xE4zisionsschnitt."
 --- !u!114 &285002657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6258,6 +6470,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303077454}
   m_CullTransparentMesh: 1
+--- !u!1 &306734156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 306734157}
+  m_Layer: 0
+  m_Name: "[Verflucht] Ewigkeitsfluch | Passive | Passiv: Der Fluch verf\xE4llt deutlich
+    langsamer, wenn keine ..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &306734157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306734156}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &311502056
 GameObject:
   m_ObjectHideFlags: 0
@@ -6272,7 +6516,7 @@ GameObject:
   - component: {fileID: 311502059}
   - component: {fileID: 311502058}
   m_Layer: 0
-  m_Name: Basic_Slot_8
+  m_Name: '[Basic] Eisenbrecher | x1 Dmg (+0 Str-Dmg) | Konzentrierter Durchbr...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6316,6 +6560,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1795359335}
   levelText: {fileID: 767732318}
   lockOverlay: {fileID: 1200525435}
+  skillDescriptionPreview: Konzentrierter Durchbruchsschlag gegen Schutz.
 --- !u!114 &311502059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6737,7 +6982,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1269, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &357061416
@@ -6860,7 +7105,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 361872213}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: OpenLoadPanelFromMenu
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &361872213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6913,7 +7170,7 @@ GameObject:
   - component: {fileID: 363432344}
   - component: {fileID: 363432343}
   m_Layer: 0
-  m_Name: Basic_Slot_10
+  m_Name: '[Basic] Zornspalter | x1 Dmg (+0 Str-Dmg) | Verbrauchte Rage wird ...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6957,6 +7214,8 @@ MonoBehaviour:
   skillIcon: {fileID: 1677659729}
   levelText: {fileID: 1334259175}
   lockOverlay: {fileID: 157326170}
+  skillDescriptionPreview: "Verbrauchte Rage wird in einem zerst\xF6rerischen Schlag
+    entladen."
 --- !u!114 &363432344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7252,6 +7511,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 366554535}
   m_CullTransparentMesh: 1
+--- !u!1 &370147358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 370147359}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 7 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &370147359
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370147358}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &387543224
 Material:
   serializedVersion: 8
@@ -7719,6 +8009,7 @@ RectTransform:
   - {fileID: 856712995}
   - {fileID: 637422197}
   - {fileID: 364711819}
+  - {fileID: 1613248720}
   m_Father: {fileID: 98281692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -8270,6 +8561,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458634743}
   m_CullTransparentMesh: 1
+--- !u!1 &465017520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 465017521}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 5 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &465017521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465017520}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &475021186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 475021187}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 4 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &475021187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475021186}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &476438220
 GameObject:
   m_ObjectHideFlags: 0
@@ -8422,6 +8775,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481614436}
   m_CullTransparentMesh: 1
+--- !u!1 &505221309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 505221310}
+  m_Layer: 0
+  m_Name: "[Zauber] Blitzschlag | 20 MP | Ein konzentrierter Strahl aus wei\xDFer
+    Energie."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &505221310
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505221309}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &520809130
 GameObject:
   m_ObjectHideFlags: 0
@@ -8436,7 +8821,7 @@ GameObject:
   - component: {fileID: 520809133}
   - component: {fileID: 520809132}
   m_Layer: 0
-  m_Name: Verflucht_Slot_7
+  m_Name: '[Verflucht] Seelenlast | Passive | Die Last der Seelen er...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8480,6 +8865,7 @@ MonoBehaviour:
   skillIcon: {fileID: 734154269}
   levelText: {fileID: 632265937}
   lockOverlay: {fileID: 237566576}
+  skillDescriptionPreview: "Die Last der Seelen erh\xF6ht die Chance auf Bet\xE4ubung."
 --- !u!114 &520809133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8746,6 +9132,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528184341}
   m_CullTransparentMesh: 1
+--- !u!1 &532075290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 532075291}
+  m_Layer: 0
+  m_Name: "[Verflucht] Seelenlast | Passive | Passiv: Je h\xF6her dein Fluch, desto
+    langsamer verlieren Feinde ..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &532075291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532075290}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &533506606
 GameObject:
   m_ObjectHideFlags: 0
@@ -8758,6 +9176,7 @@ GameObject:
   - component: {fileID: 533506609}
   - component: {fileID: 533506608}
   - component: {fileID: 533506607}
+  - component: {fileID: 533506611}
   m_Layer: 5
   m_Name: StrengthButton
   m_TagString: Untagged
@@ -8878,6 +9297,19 @@ RectTransform:
   m_AnchoredPosition: {x: 250.5, y: -90.294}
   m_SizeDelta: {x: 74.8329, y: 83.3644}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &533506611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533506606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f60587f481fe64d88cd938924898c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeTooltipTrigger
+  type: 0
 --- !u!1 &540419322
 GameObject:
   m_ObjectHideFlags: 0
@@ -9012,6 +9444,37 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &541180000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 541180001}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 11 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &541180001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541180000}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &556753801
 GameObject:
   m_ObjectHideFlags: 0
@@ -9361,6 +9824,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565265329}
   m_CullTransparentMesh: 1
+--- !u!1 &567596674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567596675}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 8 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &567596675
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567596674}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &571507790
 GameObject:
   m_ObjectHideFlags: 0
@@ -9721,7 +10215,7 @@ GameObject:
   - component: {fileID: 576896464}
   - component: {fileID: 576896463}
   m_Layer: 0
-  m_Name: Verflucht_Slot_3
+  m_Name: "[Verflucht] Fluchfokus | Passive | Erh\xF6ht die Rate, mit d..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9765,6 +10259,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1891881256}
   levelText: {fileID: 997704156}
   lockOverlay: {fileID: 1697321453}
+  skillDescriptionPreview: "Erh\xF6ht die Rate, mit der Fluch im Kampf gewonnen wird."
 --- !u!114 &576896464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9861,7 +10356,7 @@ GameObject:
   - component: {fileID: 579527896}
   - component: {fileID: 579527895}
   m_Layer: 0
-  m_Name: Verflucht_Slot_9
+  m_Name: '[Verflucht] Finsterschritt | Passive | Du verschmilzt mit den...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9905,6 +10400,8 @@ MonoBehaviour:
   skillIcon: {fileID: 1540819340}
   levelText: {fileID: 734255177}
   lockOverlay: {fileID: 53916139}
+  skillDescriptionPreview: Du verschmilzt mit den Schatten und weichst Angriffen
+    aus.
 --- !u!114 &579527896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10140,7 +10637,7 @@ GameObject:
   - component: {fileID: 596882454}
   - component: {fileID: 596882453}
   m_Layer: 0
-  m_Name: Zauber_Slot_2
+  m_Name: "[Zauber] Soul Reap | 30 MP (+0 Int-Dmg) | Entrei\xDFt dem Gegner ei..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10184,6 +10681,8 @@ MonoBehaviour:
   skillIcon: {fileID: 89139232}
   levelText: {fileID: 1423265110}
   lockOverlay: {fileID: 1515697240}
+  skillDescriptionPreview: "Entrei\xDFt dem Gegner einen Teil seiner Seele, verursacht
+    dunklen Fluchschaden und absorbiert Lebensenergie f\xFCr den Anwender."
 --- !u!114 &596882454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11210,7 +11709,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 18.000122, y: -104.99997}
+  m_AnchoredPosition: {x: 18.000061, y: -104.99997}
   m_SizeDelta: {x: 769.8691, y: 61.4074}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &637749247
@@ -11543,7 +12042,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 657261165}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: SaveGame
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &657261165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11856,15 +12367,15 @@ MonoBehaviour:
   attributePointsText: {fileID: 168383218}
   strengthText: {fileID: 1354893414}
   vitalityText: {fileID: 1117248015}
-  armorText: {fileID: 591014808}
-  speedText: {fileID: 56310110}
+  intelligenceText: {fileID: 591014808}
+  curseText: {fileID: 56310110}
   hpBar: {fileID: 1663974693}
   expBar: {fileID: 205358354}
   expRing: {fileID: 191028722}
   strengthButton: {fileID: 533506607}
   vitalityButton: {fileID: 1628768107}
-  armorButton: {fileID: 1004082901}
-  speedButton: {fileID: 1122855372}
+  intelligenceButton: {fileID: 1004082901}
+  curseButton: {fileID: 1122855372}
 --- !u!114 &666128194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11903,6 +12414,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 666128191}
   m_CullTransparentMesh: 1
+--- !u!1 &668078785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 668078786}
+  m_Layer: 0
+  m_Name: "[Basic] Rage | x1,4 Dmg | Entfessle deinen Zorn! F\xFChrt m\xE4chtige
+    Schl\xE4ge aus. QTE wird mit jedem L..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &668078786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668078785}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &684133899
 GameObject:
   m_ObjectHideFlags: 0
@@ -12260,7 +12803,7 @@ GameObject:
   - component: {fileID: 709007173}
   - component: {fileID: 709007172}
   m_Layer: 0
-  m_Name: Basic_Slot_1
+  m_Name: "[Basic] Wilde Schl\xE4ge | x1 Dmg (+0 Str-Dmg) | Eine schnelle Kette au..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12304,6 +12847,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1798744162}
   levelText: {fileID: 1108397230}
   lockOverlay: {fileID: 226323937}
+  skillDescriptionPreview: Eine schnelle Kette aus Schwertangriffen.
 --- !u!114 &709007173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13030,7 +13574,7 @@ GameObject:
   - component: {fileID: 749381680}
   - component: {fileID: 749381679}
   m_Layer: 0
-  m_Name: Basic_Slot_9
+  m_Name: '[Basic] Schattenhieb | x1 Dmg (+0 Str-Dmg) | Ein schneller, kaum si...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13074,6 +13618,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1964401213}
   levelText: {fileID: 1853920468}
   lockOverlay: {fileID: 404650545}
+  skillDescriptionPreview: Ein schneller, kaum sichtbarer Schnitt.
 --- !u!114 &749381680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13417,6 +13962,37 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &767159368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 767159369}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 9 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &767159369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767159368}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &767732316
 GameObject:
   m_ObjectHideFlags: 0
@@ -14342,7 +14918,7 @@ GameObject:
   - component: {fileID: 846987749}
   - component: {fileID: 846987748}
   m_Layer: 0
-  m_Name: Verflucht_Slot_4
+  m_Name: '[Verflucht] Blutzoll | Passive | Entzieht Feinden Leben...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14386,6 +14962,7 @@ MonoBehaviour:
   skillIcon: {fileID: 708589692}
   levelText: {fileID: 2079633118}
   lockOverlay: {fileID: 1723213526}
+  skillDescriptionPreview: Entzieht Feinden Lebenskraft bei jedem Treffer.
 --- !u!114 &846987749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14847,7 +15424,7 @@ GameObject:
   - component: {fileID: 888359782}
   - component: {fileID: 888359781}
   m_Layer: 0
-  m_Name: Zauber_Slot_5
+  m_Name: '[Zauber] Seelenbrand | 0 MP (+0 Int-Dmg) | Violettes Fluchfeuer f...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14891,6 +15468,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1097689438}
   levelText: {fileID: 1717271375}
   lockOverlay: {fileID: 2125048433}
+  skillDescriptionPreview: Violettes Fluchfeuer frisst an der Seele des Gegners.
 --- !u!114 &888359782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15048,6 +15626,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892364953}
   m_CullTransparentMesh: 1
+--- !u!1 &895382195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 895382196}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 9 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &895382196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895382195}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &896537663
 GameObject:
   m_ObjectHideFlags: 0
@@ -15444,6 +16053,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &928821648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 928821649}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 10 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &928821649
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928821648}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &932212100
 GameObject:
   m_ObjectHideFlags: 0
@@ -15458,7 +16098,7 @@ GameObject:
   - component: {fileID: 932212103}
   - component: {fileID: 932212102}
   m_Layer: 0
-  m_Name: Verflucht_Slot_8
+  m_Name: "[Verflucht] Abgrundruf | Passive | Verst\xE4rkt die Macht de..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15502,6 +16142,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1112118614}
   levelText: {fileID: 565265331}
   lockOverlay: {fileID: 344305798}
+  skillDescriptionPreview: "Verst\xE4rkt die Macht deiner Zauber und Fl\xFCche."
 --- !u!114 &932212103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16549,6 +17190,7 @@ GameObject:
   - component: {fileID: 1004082903}
   - component: {fileID: 1004082902}
   - component: {fileID: 1004082901}
+  - component: {fileID: 1004082905}
   m_Layer: 5
   m_Name: IntelligenceButton
   m_TagString: Untagged
@@ -16669,6 +17311,19 @@ RectTransform:
   m_AnchoredPosition: {x: 250.5, y: -361.81}
   m_SizeDelta: {x: 74.8329, y: 83.3644}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1004082905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004082900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f60587f481fe64d88cd938924898c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeTooltipTrigger
+  type: 2
 --- !u!1 &1010210949
 GameObject:
   m_ObjectHideFlags: 0
@@ -16820,6 +17475,139 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1014114223}
   m_CullTransparentMesh: 1
+--- !u!1 &1014577536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1014577537}
+  - component: {fileID: 1014577540}
+  - component: {fileID: 1014577539}
+  - component: {fileID: 1014577538}
+  m_Layer: 0
+  m_Name: PerformLoad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1014577537
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014577536}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1999161959}
+  m_Father: {fileID: 2073941170}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -50}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1014577538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014577536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.2, g: 0.2, b: 0.2, a: 0.8}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1014577539
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014577536}
+  m_CullTransparentMesh: 1
+--- !u!114 &1014577540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014577536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: LoadGame
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!21 &1017094433
 Material:
   serializedVersion: 8
@@ -17019,7 +17807,7 @@ GameObject:
   - component: {fileID: 1028624214}
   - component: {fileID: 1028624213}
   m_Layer: 0
-  m_Name: Basic_Slot_2
+  m_Name: '[Basic] Rage | x1,4 Dmg (+0 Str-Dmg) | Mit jedem erfolgreiche...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17063,6 +17851,7 @@ MonoBehaviour:
   skillIcon: {fileID: 768646143}
   levelText: {fileID: 1739916002}
   lockOverlay: {fileID: 1480394748}
+  skillDescriptionPreview: Mit jedem erfolgreichen Schlag steigt Ryos Wut.
 --- !u!114 &1028624214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17159,7 +17948,7 @@ GameObject:
   - component: {fileID: 1041057702}
   - component: {fileID: 1041057701}
   m_Layer: 0
-  m_Name: Zauber_Slot_4
+  m_Name: '[Zauber] Schattenklinge | 0 MP (+0 Int-Dmg) | Ryos Schwert wird mit ...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17203,6 +17992,7 @@ MonoBehaviour:
   skillIcon: {fileID: 269201044}
   levelText: {fileID: 981862169}
   lockOverlay: {fileID: 121279918}
+  skillDescriptionPreview: "Ryos Schwert wird mit dunkler Energie verst\xE4rkt."
 --- !u!114 &1041057702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17945,6 +18735,139 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065755317}
   m_CullTransparentMesh: 1
+--- !u!1 &1088134310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1088134311}
+  - component: {fileID: 1088134314}
+  - component: {fileID: 1088134313}
+  - component: {fileID: 1088134312}
+  m_Layer: 0
+  m_Name: BackButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1088134311
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088134310}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1590733227}
+  m_Father: {fileID: 2073941170}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -120}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1088134312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088134310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.4, g: 0.1, b: 0.1, a: 0.8}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1088134313
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088134310}
+  m_CullTransparentMesh: 1
+--- !u!114 &1088134314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088134310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: CloseLoadPanel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1096982585
 GameObject:
   m_ObjectHideFlags: 0
@@ -18170,6 +19093,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1101295249}
   m_CullTransparentMesh: 1
+--- !u!1 &1103182294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1103182295}
+  m_Layer: 0
+  m_Name: "[Verflucht] Schattengunst | Passive | Passiv: Der Fluch sch\xFCtzt dich.
+    Reduziert erlittenen Schade..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1103182295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103182294}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1107541814
 GameObject:
   m_ObjectHideFlags: 0
@@ -18611,7 +19566,7 @@ GameObject:
   - component: {fileID: 1121407635}
   - component: {fileID: 1121407634}
   m_Layer: 0
-  m_Name: Basic_Slot_5
+  m_Name: '[Basic] Blutschnitt | x1 Dmg (+0 Str-Dmg) | Tiefer Schnitt verursa...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18655,6 +19610,7 @@ MonoBehaviour:
   skillIcon: {fileID: 2054164609}
   levelText: {fileID: 776408808}
   lockOverlay: {fileID: 1395471513}
+  skillDescriptionPreview: Tiefer Schnitt verursacht Blutung.
 --- !u!114 &1121407635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18749,6 +19705,7 @@ GameObject:
   - component: {fileID: 1122855374}
   - component: {fileID: 1122855373}
   - component: {fileID: 1122855372}
+  - component: {fileID: 1122855376}
   m_Layer: 5
   m_Name: CurseButton
   m_TagString: Untagged
@@ -18869,6 +19826,19 @@ RectTransform:
   m_AnchoredPosition: {x: 250.5, y: -500.35}
   m_SizeDelta: {x: 74.8329, y: 83.3644}
   m_Pivot: {x: 0.49999982, y: 0.49999958}
+--- !u!114 &1122855376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122855371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f60587f481fe64d88cd938924898c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeTooltipTrigger
+  type: 3
 --- !u!1 &1131822478
 GameObject:
   m_ObjectHideFlags: 0
@@ -18911,6 +19881,7 @@ RectTransform:
   - {fileID: 357061414}
   - {fileID: 175436896}
   - {fileID: 798569056}
+  - {fileID: 2073941170}
   m_Father: {fileID: 48363385}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -18938,6 +19909,7 @@ MonoBehaviour:
   bottomMenuPanel: {fileID: 637749244}
   lockedDoorPopup: {fileID: 1830977142}
   shopPanel: {fileID: 1607514325}
+  backpackGoldText: {fileID: 1613248718}
   backpackKey: 98
   inventoryKey: 105
   attributeKey: 116
@@ -19024,7 +19996,7 @@ GameObject:
   - component: {fileID: 1134092333}
   - component: {fileID: 1134092332}
   m_Layer: 0
-  m_Name: Verflucht_Slot_2
+  m_Name: '[Verflucht] Schattengunst | Passive | Reduziert erlittenen S...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19068,6 +20040,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1956882344}
   levelText: {fileID: 445062963}
   lockOverlay: {fileID: 528184341}
+  skillDescriptionPreview: Reduziert erlittenen Schaden durch dunkle Energie.
 --- !u!114 &1134092333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19150,6 +20123,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134092330}
   m_CullTransparentMesh: 1
+--- !u!1 &1139293469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1139293470}
+  m_Layer: 0
+  m_Name: "[Basic] Wilde Schl\xE4ge | x1 Dmg | Eine Serie von schnellen Angriffen.
+    Erm\xF6glicht Combos."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1139293470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139293469}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1140924749
 GameObject:
   m_ObjectHideFlags: 0
@@ -20069,7 +21074,7 @@ GameObject:
   - component: {fileID: 1190652538}
   - component: {fileID: 1190652537}
   m_Layer: 0
-  m_Name: Verflucht_Slot_10
+  m_Name: '[Verflucht] Ewigkeitsfluch | Passive | Verhindert den schnell...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20113,6 +21118,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1881151623}
   levelText: {fileID: 1526613120}
   lockOverlay: {fileID: 108560277}
+  skillDescriptionPreview: Verhindert den schnellen Verfall deiner Fluchmacht.
 --- !u!114 &1190652538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20270,6 +21276,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200525435}
   m_CullTransparentMesh: 1
+--- !u!1 &1208665085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1208665086}
+  m_Layer: 0
+  m_Name: '[Basic] Stun Schlag | x2 Dmg | Ein wuchtiger Schlag, der den Gegner mit
+    einer gewissen Wahrschein...'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1208665086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208665085}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1211181891
 GameObject:
   m_ObjectHideFlags: 0
@@ -20284,7 +21322,7 @@ GameObject:
   - component: {fileID: 1211181894}
   - component: {fileID: 1211181893}
   m_Layer: 0
-  m_Name: Verflucht_Slot_1
+  m_Name: '[Verflucht] Dunkler Keim | Unlock | Schaltet das Fluchsyst...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20328,6 +21366,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1277959006}
   levelText: {fileID: 626726600}
   lockOverlay: {fileID: 126349200}
+  skillDescriptionPreview: Schaltet das Fluchsystem frei.
 --- !u!114 &1211181894
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21131,6 +22170,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258207538}
   m_CullTransparentMesh: 1
+--- !u!1 &1260218309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260218310}
+  m_Layer: 0
+  m_Name: '[Verflucht] Blutzoll | Passive | Passiv: Deine Angriffe heilen dich leicht,
+    basierend auf deinem ...'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1260218310
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260218309}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &1263260420
 Material:
   serializedVersion: 8
@@ -21722,6 +22793,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297367244}
   m_CullTransparentMesh: 1
+--- !u!1 &1309523620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1309523621}
+  m_Layer: 0
+  m_Name: "[Verflucht] Schatten | Passive | Passiv: Dein Schatten greift mit an und
+    verursacht zus\xE4tzlichen ..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1309523621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309523620}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1319956514
 GameObject:
   m_ObjectHideFlags: 0
@@ -22719,6 +23822,37 @@ RectTransform:
   m_AnchoredPosition: {x: 122.713, y: -90.318054}
   m_SizeDelta: {x: 119.375, y: 83.316}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1369801856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1369801857}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 3 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1369801857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369801856}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1385178065
 GameObject:
   m_ObjectHideFlags: 0
@@ -22812,7 +23946,7 @@ GameObject:
   - component: {fileID: 1393105674}
   - component: {fileID: 1393105673}
   m_Layer: 0
-  m_Name: Zauber_Slot_9
+  m_Name: "[Zauber] Leerensto\xDF | 0 MP (+0 Int-Dmg) | Ein konzentrierter Sto..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22856,6 +23990,8 @@ MonoBehaviour:
   skillIcon: {fileID: 234751863}
   levelText: {fileID: 1832626761}
   lockOverlay: {fileID: 597268778}
+  skillDescriptionPreview: "Ein konzentrierter Sto\xDF aus Hollow-Energie zerrei\xDFt
+    Schutz."
 --- !u!114 &1393105674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23297,7 +24433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7156823b470758547b97e0c101756eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SplashScreenLoader
-  delay: 1
+  delay: 3
 --- !u!1 &1418215632
 GameObject:
   m_ObjectHideFlags: 0
@@ -23569,6 +24705,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423265108}
   m_CullTransparentMesh: 1
+--- !u!1 &1423707252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1423707253}
+  m_Layer: 0
+  m_Name: '[Verflucht] Geisterzwang | Passive | Passiv: Feinde haben eine Chance,
+    bei Kontakt mit deinem Flu...'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1423707253
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423707252}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1427225595
 GameObject:
   m_ObjectHideFlags: 0
@@ -23706,6 +24874,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427225595}
   m_CullTransparentMesh: 1
+--- !u!1 &1430867973
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1430867974}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 11 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1430867974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430867973}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1438231595
 GameObject:
   m_ObjectHideFlags: 0
@@ -23720,7 +24919,7 @@ GameObject:
   - component: {fileID: 1438231598}
   - component: {fileID: 1438231597}
   m_Layer: 0
-  m_Name: Verflucht_Slot_5
+  m_Name: "[Verflucht] Geisterzwang | Passive | Dunkle Pr\xE4senz verunsi..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23764,6 +24963,7 @@ MonoBehaviour:
   skillIcon: {fileID: 186335322}
   levelText: {fileID: 575136521}
   lockOverlay: {fileID: 1801129206}
+  skillDescriptionPreview: "Dunkle Pr\xE4senz verunsichert Feinde und erh\xF6ht Stun-Chance."
 --- !u!114 &1438231598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24491,7 +25691,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1492220557}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: CloseAllPanels
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1492220557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24530,6 +25742,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1492220554}
   m_CullTransparentMesh: 1
+--- !u!1 &1503000122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1503000123}
+  m_Layer: 0
+  m_Name: "[Basic] Wilde Schl\xE4ge | x1 Dmg | Eine Serie von schnellen Angriffen.
+    Erm\xF6glicht Combos."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1503000123
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503000122}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1505694217
 GameObject:
   m_ObjectHideFlags: 0
@@ -24544,7 +25788,7 @@ GameObject:
   - component: {fileID: 1505694220}
   - component: {fileID: 1505694219}
   m_Layer: 0
-  m_Name: Zauber_Slot_7
+  m_Name: "[Zauber] Astralbruch | 0 MP (+0 Int-Dmg) | Zerrei\xDFt die magische ..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24588,6 +25832,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1555759900}
   levelText: {fileID: 366554537}
   lockOverlay: {fileID: 1659354345}
+  skillDescriptionPreview: "Zerrei\xDFt die magische Essenz des Gegners."
 --- !u!114 &1505694220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25447,6 +26692,8 @@ MonoBehaviour:
     musicClip: {fileID: 8300000, guid: 701df46c6a82f474ba38b4a7d6bdc360, type: 3}
   - sceneName: Temple
     musicClip: {fileID: 8300000, guid: e406b5508edc4044c904c5b9600a2797, type: 3}
+  - sceneName: MainMenu
+    musicClip: {fileID: 8300000, guid: 3120d13b6c29a9b41884c34ea09ab956, type: 3}
 --- !u!1 &1540819338
 GameObject:
   m_ObjectHideFlags: 0
@@ -25999,6 +27246,68 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1564127310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1564127311}
+  m_Layer: 0
+  m_Name: "[Zauber] Zauber F\xE4higkeit 6 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1564127311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564127310}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1577855186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1577855187}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 4 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1577855187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577855186}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1588541381
 GameObject:
   m_ObjectHideFlags: 0
@@ -26073,6 +27382,143 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588541381}
+  m_CullTransparentMesh: 1
+--- !u!1 &1590733226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1590733227}
+  - component: {fileID: 1590733229}
+  - component: {fileID: 1590733228}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1590733227
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590733226}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1088134311}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1590733228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590733226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "Zur\xFCck"
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 20
+  m_fontSizeBase: 20
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1590733229
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590733226}
   m_CullTransparentMesh: 1
 --- !u!21 &1592791273
 Material:
@@ -26372,6 +27818,143 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607514325}
   m_CullTransparentMesh: 1
+--- !u!1 &1613248717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1613248720}
+  - component: {fileID: 1613248719}
+  - component: {fileID: 1613248718}
+  m_Layer: 0
+  m_Name: BackpackGoldText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1613248718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613248717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4278512639
+  m_fontColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 40
+  m_fontSizeBase: 40
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: -4.2782593, y: 0, z: 0.948682, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1613248719
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613248717}
+  m_CullTransparentMesh: 1
+--- !u!224 &1613248720
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613248717}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 421260801}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.000061035, y: -301}
+  m_SizeDelta: {x: 353.71, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1615081773
 GameObject:
   m_ObjectHideFlags: 0
@@ -26535,6 +28118,7 @@ GameObject:
   - component: {fileID: 1628768109}
   - component: {fileID: 1628768108}
   - component: {fileID: 1628768107}
+  - component: {fileID: 1628768111}
   m_Layer: 5
   m_Name: VitalityButton
   m_TagString: Untagged
@@ -26655,6 +28239,19 @@ RectTransform:
   m_AnchoredPosition: {x: 250.5, y: -226.54}
   m_SizeDelta: {x: 74.8329, y: 83.3644}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1628768111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1628768106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f60587f481fe64d88cd938924898c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeTooltipTrigger
+  type: 1
 --- !u!21 &1629333704
 Material:
   serializedVersion: 8
@@ -26764,6 +28361,38 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &1638225908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1638225909}
+  m_Layer: 0
+  m_Name: "[Basic] Wilde Schl\xE4ge | x1 Dmg | Eine Serie von schnellen Angriffen.
+    Erm\xF6glicht Combos."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1638225909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638225908}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &1645651149
 Material:
   serializedVersion: 8
@@ -26873,6 +28502,69 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &1651804351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1651804352}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 5 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1651804352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651804351}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1654277055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1654277056}
+  m_Layer: 0
+  m_Name: "[Verflucht] Fluchfokus | Passive | Passiv: Erh\xF6ht den Fluchgewinn durch
+    Zauber und Treffer."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1654277056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654277055}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1655526532
 GameObject:
   m_ObjectHideFlags: 0
@@ -27229,10 +28921,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   player: {fileID: 0}
+  playerPrefab: {fileID: 4699474175162919012, guid: bb83c6f70584633499f8294d91de3560, type: 3}
   canvas: {fileID: 1131822478}
   eventSystem: {fileID: 1385178065}
   questManager: {fileID: 0}
+  saveSystemPrefab: {fileID: 0}
   spawnPointName: 
+--- !u!1 &1675696581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1675696582}
+  m_Layer: 0
+  m_Name: "[Zauber] Soul Reap | 30 MP | Entrei\xDFt dem Gegner einen Teil seiner
+    Seele, verursacht dunklen Fluc..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1675696582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675696581}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1677659727
 GameObject:
   m_ObjectHideFlags: 0
@@ -27398,7 +29124,7 @@ GameObject:
   - component: {fileID: 1690981758}
   - component: {fileID: 1690981757}
   m_Layer: 0
-  m_Name: Verflucht_Slot_11
+  m_Name: '[Verflucht] Todeshauch | Passive | Die ultimative Macht d...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27442,6 +29168,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1252789017}
   levelText: {fileID: 2115262935}
   lockOverlay: {fileID: 1101295249}
+  skillDescriptionPreview: Die ultimative Macht der Shinigami-Form wird entfesselt.
 --- !u!114 &1690981758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27867,6 +29594,37 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1711171240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1711171241}
+  m_Layer: 0
+  m_Name: "[Basic] Basic F\xE4higkeit 10 | x1 Dmg | "
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1711171241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711171240}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &1714751205
 Material:
   serializedVersion: 8
@@ -28382,6 +30140,143 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723213526}
   m_CullTransparentMesh: 1
+--- !u!1 &1732201052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1732201053}
+  - component: {fileID: 1732201055}
+  - component: {fileID: 1732201054}
+  m_Layer: 0
+  m_Name: SaveInfoText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1732201053
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732201052}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2073941170}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 100}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1732201054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732201052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Kein Spielstand
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1732201055
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732201052}
+  m_CullTransparentMesh: 1
 --- !u!1 &1739916000
 GameObject:
   m_ObjectHideFlags: 0
@@ -28656,6 +30551,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744645672}
   m_CullTransparentMesh: 1
+--- !u!1 &1750012258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1750012259}
+  m_Layer: 0
+  m_Name: '[Verflucht] Todeshauch | Passive | Passiv: Ein vernichtender Hauch umgibt
+    dich, wenn du die Shini...'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1750012259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750012258}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1763050120
 GameObject:
   m_ObjectHideFlags: 0
@@ -28746,7 +30673,7 @@ GameObject:
   - component: {fileID: 1780343714}
   - component: {fileID: 1780343713}
   m_Layer: 0
-  m_Name: Zauber_Slot_8
+  m_Name: '[Zauber] Finstermal | 0 MP (+0 Int-Dmg) | Ein dunkles Siegel ver...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28790,6 +30717,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1901535123}
   levelText: {fileID: 217019608}
   lockOverlay: {fileID: 1010210949}
+  skillDescriptionPreview: "Ein dunkles Siegel verst\xE4rkt allen Folgeschaden."
 --- !u!114 &1780343714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29718,7 +31646,7 @@ GameObject:
   - component: {fileID: 1819327474}
   - component: {fileID: 1819327473}
   m_Layer: 0
-  m_Name: Basic_Slot_4
+  m_Name: '[Basic] Konterklinge | x1 Dmg (+0 Str-Dmg) | Wartet auf den Gegner ...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29762,6 +31690,7 @@ MonoBehaviour:
   skillIcon: {fileID: 348858422}
   levelText: {fileID: 1849835117}
   lockOverlay: {fileID: 2028220335}
+  skillDescriptionPreview: "Wartet auf den Gegner und kontert pr\xE4zise."
 --- !u!114 &1819327474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29920,6 +31849,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1819758885}
   m_CullTransparentMesh: 1
+--- !u!1 &1828658230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1828658231}
+  m_Layer: 0
+  m_Name: "[Zauber] Blitzschlag | 10 MP | Ein konzentrierter Strahl aus wei\xDFer
+    Energie."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1828658231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828658230}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1830977142
 GameObject:
   m_ObjectHideFlags: 0
@@ -30705,7 +32666,7 @@ GameObject:
   - component: {fileID: 1862262301}
   - component: {fileID: 1862262300}
   m_Layer: 0
-  m_Name: Basic_Slot_3
+  m_Name: "[Basic] Sch\xE4delbrecher | x1 Dmg (+0 Str-Dmg) | Ein brutaler Hieb gege..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30745,10 +32706,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3e2b98cc333d5b45a6ff17bbd843260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillSlotUI
-  skill: {fileID: 11400000, guid: 5bb1b202cad026f459250fc8ce5ffb17, type: 2}
+  skill: {fileID: 11400000, guid: 34f16ff313b2bf84ca3e4275522e2258, type: 2}
   skillIcon: {fileID: 121221843}
   levelText: {fileID: 1258207540}
   lockOverlay: {fileID: 892364953}
+  skillDescriptionPreview: Ein brutaler Hieb gegen Kopf oder Schwachstelle.
 --- !u!114 &1862262301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31280,7 +33242,7 @@ GameObject:
   - component: {fileID: 1900628760}
   - component: {fileID: 1900628759}
   m_Layer: 0
-  m_Name: Basic_Slot_7
+  m_Name: '[Basic] Klingenwirbel | x1 Dmg (+0 Str-Dmg) | Rasante Schwertwirbel-...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31324,6 +33286,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1784976599}
   levelText: {fileID: 419933628}
   lockOverlay: {fileID: 556753801}
+  skillDescriptionPreview: Rasante Schwertwirbel-Serie.
 --- !u!114 &1900628760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31991,6 +33954,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964401211}
   m_CullTransparentMesh: 1
+--- !u!1 &1976181302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1976181303}
+  m_Layer: 0
+  m_Name: '[Verflucht] Dunkler Keim | Unlock | Die Saat der Dunkelheit wird in dein
+    Herz gepflanzt. Schaltet...'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1976181303
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976181302}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1978320786
 GameObject:
   m_ObjectHideFlags: 0
@@ -32140,6 +34135,275 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1999161958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1999161959}
+  - component: {fileID: 1999161961}
+  - component: {fileID: 1999161960}
+  m_Layer: 0
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1999161959
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999161958}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1014577537}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1999161960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999161958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Laden
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 20
+  m_fontSizeBase: 20
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1999161961
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999161958}
+  m_CullTransparentMesh: 1
+--- !u!1 &2008804468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2008804469}
+  - component: {fileID: 2008804472}
+  - component: {fileID: 2008804471}
+  - component: {fileID: 2008804470}
+  m_Layer: 0
+  m_Name: CloseButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2008804469
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008804468}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2.6620605, y: 2.6620605, z: 1.3310302}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 98281692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -26.921, y: -93.678}
+  m_SizeDelta: {x: 18.802, y: 30.445}
+  m_Pivot: {x: 1, y: 1}
+--- !u!114 &2008804470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008804468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2008804471}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1131822480}
+        m_TargetAssemblyTypeName: MyUIManager, Assembly-CSharp
+        m_MethodName: CloseAllPanels
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2008804471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008804468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2008804472
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008804468}
+  m_CullTransparentMesh: 1
 --- !u!1 &2023601844
 GameObject:
   m_ObjectHideFlags: 0
@@ -32354,6 +34618,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2028220335}
   m_CullTransparentMesh: 1
+--- !u!1 &2030856433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2030856434}
+  m_Layer: 0
+  m_Name: "[Verflucht] Finsterschritt | Passive | Passiv: Du bewegst dich wie ein
+    Geist. Erh\xF6ht Ausweichchan..."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2030856434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030856433}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &2036797749
 Material:
   serializedVersion: 8
@@ -32853,6 +35149,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillManager
   skillPoints: 0
+  allAvailableSkills:
+  - {fileID: 11400000, guid: d835ae71b4a4002418aa33a6c730afce, type: 2}
+  - {fileID: 11400000, guid: c1b8f489006282a42b8b94088f66fd1a, type: 2}
+  - {fileID: 11400000, guid: 5bb1b202cad026f459250fc8ce5ffb17, type: 2}
+  - {fileID: 11400000, guid: df72fba8afbc7ec49aa4c4cfb2415c49, type: 2}
+  - {fileID: 11400000, guid: 7bebbc29f415a8c42b4c18b3df7c90bc, type: 2}
+  - {fileID: 11400000, guid: 1538304213e0be74c9da206157248f79, type: 2}
+  - {fileID: 11400000, guid: cf53b4927cdabe147829cd2cf5754d5b, type: 2}
+  - {fileID: 11400000, guid: 936f0ec969b41d24ebc9d523c56772b1, type: 2}
+  - {fileID: 11400000, guid: 78c59d57c5cb4754daeda1b35ed929e2, type: 2}
+  - {fileID: 11400000, guid: d7d41796649fe4344bd8fc7f1e04e4bc, type: 2}
+  - {fileID: 11400000, guid: cbfb11274f7c7da4e90cee1d74b28515, type: 2}
+  - {fileID: 11400000, guid: 6369c28a65f77a645b99ce9fbe688514, type: 2}
+  - {fileID: 11400000, guid: 003ac5d1050c1944fb19dfa71e880858, type: 2}
+  - {fileID: 11400000, guid: 20f8bd9733bf9a145a1430de7766d915, type: 2}
+  - {fileID: 11400000, guid: 0a9b89cb25552534abaaec339a9fe1b3, type: 2}
+  - {fileID: 11400000, guid: 137709f56cca86748beb028247e341e2, type: 2}
+  - {fileID: 11400000, guid: 677fac5cc20905740a78491368f17e47, type: 2}
+  - {fileID: 11400000, guid: 01183053d4fbf04468ac271a178cba75, type: 2}
+  - {fileID: 11400000, guid: 708bc58d28061764dbef163fd00e5812, type: 2}
+  - {fileID: 11400000, guid: c74616999476c0e438ed9e9487a0233e, type: 2}
+  - {fileID: 11400000, guid: 6d3db098417b2cb4eb235b461d685c78, type: 2}
+  - {fileID: 11400000, guid: b9404a7b19451fe40acb08ffd9867c3d, type: 2}
+  - {fileID: 11400000, guid: dfd21bc05a903cc45bfd02cf41349fba, type: 2}
+  - {fileID: 11400000, guid: d9c2b927b38af54489b6a754c960f916, type: 2}
+  - {fileID: 11400000, guid: 06b0a9424279fdb4f8a004d5389750c5, type: 2}
+  - {fileID: 11400000, guid: d33286b6932ae16499c857ae3c0391f6, type: 2}
+  - {fileID: 11400000, guid: abe9f6ee760e119409f982fa5a380271, type: 2}
+  - {fileID: 11400000, guid: 21f98daa041e94e4597f24af6b383657, type: 2}
+  - {fileID: 11400000, guid: 5a16e858b0987d949909e54333dd7d71, type: 2}
+  - {fileID: 11400000, guid: 6b19086e2283c7442a96ecece3d47f86, type: 2}
+  - {fileID: 11400000, guid: a6bdd8eb147d0e5408e9e671135a9f50, type: 2}
+  - {fileID: 11400000, guid: a4310cf0f51578541933524a45c102e0, type: 2}
+  - {fileID: 11400000, guid: b02e1565b39972d42850e3458a8e235c, type: 2}
+  - {fileID: 11400000, guid: 8a1326075ac8536419cc3a663abe4bab, type: 2}
+  - {fileID: 11400000, guid: 62aff626684ad974685bcfda9cb3313e, type: 2}
+  - {fileID: 11400000, guid: 10c46178a135e6b4d946d4de282d1f77, type: 2}
+  - {fileID: 11400000, guid: 509ecddafa515d44c8361a076134bb41, type: 2}
   learnedOrder: []
 --- !u!1 &2054164607
 GameObject:
@@ -32943,7 +35277,8 @@ GameObject:
   - component: {fileID: 2059950822}
   - component: {fileID: 2059950821}
   m_Layer: 0
-  m_Name: Basic_Slot_6
+  m_Name: "[Basic] Aufw\xE4rtshieb | x1 Dmg (+0 Str-Dmg) | Rei\xDFt den Gegner aus
+    d..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32987,6 +35322,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1096982587}
   levelText: {fileID: 267280175}
   lockOverlay: {fileID: 731925918}
+  skillDescriptionPreview: "Rei\xDFt den Gegner aus dem Gleichgewicht."
 --- !u!114 &2059950822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33178,6 +35514,84 @@ Material:
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &2073941169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2073941170}
+  - component: {fileID: 2073941172}
+  - component: {fileID: 2073941171}
+  m_Layer: 0
+  m_Name: LoadPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &2073941170
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073941169}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1732201053}
+  - {fileID: 1014577537}
+  - {fileID: 1088134311}
+  m_Father: {fileID: 1131822479}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 700, y: 500}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2073941171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073941169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 3045907662633550242, guid: 2ecf945b56edaa24fa26c201cc844be7, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2073941172
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073941169}
+  m_CullTransparentMesh: 1
 --- !u!1 &2079633116
 GameObject:
   m_ObjectHideFlags: 0
@@ -33637,7 +36051,7 @@ GameObject:
   - component: {fileID: 2116753873}
   - component: {fileID: 2116753872}
   m_Layer: 0
-  m_Name: Zauber_Slot_3
+  m_Name: '[Zauber] Donnerspeer | 0 MP (+0 Int-Dmg) | Ein verdichteter Blitz...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33681,6 +36095,7 @@ MonoBehaviour:
   skillIcon: {fileID: 709849981}
   levelText: {fileID: 1744645674}
   lockOverlay: {fileID: 1833513513}
+  skillDescriptionPreview: Ein verdichteter Blitzspeer durchbohrt das Ziel.
 --- !u!114 &2116753873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33777,7 +36192,7 @@ GameObject:
   - component: {fileID: 2117343492}
   - component: {fileID: 2117343491}
   m_Layer: 0
-  m_Name: Verflucht_Slot_6
+  m_Name: "[Verflucht] Nachtmahr | Passive | Ein Schatten schl\xE4gt b..."
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33821,6 +36236,8 @@ MonoBehaviour:
   skillIcon: {fileID: 916716231}
   levelText: {fileID: 262721471}
   lockOverlay: {fileID: 1454929985}
+  skillDescriptionPreview: "Ein Schatten schl\xE4gt bei jedem Angriff zus\xE4tzlich
+    zu."
 --- !u!114 &2117343492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33903,6 +36320,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117343489}
   m_CullTransparentMesh: 1
+--- !u!1 &2119210402
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2119210403}
+  m_Layer: 0
+  m_Name: "[Zauber] Blitzstrahl | 20 MP | Ein konzentrierter Strahl aus wei\xDFer
+    Energie."
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2119210403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119210402}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 28493576}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2125044170
 GameObject:
   m_ObjectHideFlags: 0
@@ -34223,7 +36672,7 @@ GameObject:
   - component: {fileID: 2132887878}
   - component: {fileID: 2132887877}
   m_Layer: 0
-  m_Name: Zauber_Slot_6
+  m_Name: '[Zauber] Blutpakt | 0 MP (+0 Int-Dmg) | Opfere eigenes Leben f...'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34267,6 +36716,7 @@ MonoBehaviour:
   skillIcon: {fileID: 1588541383}
   levelText: {fileID: 1518885983}
   lockOverlay: {fileID: 107015459}
+  skillDescriptionPreview: "Opfere eigenes Leben f\xFCr verbotene Macht."
 --- !u!114 &2132887878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34479,3 +36929,4 @@ SceneRoots:
   - {fileID: 661484524}
   - {fileID: 954423835}
   - {fileID: 48363385}
+  - {fileID: 28493576}

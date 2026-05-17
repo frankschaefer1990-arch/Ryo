@@ -17,8 +17,8 @@ public class AttributeUI : MonoBehaviour
     [Header("Attribute Text")]
     public TextMeshProUGUI strengthText;
     public TextMeshProUGUI vitalityText;
-    public TextMeshProUGUI armorText;
-    public TextMeshProUGUI speedText;
+    public TextMeshProUGUI intelligenceText;
+    public TextMeshProUGUI curseText;
 
     [Header("Bars")]
     public Slider hpBar;
@@ -30,8 +30,8 @@ public class AttributeUI : MonoBehaviour
     [Header("Attribute Buttons")]
     public Button strengthButton;
     public Button vitalityButton;
-    public Button armorButton;
-    public Button speedButton;
+    public Button intelligenceButton;
+    public Button curseButton;
 
     private void OnEnable()
     {
@@ -64,22 +64,29 @@ public class AttributeUI : MonoBehaviour
     // =========================
     private void ReconnectPlayerStats()
     {
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool isMenu = sceneName == "MainMenu" || sceneName == "SplashScreen";
+
         if (PlayerStats.Instance != null)
         {
             playerStats = PlayerStats.Instance;
         }
         else
         {
-            playerStats = FindFirstObjectByType<PlayerStats>();
+            playerStats = FindAnyObjectByType<PlayerStats>();
         }
 
         if (playerStats == null)
         {
-            Debug.LogError("PlayerStats konnte nicht gefunden werden!");
+            // Only log as error if we are in a gameplay scene
+            if (!isMenu)
+            {
+                Debug.LogWarning("AttributeUI: PlayerStats konnte in dieser Szene noch nicht gefunden werden.");
+            }
         }
         else
         {
-            Debug.Log("PlayerStats erfolgreich verbunden.");
+            Debug.Log("AttributeUI: PlayerStats erfolgreich verbunden.");
         }
     }
 
@@ -90,8 +97,8 @@ public class AttributeUI : MonoBehaviour
     {
         SetupButton(strengthButton);
         SetupButton(vitalityButton);
-        SetupButton(armorButton);
-        SetupButton(speedButton);
+        SetupButton(intelligenceButton);
+        SetupButton(curseButton);
 
         if (strengthButton != null)
         {
@@ -105,21 +112,24 @@ public class AttributeUI : MonoBehaviour
             vitalityButton.onClick.AddListener(AddVitality);
         }
 
-        if (armorButton != null)
+        if (intelligenceButton != null)
         {
-            armorButton.onClick.RemoveAllListeners();
-            armorButton.onClick.AddListener(AddArmor);
+            intelligenceButton.onClick.RemoveAllListeners();
+            intelligenceButton.onClick.AddListener(AddIntelligence);
         }
 
-        if (speedButton != null)
+        if (curseButton != null)
         {
-            speedButton.onClick.RemoveAllListeners();
-            speedButton.onClick.AddListener(AddSpeed);
+            curseButton.onClick.RemoveAllListeners();
+            curseButton.onClick.AddListener(AddCurse);
         }
     }
 
     private void Update()
     {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "MainMenu" || sceneName == "SplashScreen") return;
+
         if (playerStats == null)
         {
             ReconnectPlayerStats();
@@ -150,11 +160,11 @@ public class AttributeUI : MonoBehaviour
         if (vitalityText != null)
             vitalityText.text = playerStats.vitality.ToString();
 
-        if (armorText != null)
-            armorText.text = playerStats.defense.ToString();
+        if (intelligenceText != null)
+            intelligenceText.text = playerStats.defense.ToString();
 
-        if (speedText != null)
-            speedText.text = playerStats.agility.ToString();
+        if (curseText != null)
+            curseText.text = playerStats.agility.ToString();
 
         // =========================
         // HP BAR
@@ -192,8 +202,8 @@ public class AttributeUI : MonoBehaviour
         // =========================
         UpdateButtonVisual(strengthButton);
         UpdateButtonVisual(vitalityButton);
-        UpdateButtonVisual(armorButton);
-        UpdateButtonVisual(speedButton);
+        UpdateButtonVisual(intelligenceButton);
+        UpdateButtonVisual(curseButton);
     }
 
     // =========================
@@ -286,9 +296,9 @@ public class AttributeUI : MonoBehaviour
     }
 
     // =========================
-    // ARMOR -> INTELLIGENCE
+    // INTELLIGENCE
     // =========================
-    public void AddArmor()
+    public void AddIntelligence()
     {
         if (playerStats == null) return;
         if (!playerStats.UseAttributePoint()) return;
@@ -307,9 +317,9 @@ public class AttributeUI : MonoBehaviour
     }
 
     // =========================
-    // SPEED -> CURSE
+    // CURSE
     // =========================
-    public void AddSpeed()
+    public void AddCurse()
     {
         if (playerStats == null) return;
         if (!playerStats.UseAttributePoint()) return;

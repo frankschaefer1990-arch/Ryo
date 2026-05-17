@@ -25,5 +25,32 @@ MonoBehaviour:
   isSpell: 1
   manaCost: 20
   effectColor: {r: 0, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 8300000, guid: 397bc8e3f24e97b48b5d6b55c47e14e4, type: 3}
   hasCombo: 0
+  healMultiplier: 0
+  isCurseUnlocker: 0
+  isPassiveCurse: 0
+  effectSummary: 'CATEGORY: Zauber
+
+    TYPE: Active
+
+    Base Hits: 1
+
+    Dmg Multiplier:
+    x1,75
+
+    Mana Cost: 20
+
+    Scaling: +2 Damage per Intelligence point
+
+'
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

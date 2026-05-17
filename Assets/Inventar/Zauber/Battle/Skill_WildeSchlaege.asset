@@ -25,5 +25,30 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
+  customSlashSprite: {fileID: 0}
+  slashDuration: 0.2
+  visualOffset: {x: 0, y: 0, z: 0}
+  visualScale: {x: 1, y: 1, z: 1}
+  randomRotation: 1
   skillSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}
   hasCombo: 1
+  healMultiplier: 0
+  isCurseUnlocker: 0
+  isPassiveCurse: 0
+  effectSummary: 'CATEGORY: Basic
+
+    TYPE: Active
+
+    Base Hits: 3
+
+    Dmg Multiplier:
+    x1
+
+    Scaling: +1 Damage per Strength point
+
+'
+  canStun: 0
+  baseStunChance: 0.1
+  stunChancePerLevel: 0.05
+  baseTimeLimit: 1.2
+  timeLimitReductionPerLevel: 0.05

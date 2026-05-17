@@ -9,7 +9,33 @@ public class SkillSlotUI : MonoBehaviour, UnityEngine.EventSystems.IPointerEnter
     public TextMeshProUGUI levelText;
     public GameObject lockOverlay;
 
+    [Header("Inspector Info")]
+    [TextArea(3, 10)] public string skillDescriptionPreview;
+
     private Button button;
+
+    private void OnValidate()
+    {
+        if (skill != null)
+        {
+            string summary = "";
+            if (skill.isCurseUnlocker) summary = "Unlock";
+            else if (skill.isPassiveCurse) summary = "Passive";
+            else if (skill.isSpell) summary = skill.manaCost + " MP (+" + (PlayerStats.Instance != null ? PlayerStats.Instance.defense * 2 : 0) + " Int-Dmg)";
+            else summary = "x" + skill.damageMultiplier + " Dmg (+" + (PlayerStats.Instance != null ? PlayerStats.Instance.strength : 0) + " Str-Dmg)";
+
+            // Get a short snippet of the description
+            string descSnippet = skill.description;
+            if (descSnippet.Length > 25) descSnippet = descSnippet.Substring(0, 22) + "...";
+            
+            if (string.IsNullOrEmpty(descSnippet)) descSnippet = "Keine Beschreibung";
+
+            gameObject.name = string.Format("[{0}] {1} | {2} | {3}", skill.category, skill.skillName, summary, descSnippet);
+            
+            // Preview the full description in the inspector
+            skillDescriptionPreview = skill.description;
+        }
+    }
 
     private void Awake()
     {

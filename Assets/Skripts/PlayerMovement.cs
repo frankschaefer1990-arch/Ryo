@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Speed Scaling")]
     public float baseMoveSpeed = 5f;
-    public float agilitySpeedBonus = 0.2f;
 
     private PlayerStats playerStats;
     private bool wasLockedLastFrame = false;
@@ -67,14 +66,9 @@ public class PlayerMovement : MonoBehaviour
         void Update()
 {
         // =========================
-        // SPEED SYSTEM (AGILITY)
+        // SPEED SYSTEM
         // =========================
-        if (playerStats != null)
-        {
-            // AGI 1 = Base Speed
-            // Jeder weitere Punkt = +0.2
-            speed = baseMoveSpeed + ((playerStats.agility - 1) * agilitySpeedBonus);
-        }
+        speed = baseMoveSpeed;
 
         // =========================
         // MOVEMENT LOCK (z.B. Shop offen oder Dialog)
@@ -149,12 +143,14 @@ public class PlayerMovement : MonoBehaviour
         if (movement == Vector2.zero)
             return;
 
-        Vector2 targetPosition = rb.position + movement * speed * Time.fixedDeltaTime;
+        float moveDistance = speed * Time.fixedDeltaTime;
+        Vector2 targetPosition = rb.position + movement * moveDistance;
 
-        // Prüfen ob Wand im Weg
-        Collider2D hit = Physics2D.OverlapCircle(targetPosition, 0.1f, wallLayer);
+        // Directional check: Raycast/CircleCast in movement direction
+        // Radius 0.3f covers the player width, distance 0.1f checks slightly ahead
+        RaycastHit2D hit = Physics2D.CircleCast(rb.position, 0.3f, movement, 0.1f, wallLayer);
 
-        if (hit == null)
+        if (hit.collider == null)
         {
             rb.MovePosition(targetPosition);
         }

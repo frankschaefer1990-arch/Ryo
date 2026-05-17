@@ -1665,7 +1665,9 @@ MonoBehaviour:
   meister: {fileID: 229067657}
   soulBallObject: {fileID: 2021875648}
   bossData: {fileID: 11400000, guid: 969963862c3708148aa236d32a6ca545, type: 2}
+  dunklerKeimSkill: {fileID: 11400000, guid: 6369c28a65f77a645b99ce9fbe688514, type: 2}
   templeMusic: {fileID: 8300000, guid: e406b5508edc4044c904c5b9600a2797, type: 3}
+  heartbeatSFX: {fileID: 8300000, guid: 086d57c07f0cd85438fc34f6efcf0030, type: 3}
 --- !u!1 &1179450209
 GameObject:
   m_ObjectHideFlags: 0

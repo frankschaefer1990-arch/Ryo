@@ -34,6 +34,7 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            if (transform.parent != null) transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
             SetupAudioSources();
         }
@@ -90,7 +91,7 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"AudioManager: Updating music for scene [{newScene}]. Current track for: [{currentSceneName}]");
         
         // Prevent restarting the same music when reloading or transitioning to same scene
-        if (newScene == currentSceneName) 
+        if (newScene == currentSceneName && !isCrossfading) 
         {
             Debug.Log("AudioManager: Scene unchanged, keeping current music.");
             return;
@@ -107,29 +108,55 @@ public class AudioManager : MonoBehaviour
             }
         }
 
+        // Programmatic fallback for MainMenu if mapping is missing
+        if (clipToPlay == null && (newScene == "MainMenu" || newScene == "SplashScreen"))
+        {
+            foreach (var mapping in sceneMusicList) {
+                if (mapping.musicClip != null && (mapping.musicClip.name == "Rust Crown" || mapping.musicClip.name == "Rust_Crown")) {
+                    clipToPlay = mapping.musicClip;
+                    break;
+                }
+            }
+        }
+
         if (clipToPlay != null)
         {
+            Debug.Log($"AudioManager: Found music for scene {newScene}: {clipToPlay.name}");
             StartCoroutine(CrossfadeMusic(clipToPlay));
         }
         else
         {
-            // Optional: Fade out if no music is defined for the scene
+            Debug.Log($"AudioManager: No music defined for scene {newScene}, fading out.");
             StartCoroutine(FadeOutCurrent());
         }
     }
 
     private IEnumerator CrossfadeMusic(AudioClip newClip)
     {
+        if (newClip == null) yield break;
+
+        // If we're already crossfading, wait or skip if it's the same clip
+        if (isCrossfading) {
+            AudioSource fadeInSource_Check = usingSourceA ? audioSourceB : audioSourceA;
+            if (fadeInSource_Check.clip == newClip) {
+                Debug.Log("AudioManager: Already crossfading to this clip.");
+                yield break;
+            }
+        }
+
         isCrossfading = true;
         AudioSource fadeOutSource = usingSourceA ? audioSourceA : audioSourceB;
         AudioSource fadeInSource = usingSourceA ? audioSourceB : audioSourceA;
 
-        // If the same clip is already playing, just ensure it's at the right volume
-        if (fadeOutSource.clip == newClip && fadeOutSource.isPlaying)
+        // If the same clip is already playing and fully faded, just ensure volume
+        if (fadeOutSource.clip == newClip && fadeOutSource.isPlaying && !isCrossfading)
         {
+            fadeOutSource.volume = masterVolume;
             isCrossfading = false;
             yield break;
         }
+
+        Debug.Log($"AudioManager: Crossfading {fadeOutSource.clip?.name ?? "None"} -> {newClip.name}");
 
         fadeInSource.clip = newClip;
         fadeInSource.volume = 0;

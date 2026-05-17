@@ -1,0 +1,15 @@
+{
+    "asset": "03bf33f87c63bd642b229f13b611aa72",
+    "fileName": "019e32d8-8fdd-7487-9d80-b6ea3f5e5732.wav",
+    "prompt": "3 dark deep loud slow human heartbeats with a lot of bass and reverb, cinematic horror style",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 10.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

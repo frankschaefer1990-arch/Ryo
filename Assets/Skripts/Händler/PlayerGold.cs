@@ -15,13 +15,12 @@ public class PlayerGold : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.Log($"PlayerGold: Duplicate script on {gameObject.name} removed.");
-            Destroy(this); // Only destroy this script instance
+            Debug.Log($"PlayerGold: Duplicate component on {gameObject.name} removed.");
+            Destroy(this); // Destroy only the script component
             return;
         }
 
         Instance = this;
-        // Only persist if we are a root object or specifically part of persistent systems
         if (transform.parent == null)
         {
             DontDestroyOnLoad(gameObject);
@@ -45,6 +44,7 @@ public class PlayerGold : MonoBehaviour
         if (Instance == this)
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            Instance = null; // CLEAR INSTANCE
         }
     }
 
@@ -88,25 +88,22 @@ public class PlayerGold : MonoBehaviour
     // =========================
     public void AddGold(int amount)
     {
-        // Ungültige Werte blockieren
         if (amount <= 0)
         {
-            Debug.LogWarning("Ungültiger Goldbetrag!");
+            Debug.LogWarning("PlayerGold: Ungültiger Goldbetrag: " + amount);
             return;
         }
 
+        int oldGold = currentGold;
         currentGold += amount;
-        Debug.Log($"PlayerGold: {amount} Gold hinzugefügt. Neuer Stand: {currentGold}");
+        Debug.Log($"PlayerGold: {amount} Gold hinzugefügt. {oldGold} -> {currentGold}");
     }
 
-    // =========================
-    // DIREKT SETZEN (SaveSystem später)
-    // =========================
     public void SetGold(int amount)
     {
+        int oldGold = currentGold;
         currentGold = Mathf.Max(0, amount);
-
-        Debug.Log("Gold gesetzt auf: " + currentGold);
+        Debug.Log($"PlayerGold: Gold direkt gesetzt. {oldGold} -> {currentGold}");
     }
 
     // =========================

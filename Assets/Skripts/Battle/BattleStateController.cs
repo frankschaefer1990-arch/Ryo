@@ -33,29 +33,26 @@ public class BattleStateController : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         bool isBattleScene = scene.name.Contains("Battle");
-        // Use a very short delay to ensure GameManager has updated the player reference
+        bool isMenu = scene.name.Contains("Menu") || scene.name.Contains("Splash");
+        
+        if (isMenu) return;
+
+        // Ensure we handle player state correctly for the current scene
         StartCoroutine(ToggleDelayed(!isBattleScene));
         
-        if (!isBattleScene)
-        {
-            lastOverworldScene = scene.name;
-        }
+        if (!isBattleScene) lastOverworldScene = scene.name;
     }
 
     private IEnumerator ToggleDelayed(bool active)
     {
-        // Wait for end of frame instead of 0.2s for cleaner transitions
-        yield return new WaitForEndOfFrame();
+        // Wait for GameManager systems to be fully ready
+        yield return new WaitForSeconds(0.2f);
         TogglePlayerState(active);
     }
 
     public void TogglePlayerState(bool active)
     {
-        GameObject playerObj = null;
-        if (GameManager.Instance != null && GameManager.Instance.player != null)
-        {
-            playerObj = GameManager.Instance.player;
-        }
+        GameObject playerObj = (GameManager.Instance != null) ? GameManager.Instance.player : null;
         
         if (playerObj == null)
         {
@@ -63,24 +60,16 @@ public class BattleStateController : MonoBehaviour
             if (playerObj == null) playerObj = GameObject.Find("Player");
         }
 
-        if (playerObj == null) {
-            // Only log warning if we are NOT in a battle scene (where player might be disabled/gone)
-            if (!SceneManager.GetActiveScene().name.Contains("Battle"))
-                Debug.LogWarning($"BattleStateController: Player nicht gefunden in Szene {SceneManager.GetActiveScene().name}.");
-            return;
-        }
+        if (playerObj == null) return;
 
         try {
-            // Renderer
-            SpriteRenderer sr = playerObj.GetComponentInChildren<SpriteRenderer>();
+            var sr = playerObj.GetComponentInChildren<SpriteRenderer>();
             if (sr != null) sr.enabled = active;
 
-            // Movement
-            MonoBehaviour movement = playerObj.GetComponent("PlayerMovement") as MonoBehaviour;
+            var movement = playerObj.GetComponent<PlayerMovement>();
             if (movement != null) movement.enabled = active;
 
-            // Physics
-            Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
+            var rb = playerObj.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
                 if (!active)
@@ -94,11 +83,8 @@ public class BattleStateController : MonoBehaviour
                 }
             }
 
-            // Collider
-            Collider2D col = playerObj.GetComponent<Collider2D>();
+            var col = playerObj.GetComponent<Collider2D>();
             if (col != null) col.enabled = active;
-
-            Debug.Log($"BattleStateController: Player state set to {active} in {SceneManager.GetActiveScene().name}");
         }
         catch (System.Exception e) {
             Debug.LogError("BattleStateController: Error in TogglePlayerState: " + e.Message);

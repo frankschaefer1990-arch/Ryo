@@ -10,6 +10,14 @@ public class QuestManager : MonoBehaviour
     public bool defeatedTempleBoss = false;
     public bool finishedTempleSequence = false;
 
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished)
+    {
+        introSeen = intro;
+        visitedTemple = visited;
+        defeatedTempleBoss = defeated;
+        finishedTempleSequence = finished;
+    }
+
     [Header("Battle Setup")]
     public EnemyData nextBattleEnemy;
 

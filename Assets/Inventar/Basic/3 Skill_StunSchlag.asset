@@ -34,6 +34,23 @@ MonoBehaviour:
   skillSound: {fileID: 0}
   hasCombo: 0
   healMultiplier: 0
+  isCurseUnlocker: 0
+  isPassiveCurse: 0
+  effectSummary: 'CATEGORY: Basic
+
+    TYPE: Active
+
+    Base Hits: 1
+
+    Dmg Multiplier:
+    x2
+
+    Scaling: +1 Damage per Strength point
+
+    Stun Chance: 20% (+10% per
+    Level)
+
+'
   canStun: 1
   baseStunChance: 0.2
   stunChancePerLevel: 0.1

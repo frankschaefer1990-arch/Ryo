@@ -16,6 +16,13 @@ public class InventoryManager : MonoBehaviour
     private bool[] slotOccupied;
     private int selectedSlotIndex = -1;
 
+    public bool[] GetSlotData() => slotOccupied;
+    public void SetSlotData(bool[] data) 
+    { 
+        slotOccupied = data; 
+        RefreshInventory(); 
+    }
+
     public int GetSelectedSlotIndex() => selectedSlotIndex;
 
     private void Awake()

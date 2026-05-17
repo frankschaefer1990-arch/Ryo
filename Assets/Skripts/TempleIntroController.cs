@@ -14,7 +14,9 @@ public class TempleIntroController : MonoBehaviour
     public Transform meister;
     public GameObject soulBallObject; 
     public EnemyData bossData;
+    public BattleSkill dunklerKeimSkill;
     public AudioClip templeMusic;
+    public AudioClip heartbeatSFX;
 
     private bool hasStartedBattle = false;
 
@@ -192,7 +194,43 @@ public class TempleIntroController : MonoBehaviour
             
             yield return new WaitForSeconds(1.0f);
             yield return StartCoroutine(SoulAbsorptionEffect(player.transform));
-            di.ShowMessage("System", "Seele von Skelettkrieger wurde verschlungen... Ryo wurde verflucht!", 2.5f); yield return WaitForDialogue(di);
+            
+            di.ShowMessage("System", "Seele von Skelettkrieger wurde verschlungen... Ryo wurde verflucht!\nShinigamiform freigeschalten, passiver Skill 'Dunkler Keim' gelernt!", 4.5f); 
+            
+            if (SkillManager.Instance != null && dunklerKeimSkill != null)
+            {
+                SkillManager.Instance.ForceLearnSkill(dunklerKeimSkill);
+            }
+            
+            yield return WaitForDialogue(di);
+            
+            // Heartbeats (3 times) - Played louder
+            if (heartbeatSFX != null)
+            {
+                AudioSource audio = gameObject.AddComponent<AudioSource>();
+                audio.clip = heartbeatSFX;
+                audio.spatialBlend = 0f; // Ensure 2D sound (full volume)
+                audio.volume = 1.0f;
+                
+                // Beat 1
+                audio.Play();
+                audio.PlayOneShot(heartbeatSFX, 1.0f); // Double up for volume
+                yield return new WaitForSeconds(1.2f); // Increased from 0.7
+                // Beat 2
+                audio.Play();
+                audio.PlayOneShot(heartbeatSFX, 1.0f);
+                yield return new WaitForSeconds(1.2f); // Increased from 0.7
+                // Beat 3
+                audio.Play();
+                audio.PlayOneShot(heartbeatSFX, 1.0f);
+                yield return new WaitForSeconds(1.8f); // Increased from 1.2
+                
+                Destroy(audio, 1.0f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(3.0f); // Fallback wait
+            }
             }
 
             di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di);

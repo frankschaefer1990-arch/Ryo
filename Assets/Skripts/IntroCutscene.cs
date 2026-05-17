@@ -23,6 +23,8 @@ public class IntroCutscene : MonoBehaviour
 
     private IEnumerator PlayIntro()
     {
+        Debug.Log("IntroCutscene: PlayIntro started.");
+        
         if (MyUIManager.Instance != null)
         {
             MyUIManager.Instance.CloseAllPanels();
@@ -30,49 +32,56 @@ public class IntroCutscene : MonoBehaviour
         }
 
         GameObject playerObj = null;
-        float timeout = 3.0f;
-        while (playerObj == null && timeout > 0)
+        float waitTime = 0;
+        // Wait for player to be spawned AND adopted by GameManager
+        while (playerObj == null && waitTime < 5.0f)
         {
             if (GameManager.Instance != null && GameManager.Instance.player != null)
+            {
                 playerObj = GameManager.Instance.player;
-            else
-                playerObj = GameObject.FindGameObjectWithTag("Player");
+            }
 
             if (playerObj == null)
             {
-                yield return null;
-                timeout -= Time.deltaTime;
+                yield return new WaitForSeconds(0.1f);
+                waitTime += 0.1f;
             }
         }
 
-        PlayerMovement playerMove = null;
-        if (playerObj != null)
+        if (playerObj == null)
         {
-            playerMove = playerObj.GetComponent<PlayerMovement>();
-            if (playerMove != null) playerMove.canMove = false;
+            Debug.LogError("IntroCutscene: Player not found after 5 seconds!");
+        }
+        else
+        {
+            Debug.Log("IntroCutscene: Player ready: " + playerObj.name + " at " + playerObj.transform.position);
+            playerObj.SetActive(true);
+            var sr = playerObj.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null) 
+            {
+                sr.enabled = true;
+                sr.color = Color.white;
+                sr.sortingOrder = 20; // Ensure he is on top
+            }
         }
 
-        /*
-        if (FadeManager.Instance != null)
-        {
-            yield return StartCoroutine(FadeManager.Instance.PlayRealisticBlink());
-        }
+        PlayerMovement playerMove = playerObj?.GetComponent<PlayerMovement>();
+        if (playerMove != null) playerMove.canMove = false;
 
-        yield return new WaitForSeconds(0.5f);
-        */
-
-        CameraFollow camFollow = FindFirstObjectByType<CameraFollow>();
-        Transform playerTransform = null;
+        CameraFollow camFollow = FindAnyObjectByType<CameraFollow>();
         if (camFollow != null)
         {
-            playerTransform = camFollow.player;
             camFollow.enabled = false; 
             
             Vector3 startPos = camFollow.transform.position;
-            Vector3 targetPos = new Vector3(templeEntrance.position.x, templeEntrance.position.y, startPos.z);
+            startPos.z = -10f; // Force correct Z
+            
+            Vector3 targetPos = (templeEntrance != null) ? new Vector3(templeEntrance.position.x, templeEntrance.position.y, -10f) : startPos;
 
             float elapsed = 0;
             float duration = 2.5f;
+            Debug.Log($"IntroCutscene: Panning to {((templeEntrance != null) ? templeEntrance.name : "StartPos")} at {targetPos}");
+            
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
@@ -83,27 +92,30 @@ public class IntroCutscene : MonoBehaviour
             if (hollowScreem != null)
             {
                 AudioSource.PlayClipAtPoint(hollowScreem, Camera.main.transform.position, screamVolume);
-                AudioSource.PlayClipAtPoint(hollowScreem, Camera.main.transform.position, screamVolume);
             }
             yield return new WaitForSeconds(1.5f);
 
+            // PAN BACK TO PLAYER
+            Debug.Log("IntroCutscene: Panning back to Player...");
             elapsed = 0;
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
-                if (playerTransform != null && playerTransform.gameObject != null)
-                {
-                    camFollow.transform.position = Vector3.Lerp(targetPos, new Vector3(playerTransform.position.x, playerTransform.position.y, startPos.z), elapsed / duration);
-                }
-                else {
-                    if (GameManager.Instance != null && GameManager.Instance.player != null)
-                        playerTransform = GameManager.Instance.player.transform;
-                }
+                
+                // RE-FETCH PLAYER POSITION EVERY FRAME
+                Vector3 playerPos = (GameManager.Instance != null && GameManager.Instance.player != null) 
+                    ? GameManager.Instance.player.transform.position 
+                    : Vector3.zero;
+                
+                Vector3 backTarget = new Vector3(playerPos.x, playerPos.y, -10f);
+                camFollow.transform.position = Vector3.Lerp(targetPos, backTarget, elapsed / duration);
                 yield return null;
             }
 
             camFollow.enabled = true;
-            var brain = Camera.main.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+            Debug.Log("IntroCutscene: Pan back complete. Camera snap to player.");
+            
+            var brain = Camera.main?.GetComponent<Unity.Cinemachine.CinemachineBrain>();
             if (brain != null) brain.enabled = false;
         }
 
@@ -116,5 +128,14 @@ public class IntroCutscene : MonoBehaviour
         if (QuestManager.Instance != null) QuestManager.Instance.introSeen = true;
         if (playerMove != null) playerMove.canMove = true;
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
-    }
-}
+        
+        if (playerObj != null)
+        {
+            Debug.Log($"IntroCutscene: Sequence finished. Player '{playerObj.name}' active: {playerObj.activeInHierarchy} at {playerObj.transform.position}");
+        }
+        else
+        {
+            Debug.LogWarning("IntroCutscene: Sequence finished but playerObj was lost!");
+        }
+        }
+        }

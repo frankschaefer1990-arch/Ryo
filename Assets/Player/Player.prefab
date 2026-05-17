@@ -13,7 +13,11 @@ GameObject:
   - component: {fileID: 1887375432420705578}
   - component: {fileID: 2105772294247722155}
   - component: {fileID: 4048747875721026948}
-  m_Layer: 0
+  - component: {fileID: 8171351783474549907}
+  - component: {fileID: 2354657156177109498}
+  - component: {fileID: 5480748479723500985}
+  - component: {fileID: 7749385931716217532}
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -82,7 +86,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 100
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3158303706182501895, guid: 59b3de89afdd1f04ea94c33594767549, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -136,11 +140,10 @@ MonoBehaviour:
   speed: 5
   wallLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   canMove: 1
   upScaleMultiplier: 1.1
   baseMoveSpeed: 5
-  agilitySpeedBonus: 0.2
 --- !u!95 &4048747875721026948
 Animator:
   serializedVersion: 7
@@ -163,3 +166,112 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8171351783474549907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4699474175162919012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4a0bab2570b7f543962457c12eb3b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  level: 1
+  currentXP: 0
+  xpToNextLevel: 10
+  attributePoints: 0
+  strength: 1
+  vitality: 1
+  defense: 1
+  agility: 1
+  statDescription: 'Strength: +1 Dmg per point to basic attacks
+
+    Vitality: +10
+    Max HP per point
+
+    Intelligence: +10 Max Mana, +1 Mana Regen per turn & +2
+    Spell Damage per point
+
+    Curse: Increases the effectiveness and scaling of
+    all passive curse skills.'
+  baseHealth: 100
+  maxHealth: 0
+  currentHealth: 0
+  maxMana: 50
+  currentMana: 50
+  isCurseSystemUnlocked: 0
+  curseValue: 0
+  maxCurseValue: 100
+  levelText: {fileID: 0}
+  healthText: {fileID: 0}
+  manaText: {fileID: 0}
+  expText: {fileID: 0}
+  attributePointsText: {fileID: 0}
+  strengthText: {fileID: 0}
+  vitalityText: {fileID: 0}
+  intelligenceText: {fileID: 0}
+  curseText: {fileID: 0}
+--- !u!114 &2354657156177109498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4699474175162919012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 940f21060d6ccea4590ec5d73f786e2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
+  currentGold: 10
+--- !u!114 &5480748479723500985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4699474175162919012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b70f2e5130e124599ceafac277d730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallBlocker
+--- !u!70 &7749385931716217532
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4699474175162919012}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 1.0168805, y: 0.29659212}
+  m_Size: {x: 7.0337687, y: 11.982798}
+  m_Direction: 0

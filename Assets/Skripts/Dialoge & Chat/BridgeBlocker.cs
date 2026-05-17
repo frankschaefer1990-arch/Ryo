@@ -79,7 +79,7 @@ public class BridgeBlocker : MonoBehaviour
         // QuestManager später erneut suchen
         if (questManager == null)
         {
-            questManager = FindFirstObjectByType<QuestManager>();
+            questManager = FindAnyObjectByType<QuestManager>();
         }
 
         // Falls kein QuestManager existiert:

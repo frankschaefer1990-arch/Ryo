@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   player: {fileID: 6634447748592673798, guid: 0abb6f45375949f4ca27c0d7ea2b0535, type: 3}
+  playerPrefab: {fileID: 4699474175162919012, guid: bb83c6f70584633499f8294d91de3560, type: 3}
   canvas: {fileID: 87633132258241621, guid: 6359048616f2e9c46868738b3f1e37d1, type: 3}
   eventSystem: {fileID: 8044173454255964038, guid: cb9551c84368e8b488205da084b7c01e, type: 3}
+  questManager: {fileID: 0}
+  saveSystemPrefab: {fileID: 0}
   spawnPointName: 
