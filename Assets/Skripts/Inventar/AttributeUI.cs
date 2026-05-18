@@ -250,13 +250,25 @@ public class AttributeUI : MonoBehaviour
     public void AddStrength()
     {
         if (playerStats == null) return;
-        if (!playerStats.UseAttributePoint()) return;
+        
+        int amount = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 5 : 1;
+        int actuallyAdded = 0;
+        
+        for (int i = 0; i < amount; i++)
+        {
+            if (playerStats.UseAttributePoint())
+            {
+                playerStats.strength += 1;
+                actuallyAdded++;
+            }
+            else break;
+        }
 
-        playerStats.strength += 1;
-
-        Debug.Log("STR erhöht auf: " + playerStats.strength);
-
-        playerStats.UpdateUI();
+        if (actuallyAdded > 0)
+        {
+            Debug.Log("STR erhöht auf: " + playerStats.strength);
+            playerStats.UpdateUI();
+        }
     }
 
     // =========================
@@ -264,35 +276,34 @@ public class AttributeUI : MonoBehaviour
     // =========================
     public void AddVitality()
     {
-        if (playerStats == null)
-        {
-            Debug.LogError("PlayerStats fehlt!");
-            return;
-        }
+        if (playerStats == null) return;
 
-        if (!playerStats.UseAttributePoint())
-        {
-            Debug.Log("Keine Attributpunkte!");
-            return;
-        }
-
-        int oldMax = playerStats.maxHealth;
-        playerStats.vitality += 1;
-        playerStats.RecalculateStats();
+        int amount = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 5 : 1;
+        int actuallyAdded = 0;
         
-        // Die Differenz (HP Gewinn) auch heilen
-        int healthGain = playerStats.maxHealth - oldMax;
-        playerStats.currentHealth += healthGain;
-
-        if (playerStats.currentHealth > playerStats.maxHealth)
+        for (int i = 0; i < amount; i++)
         {
-            playerStats.currentHealth = playerStats.maxHealth;
+            int oldMax = playerStats.maxHealth;
+            if (playerStats.UseAttributePoint())
+            {
+                playerStats.vitality += 1;
+                playerStats.RecalculateStats();
+                
+                int healthGain = playerStats.maxHealth - oldMax;
+                playerStats.currentHealth += healthGain;
+                if (playerStats.currentHealth > playerStats.maxHealth)
+                    playerStats.currentHealth = playerStats.maxHealth;
+                
+                actuallyAdded++;
+            }
+            else break;
         }
 
-        Debug.Log("VIT erhöht auf: " + playerStats.vitality);
-        Debug.Log("HP: " + playerStats.currentHealth + " / " + playerStats.maxHealth);
-
-        playerStats.UpdateUI();
+        if (actuallyAdded > 0)
+        {
+            Debug.Log("VIT erhöht auf: " + playerStats.vitality);
+            playerStats.UpdateUI();
+        }
     }
 
     // =========================
@@ -301,19 +312,31 @@ public class AttributeUI : MonoBehaviour
     public void AddIntelligence()
     {
         if (playerStats == null) return;
-        if (!playerStats.UseAttributePoint()) return;
 
-        int oldMaxMana = playerStats.maxMana;
-        playerStats.defense += 1;
-        playerStats.RecalculateStats(); // Update Mana
+        int amount = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 5 : 1;
+        int actuallyAdded = 0;
+        
+        for (int i = 0; i < amount; i++)
+        {
+            int oldMaxMana = playerStats.maxMana;
+            if (playerStats.UseAttributePoint())
+            {
+                playerStats.defense += 1;
+                playerStats.RecalculateStats();
+                
+                int manaGain = playerStats.maxMana - oldMaxMana;
+                playerStats.currentMana += manaGain;
+                
+                actuallyAdded++;
+            }
+            else break;
+        }
 
-        // Increase current mana by the amount the max mana increased (10)
-        int manaGain = playerStats.maxMana - oldMaxMana;
-        playerStats.currentMana += manaGain;
-
-        Debug.Log("INT erhöht auf: " + playerStats.defense);
-
-        playerStats.UpdateUI();
+        if (actuallyAdded > 0)
+        {
+            Debug.Log("INT erhöht auf: " + playerStats.defense);
+            playerStats.UpdateUI();
+        }
     }
 
     // =========================
@@ -322,13 +345,25 @@ public class AttributeUI : MonoBehaviour
     public void AddCurse()
     {
         if (playerStats == null) return;
-        if (!playerStats.UseAttributePoint()) return;
 
-        playerStats.agility += 1;
+        int amount = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? 5 : 1;
+        int actuallyAdded = 0;
+        
+        for (int i = 0; i < amount; i++)
+        {
+            if (playerStats.UseAttributePoint())
+            {
+                playerStats.agility += 1;
+                actuallyAdded++;
+            }
+            else break;
+        }
 
-        Debug.Log("CURSE erhöht auf: " + playerStats.agility);
-
-        playerStats.UpdateUI();
+        if (actuallyAdded > 0)
+        {
+            Debug.Log("CURSE erhöht auf: " + playerStats.agility);
+            playerStats.UpdateUI();
+        }
     }
 
     // =========================

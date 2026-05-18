@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     private bool wasLockedLastFrame = false;
 
     void Start()
-{
+    {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
@@ -49,8 +49,9 @@ public class PlayerMovement : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
 
+        canMove = true; // FORCE UNLOCK
         ResetMovementState();
-        }
+    }
 
         public void ResetMovementState()
         {
@@ -71,25 +72,8 @@ public class PlayerMovement : MonoBehaviour
         speed = baseMoveSpeed;
 
         // =========================
-        // MOVEMENT LOCK (z.B. Shop offen oder Dialog)
-        // =========================
-        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
-        if (!canMove || dialogueActive)
-        {
-            movement = Vector2.zero;
-            if (!wasLockedLastFrame)
-            {
-                ResetMovementState();
-                wasLockedLastFrame = true;
-            }
-            return;
-        }
-
-        wasLockedLastFrame = false;
-
-        // =========================
         // INPUT
-// =========================
+        // =========================
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -101,7 +85,30 @@ public class PlayerMovement : MonoBehaviour
 
         movement = movement.normalized;
 
-        bool isMoving = movement.magnitude > 0;
+        // =========================
+        // MOVEMENT LOCK (z.B. Shop offen oder Dialog)
+        // =========================
+        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+        bool uiPanelOpen = MyUIManager.Instance != null && MyUIManager.Instance.IsAnyPanelOpen();
+        
+        if (!canMove || dialogueActive || uiPanelOpen)
+        {
+            movement = Vector2.zero;
+            if (animator != null)
+            {
+                animator.SetBool("isMoving", false);
+                // Also ensure the animator knows which way we were last facing
+                animator.SetFloat("MoveX", lastMovement.x);
+                animator.SetFloat("MoveY", lastMovement.y);
+            }
+            
+            if (!wasLockedLastFrame)
+            {
+                wasLockedLastFrame = true;
+            }
+            return;
+        }
+bool isMoving = movement.magnitude > 0;
 
         if (isMoving)
         {
@@ -147,8 +154,8 @@ public class PlayerMovement : MonoBehaviour
         Vector2 targetPosition = rb.position + movement * moveDistance;
 
         // Directional check: Raycast/CircleCast in movement direction
-        // Radius 0.3f covers the player width, distance 0.1f checks slightly ahead
-        RaycastHit2D hit = Physics2D.CircleCast(rb.position, 0.3f, movement, 0.1f, wallLayer);
+        // Radius 0.12f matches the small player scale better, distance 0.1f checks slightly ahead
+        RaycastHit2D hit = Physics2D.CircleCast(rb.position, 0.12f, movement, 0.1f, wallLayer);
 
         if (hit.collider == null)
         {

@@ -13,6 +13,7 @@ public class SkillSlotUI : MonoBehaviour, UnityEngine.EventSystems.IPointerEnter
     [TextArea(3, 10)] public string skillDescriptionPreview;
 
     private Button button;
+    private bool isMouseOver = false;
 
     private void OnValidate()
     {
@@ -100,18 +101,12 @@ public class SkillSlotUI : MonoBehaviour, UnityEngine.EventSystems.IPointerEnter
         bool isUnlocked = level > 0 || canUpgrade || (skill.prerequisiteSkill == null && playerLevel >= skill.levelRequirement);
         
         if (lockOverlay != null) lockOverlay.SetActive(!isUnlocked);
+
+        // Auto-update tooltip if mouse is currently over this slot
+        if (isMouseOver) ShowTooltip();
     }
 
-    public void OnSlotClicked()
-    {
-        if (SkillManager.Instance != null)
-        {
-            SkillManager.Instance.LearnOrUpgrade(skill);
-            Refresh();
-        }
-    }
-
-    public void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData)
+    private void ShowTooltip()
     {
         if (TooltipManager.Instance != null && skill != null)
         {
@@ -128,8 +123,31 @@ public class SkillSlotUI : MonoBehaviour, UnityEngine.EventSystems.IPointerEnter
         }
     }
 
+    public void OnSlotClicked()
+    {
+        if (SkillManager.Instance != null)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                SkillManager.Instance.MaxUpgrade(skill);
+            }
+            else
+            {
+                SkillManager.Instance.LearnOrUpgrade(skill);
+            }
+            Refresh();
+        }
+    }
+
+    public void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        isMouseOver = true;
+        ShowTooltip();
+    }
+
     public void OnPointerExit(UnityEngine.EventSystems.PointerEventData eventData)
     {
+        isMouseOver = false;
         if (TooltipManager.Instance != null)
         {
             TooltipManager.Instance.HideTooltip();

@@ -48,12 +48,22 @@ public class MyUIManager : MonoBehaviour
     {
         GameManager.OnSystemsReady += ReconnectUIFromGameManager;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayerGold.OnGoldChanged += RefreshGoldDisplay;
     }
 
     private void OnDisable()
     {
         GameManager.OnSystemsReady -= ReconnectUIFromGameManager;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        PlayerGold.OnGoldChanged -= RefreshGoldDisplay;
+    }
+
+    private void RefreshGoldDisplay()
+    {
+        if (backpackGoldText != null && PlayerGold.Instance != null)
+        {
+            backpackGoldText.text = PlayerGold.Instance.currentGold.ToString();
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -66,12 +76,17 @@ public class MyUIManager : MonoBehaviour
         }
         
         CloseAllPanels();
+        RefreshGoldDisplay();
     }
 
     private void Start()
     {
+        isLocked = false; // Reset lock
+        if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll(); // Reset dialogue
+        
         ReconnectUIFromGameManager();
         CloseAllPanels();
+        RefreshGoldDisplay();
     }
 
     private void Update()
@@ -84,7 +99,7 @@ public class MyUIManager : MonoBehaviour
         UpdateSoftwareCursor();
 
         // Update BottomMenuPanel visibility
-        if (bottomMenuPanel != null)
+if (bottomMenuPanel != null)
         {
             // Deactivate in Battle, SplashScreen, MainMenu, or during Cutscenes (isLocked)
             bool shouldBeVisible = !inBattle && !isSplash && !isMainMenu && !isLocked;
@@ -95,17 +110,34 @@ public class MyUIManager : MonoBehaviour
         }
 
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+        
+        // Debug: press Alt+L to see lock status
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log($"MyUIManager Status: isLocked={isLocked}, dialogueActive={dialogueActive}, inBattle={inBattle}, scene={SceneManager.GetActiveScene().name}");
+        }
+
+        // ESC is special: it should always be able to close panels regardless of isLocked
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (IsAnyPanelOpen())
+            {
+                CloseAllPanels();
+            }
+            else if (!isMainMenu && !isSplash && !isLocked && !dialogueActive)
+            {
+                ToggleMainMenu();
+            }
+        }
+
         if (isLocked || dialogueActive || inBattle) return;
 
-        if (Input.GetKeyDown(backpackKey)) {
-            Debug.Log("MyUIManager: Backpack key pressed.");
-            ToggleBackpack();
-        }
+        // Shortcuts
+        if (Input.GetKeyDown(backpackKey)) ToggleBackpack();
         if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
         if (Input.GetKeyDown(skillKey)) ToggleSkills();
-        if (Input.GetKeyDown(KeyCode.Escape)) CloseAllPanels();
-
+        
         // Cheat: Press '5' to add 5 skill points
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
@@ -118,6 +150,20 @@ public class MyUIManager : MonoBehaviour
             }
         }
         }
+
+    public bool IsAnyPanelOpen()
+    {
+        bool bpOpen = backpackPanel != null && backpackPanel.activeInHierarchy;
+        bool invOpen = inventoryPanel != null && inventoryPanel.activeInHierarchy;
+        bool attrOpen = attributePanel != null && attributePanel.activeInHierarchy;
+        bool skillOpen = skillPanel != null && skillPanel.activeInHierarchy;
+        bool shopOpen = shopPanel != null && shopPanel.activeInHierarchy;
+        bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
+        bool saveOpen = SaveSlotManager.Instance != null && SaveSlotManager.Instance.saveSlotPanel != null && SaveSlotManager.Instance.saveSlotPanel.activeInHierarchy;
+        bool menuOpen = mainMenuPanel != null && mainMenuPanel.activeInHierarchy;
+
+        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen;
+    }
 
     private bool IsInBattleScene()
     {
@@ -191,14 +237,7 @@ public class MyUIManager : MonoBehaviour
 
     private void UpdateCursorState(bool inBattle)
     {
-        bool bpOpen = backpackPanel != null && backpackPanel.activeInHierarchy;
-        bool invOpen = inventoryPanel != null && inventoryPanel.activeInHierarchy;
-        bool attrOpen = attributePanel != null && attributePanel.activeInHierarchy;
-        bool skillOpen = skillPanel != null && skillPanel.activeInHierarchy;
-        bool shopOpen = shopPanel != null && shopPanel.activeInHierarchy;
-        bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
-
-        bool anyPanelOpen = bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen;
+        bool anyPanelOpen = IsAnyPanelOpen();
         bool isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
 
         if (anyPanelOpen || inBattle || isMainMenu) {
@@ -226,6 +265,11 @@ public class MyUIManager : MonoBehaviour
         skillPanel = FindChildRecursive(targetCanvas.transform, "SkillPanel");
         shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel");
         lockedDoorPopup = FindChildRecursive(targetCanvas.transform, "LockedDoorPopup");
+        
+        // RECONNECT MainMenuPanel
+        mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MainMenuPanel");
+        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MenuPanel");
+        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MenuContainer");
 
         if (inventoryPanel != null) {
             var btn = inventoryPanel.transform.Find("BackpackButton")?.GetComponent<UnityEngine.UI.Button>();
@@ -421,36 +465,34 @@ public class MyUIManager : MonoBehaviour
 
     public void SaveGame()
     {
-        if (SaveSystem.Instance != null)
+        if (SaveSlotManager.Instance != null)
+        {
+            SaveSlotManager.Instance.Open(false);
+        }
+        else if (SaveSystem.Instance != null)
         {
             SaveSystem.Instance.Save();
             Debug.Log("MyUIManager: Spielstand gespeichert.");
-            
-            // Visual feedback
             if (DialogueUI.Instance != null)
-            {
                 DialogueUI.Instance.ShowMessage("System", "Spielstand erfolgreich gespeichert!", 2.0f);
-            }
-        }
-        else
-        {
-            Debug.LogError("MyUIManager: SaveSystem nicht gefunden!");
         }
     }
 
     public void OpenLoadPanelFromMenu()
     {
-        // Toggle the load panel which should be in the MasterCanvas
+        if (SaveSlotManager.Instance != null)
+        {
+            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+            SaveSlotManager.Instance.Open(true);
+            return;
+        }
+
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-        
-        // Use the LoadPanel from MainMenuController logic or just find it
         GameObject lp = FindChildRecursive(transform, "LoadPanel");
         if (lp != null)
         {
             lp.SetActive(true);
             lp.transform.SetAsLastSibling();
-            
-            // Refresh info if SaveSystem exists
             if (SaveSystem.Instance != null)
             {
                 var text = lp.GetComponentInChildren<TextMeshProUGUI>();
@@ -462,22 +504,23 @@ public class MyUIManager : MonoBehaviour
 
     public void CloseLoadPanel()
     {
+        if (SaveSlotManager.Instance != null) SaveSlotManager.Instance.Close();
         GameObject lp = FindChildRecursive(transform, "LoadPanel");
         if (lp != null) lp.SetActive(false);
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true); // Return to main pause menu
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true); 
     }
 
     public void LoadGame()
     {
-        if (SaveSystem.Instance != null)
+        if (SaveSlotManager.Instance != null)
+        {
+            SaveSlotManager.Instance.Open(true);
+        }
+        else if (SaveSystem.Instance != null)
         {
             SaveSystem.Instance.Load();
             Debug.Log("MyUIManager: Spielstand wird geladen.");
             CloseAllPanels();
-        }
-        else
-        {
-            Debug.LogError("MyUIManager: SaveSystem nicht gefunden!");
         }
     }
 
@@ -493,11 +536,13 @@ public class MyUIManager : MonoBehaviour
 
     public void CloseAllPanels()
     {
+        if (SaveSlotManager.Instance != null) SaveSlotManager.Instance.Close();
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
         if (backpackPanel != null) backpackPanel.SetActive(false);
         if (attributePanel != null) attributePanel.SetActive(false);
         if (skillPanel != null) skillPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (lockedDoorPopup != null) lockedDoorPopup.SetActive(false);
         
         if (shopPanel != null) {
 ShopManager shop = FindFirstObjectByType<ShopManager>();
@@ -509,7 +554,7 @@ ShopManager shop = FindFirstObjectByType<ShopManager>();
         if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
 
         bool inBattle = IsInBattleScene();
-Cursor.visible = inBattle;
+    Cursor.visible = inBattle;
         Cursor.lockState = inBattle ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }

@@ -293,6 +293,12 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             ShowBattleMessage("Flucht erfolgreich!");
             yield return new WaitForSeconds(1.5f);
             
+            // Fix: If escaping from temple boss, allow re-triggering the sequence
+            if (currentEnemy != null && currentEnemy.isBoss && QuestManager.Instance != null)
+            {
+                QuestManager.Instance.visitedTemple = false;
+            }
+
             RestorePlayerVisibility();
             GameManager.Instance.LoadScene("Legend of Ryo"); 
         }

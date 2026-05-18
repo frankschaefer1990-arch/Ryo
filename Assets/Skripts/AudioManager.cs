@@ -108,17 +108,6 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        // Programmatic fallback for MainMenu if mapping is missing
-        if (clipToPlay == null && (newScene == "MainMenu" || newScene == "SplashScreen"))
-        {
-            foreach (var mapping in sceneMusicList) {
-                if (mapping.musicClip != null && (mapping.musicClip.name == "Rust Crown" || mapping.musicClip.name == "Rust_Crown")) {
-                    clipToPlay = mapping.musicClip;
-                    break;
-                }
-            }
-        }
-
         if (clipToPlay != null)
         {
             Debug.Log($"AudioManager: Found music for scene {newScene}: {clipToPlay.name}");

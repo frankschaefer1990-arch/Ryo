@@ -138,6 +138,17 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    public void MaxUpgrade(BattleSkill skill)
+    {
+        if (skill == null) return;
+        int safety = 0;
+        while (CanLearnOrUpgrade(skill) && safety < 100)
+        {
+            LearnOrUpgrade(skill);
+            safety++;
+        }
+    }
+
     public void AddPoints(int amount)
     {
         skillPoints += amount;

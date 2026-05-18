@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class PlayerGold : MonoBehaviour
 {
     public static PlayerGold Instance;
+    public static event System.Action OnGoldChanged;
 
     [Header("Gold System")]
     public int currentGold = 10;
@@ -79,15 +80,16 @@ public class PlayerGold : MonoBehaviour
         currentGold -= amount;
 
         Debug.Log("Gold ausgegeben: -" + amount + " | Rest: " + currentGold);
+        OnGoldChanged?.Invoke();
 
         return true;
-    }
+        }
 
-    // =========================
-    // GOLD HINZUFÜGEN
-    // =========================
-    public void AddGold(int amount)
-    {
+        // =========================
+        // GOLD HINZUFÜGEN
+        // =========================
+        public void AddGold(int amount)
+        {
         if (amount <= 0)
         {
             Debug.LogWarning("PlayerGold: Ungültiger Goldbetrag: " + amount);
@@ -97,14 +99,16 @@ public class PlayerGold : MonoBehaviour
         int oldGold = currentGold;
         currentGold += amount;
         Debug.Log($"PlayerGold: {amount} Gold hinzugefügt. {oldGold} -> {currentGold}");
-    }
+        OnGoldChanged?.Invoke();
+        }
 
-    public void SetGold(int amount)
-    {
+        public void SetGold(int amount)
+        {
         int oldGold = currentGold;
         currentGold = Mathf.Max(0, amount);
         Debug.Log($"PlayerGold: Gold direkt gesetzt. {oldGold} -> {currentGold}");
-    }
+        OnGoldChanged?.Invoke();
+        }
 
     // =========================
     // CHECK

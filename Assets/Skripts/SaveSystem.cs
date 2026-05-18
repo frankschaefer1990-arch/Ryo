@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class SaveData
 {
+    public string saveName;
     // Stats
     public int level;
     public int currentXP;
@@ -39,14 +40,14 @@ public class SaveData
     // Metadata
     public string saveTime;
     public float playTimeSeconds;
-    }
+}
 
 public class SaveSystem : MonoBehaviour
 {
     public static SaveSystem Instance;
-    private string savePath;
     private float currentSessionTime;
     private float loadedPlayTime;
+    private int currentSlot = 0;
 
     private void Awake()
     {
@@ -60,7 +61,11 @@ public class SaveSystem : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        savePath = Application.persistentDataPath + "/savegame.json";
+    }
+
+    private string GetSavePath(int slot)
+    {
+        return Application.persistentDataPath + "/savegame_" + slot + ".json";
     }
 
     private void Update()
@@ -74,11 +79,12 @@ public class SaveSystem : MonoBehaviour
 
     public float GetTotalPlayTime() => loadedPlayTime + currentSessionTime;
 
-    public void Save()
+    public void Save(int slot, string customName)
     {
         if (PlayerStats.Instance == null) return;
 
         SaveData data = new SaveData();
+        data.saveName = string.IsNullOrEmpty(customName) ? "Spielstand " + slot : customName;
         
         // Stats
         data.level = PlayerStats.Instance.level;
@@ -132,29 +138,39 @@ public class SaveSystem : MonoBehaviour
         data.playTimeSeconds = GetTotalPlayTime();
 
         string json = JsonUtility.ToJson(data);
-        File.WriteAllText(savePath, json);
-        Debug.Log("SaveSystem: Spiel gespeichert. Spielzeit: " + FormatTime(data.playTimeSeconds));
-        }
+        File.WriteAllText(GetSavePath(slot), json);
+        currentSlot = slot;
+        Debug.Log("SaveSystem: Spiel in Slot " + slot + " gespeichert. Name: " + data.saveName);
+    }
 
-    public void Load()
+    public void Load(int slot)
     {
-        if (!File.Exists(savePath))
+        string path = GetSavePath(slot);
+        if (!File.Exists(path))
         {
-            Debug.LogWarning("SaveSystem: Kein Spielstand gefunden.");
+            Debug.LogWarning("SaveSystem: Kein Spielstand in Slot " + slot + " gefunden.");
             return;
         }
 
-        string json = File.ReadAllText(savePath);
+        string json = File.ReadAllText(path);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
         loadedPlayTime = data.playTimeSeconds;
         currentSessionTime = 0;
+        currentSlot = slot;
 
-        // Load Scene first
+        // Apply quest data immediately
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.SetQuestData(data.introSeen, data.visitedTemple, data.defeatedTempleBoss, data.finishedTempleSequence);
+        }
+
+        // Prepare GameManager for save load to skip default spawn points
         if (GameManager.Instance != null)
         {
+            GameManager.Instance.isLoadingSave = true;
             GameManager.Instance.LoadScene(data.sceneName);
-            StartCoroutine(ApplyDataAfterSceneLoad(data));
+            StartCoroutine(ApplyDataAfterLoad(data));
         }
         else
         {
@@ -162,13 +178,76 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    private System.Collections.IEnumerator ApplyDataAfterLoad(SaveData data)
+    {
+        // Wait for the scene to actually be the new scene
+        while (SceneManager.GetActiveScene().name != data.sceneName) yield return null;
+        
+        // Wait a tiny bit for the player object to be processed by GameManager
+        yield return new WaitForSeconds(0.1f);
+
+        // 1. Position FIRST (before we become visible/unlocked)
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            GameManager.Instance.player.transform.position = new Vector3(data.posX, data.posY, data.posZ);
+            
+            // Sync Camera immediately
+            CameraFollow follow = Object.FindAnyObjectByType<CameraFollow>();
+            if (follow != null)
+            {
+                follow.player = GameManager.Instance.player.transform;
+                follow.transform.position = new Vector3(data.posX, data.posY, follow.transform.position.z);
+                follow.UpdateBounds();
+            }
+        }
+
+        // 2. Stats & Attributes
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.SetStats(data.level, data.currentXP, data.attributePoints, data.strength, data.vitality, data.defense, data.agility, data.isCurseSystemUnlocked, data.curseValue);
+            PlayerStats.Instance.RestoreHPAndMana(data.currentHealth, data.currentMana);
+        }
+        
+        // 3. Gold & Inventory
+        if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(data.gold);
+        if (InventoryManager.Instance != null && data.inventorySlots != null) InventoryManager.Instance.SetSlotData(data.inventorySlots);
+        
+        // 4. Skills
+        if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(data.learnedSkillIds, data.learnedSkillLevels, data.skillPoints);
+        
+        // 5. Cleanup
+        if (GameManager.Instance != null) GameManager.Instance.isLoadingSave = false;
+
+        // 6. Force Unlock EVERYTHING
+        if (DialogueUI.Instance != null) DialogueUI.Instance.HideAll();
+        
+        if (GameManager.Instance != null && GameManager.Instance.player != null)
+        {
+            var pm = GameManager.Instance.player.GetComponent<PlayerMovement>();
+            if (pm != null) {
+                pm.canMove = true;
+                pm.ResetMovementState();
+            }
+        }
+        
+        if (MyUIManager.Instance != null) {
+            MyUIManager.Instance.isLocked = false;
+            MyUIManager.Instance.CloseAllPanels();
+        }
+
+        Debug.Log("SaveSystem: Load sequence complete. Movement & UI unlocked.");
+    }
+
+    public void Save() => Save(currentSlot, "Automatischer Save");
+    public void Load() => Load(currentSlot);
+
     public void ResetForNewGame()
     {
         loadedPlayTime = 0;
         currentSessionTime = 0;
         
         if (PlayerStats.Instance != null) PlayerStats.Instance.SetStats(1, 0, 0, 1, 1, 1, 1, false, 0);
-        if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(10); // Start with 10 Gold
+        if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(10); 
         if (InventoryManager.Instance != null) InventoryManager.Instance.SetSlotData(new bool[10]);
         if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false);
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);
@@ -180,46 +259,16 @@ public class SaveSystem : MonoBehaviour
         return string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours + t.Days * 24, t.Minutes, t.Seconds);
     }
 
-    private System.Collections.IEnumerator ApplyDataAfterSceneLoad(SaveData data)
+    public bool HasSave(int slot) => File.Exists(GetSavePath(slot));
+    public bool HasSave() => HasSave(currentSlot);
+    
+    public string GetSaveInfo(int slot)
     {
-        // Wait for GameManager to finish setup
-        yield return new WaitForSeconds(0.2f);
-        
-        // Stats
-        if (PlayerStats.Instance != null)
-        {
-            PlayerStats.Instance.SetStats(data.level, data.currentXP, data.attributePoints, data.strength, data.vitality, data.defense, data.agility, data.isCurseSystemUnlocked, data.curseValue);
-            PlayerStats.Instance.RestoreHPAndMana(data.currentHealth, data.currentMana);
-        }
-        
-        // Gold
-        if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(data.gold);
-        
-        // Inventory
-        if (InventoryManager.Instance != null && data.inventorySlots != null) InventoryManager.Instance.SetSlotData(data.inventorySlots);
-        
-        // Quests
-        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(data.introSeen, data.visitedTemple, data.defeatedTempleBoss, data.finishedTempleSequence);
-        
-        // Skills
-        if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(data.learnedSkillIds, data.learnedSkillLevels, data.skillPoints);
-        
-        // Position
-        if (GameManager.Instance != null && GameManager.Instance.player != null)
-        {
-            GameManager.Instance.player.transform.position = new Vector3(data.posX, data.posY, data.posZ);
-        }
-        
-        Debug.Log("SaveSystem: Spielstand erfolgreich geladen.");
+        if (!HasSave(slot)) return "Kein Spielstand";
+        string json = File.ReadAllText(GetSavePath(slot));
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+        return $"{data.saveName}\nLevel {data.level} - {FormatTime(data.playTimeSeconds)}\nGespeichert: {data.saveTime}";
     }
 
-    public bool HasSave() => File.Exists(savePath);
-    
-    public string GetSaveInfo()
-    {
-        if (!HasSave()) return "Kein Spielstand";
-        string json = File.ReadAllText(savePath);
-        SaveData data = JsonUtility.FromJson<SaveData>(json);
-        return $"Level {data.level} - {FormatTime(data.playTimeSeconds)}\nGespeichert: {data.saveTime}";
-    }
+    public string GetSaveInfo() => GetSaveInfo(currentSlot);
 }

@@ -109,10 +109,14 @@ public class MainMenuController : MonoBehaviour
 
     public void OpenLoadPanel()
     {
-        if (loadPanel != null)
+        if (SaveSlotManager.Instance != null)
+        {
+            SaveSlotManager.Instance.Open(true);
+        }
+        else if (loadPanel != null)
         {
             loadPanel.SetActive(true);
-            loadPanel.transform.SetAsLastSibling(); // Bring to front
+            loadPanel.transform.SetAsLastSibling(); 
             
             if (SaveSystem.Instance != null)
                 saveInfoText.text = SaveSystem.Instance.GetSaveInfo();
@@ -123,12 +127,17 @@ public class MainMenuController : MonoBehaviour
 
     public void CloseLoadPanel()
     {
+        if (SaveSlotManager.Instance != null) SaveSlotManager.Instance.Close();
         if (loadPanel != null) loadPanel.SetActive(false);
     }
 
     public void LoadGame()
     {
-        if (SaveSystem.Instance != null && SaveSystem.Instance.HasSave())
+        if (SaveSlotManager.Instance != null)
+        {
+            SaveSlotManager.Instance.Open(true);
+        }
+        else if (SaveSystem.Instance != null && SaveSystem.Instance.HasSave())
         {
             SaveSystem.Instance.Load();
         }

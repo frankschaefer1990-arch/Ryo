@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Spawn System")]
     public string spawnPointName = "";
+    public bool isLoadingSave = false; 
 
     private bool isSceneLoading = false;
 
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        isLoadingSave = false; // Reset just in case
         InitializePersistentSystems();
         
         if (SceneManager.GetActiveScene().name == "SplashScreen")
@@ -160,17 +162,23 @@ public class GameManager : MonoBehaviour
                 listeners[0].enabled = true;
             }
 
-            // 2. EventSystem Cleanup
+            // 2. EventSystem Cleanup: Ensure only one persistent EventSystem exists
             var allES = Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach (var es in allES)
             {
                 if (eventSystem == null || eventSystem.Equals(null))
                 {
                     eventSystem = es.gameObject;
-                    if (eventSystem.scene.name != "DontDestroyOnLoad") { eventSystem.transform.SetParent(null); DontDestroyOnLoad(eventSystem); }
+                    if (eventSystem.scene.name != "DontDestroyOnLoad") 
+                    { 
+                        eventSystem.transform.SetParent(null); 
+                        DontDestroyOnLoad(eventSystem); 
+                    }
                 }
-                else if (es.gameObject != eventSystem) { 
-                    if (es.gameObject.activeInHierarchy) Destroy(es.gameObject); 
+                else if (es.gameObject != eventSystem) 
+                { 
+                    // Destroy immediately to prevent "Multiple EventSystems" warnings
+                    DestroyImmediate(es.gameObject); 
                 }
             }
 
@@ -232,10 +240,10 @@ public class GameManager : MonoBehaviour
                         var rb = PersistentPlayer.GetComponent<Rigidbody2D>();
                         if (rb != null) { rb.simulated = true; rb.linearVelocity = Vector2.zero; }
 
-                        MovePlayerToSpawn();
-                    }
-                    else
-                    {
+                        if (!isLoadingSave) MovePlayerToSpawn();
+                        }
+                        else
+                        {
                         // Move far away in battle
                         PersistentPlayer.transform.position = new Vector3(-1000, -1000, 0);
                     }

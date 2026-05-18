@@ -58,13 +58,15 @@ public class BridgeBlocker : MonoBehaviour
         // Boss besiegt -> Brücke freigeben
         if (questManager.defeatedTempleBoss)
         {
-            if (bridgeWall != null)
+            if (bridgeWall != null && bridgeWall.activeSelf)
             {
                 bridgeWall.SetActive(false);
             }
 
-            // Trigger deaktivieren
-            gameObject.SetActive(false);
+            // Nur die Blocker-Logik deaktivieren, NICHT das ganze GameObject 
+            // (da sonst das ScenePortal zum Labyrinth ebenfalls deaktiviert wird!)
+            this.enabled = false;
+            Debug.Log("BridgeBlocker: Boss besiegt. Blocker deaktiviert, Portal bleibt aktiv.");
         }
         }
 

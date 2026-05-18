@@ -37,11 +37,13 @@ public class ShopManager : MonoBehaviour
     private void OnEnable()
     {
         GameManager.OnSystemsReady += ReconnectShop;
+        PlayerGold.OnGoldChanged += UpdateGoldUI;
     }
 
     private void OnDisable()
     {
         GameManager.OnSystemsReady -= ReconnectShop;
+        PlayerGold.OnGoldChanged -= UpdateGoldUI;
     }
 
     private void Start()
