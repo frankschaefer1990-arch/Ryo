@@ -27,6 +27,7 @@ public class SaveData
     public bool visitedTemple;
     public bool defeatedTempleBoss;
     public bool finishedTempleSequence;
+    public bool labyrinthDialogueSeen;
     
     // Skills
     public int skillPoints;
@@ -162,7 +163,7 @@ public class SaveSystem : MonoBehaviour
         // Apply quest data immediately
         if (QuestManager.Instance != null)
         {
-            QuestManager.Instance.SetQuestData(data.introSeen, data.visitedTemple, data.defeatedTempleBoss, data.finishedTempleSequence);
+            QuestManager.Instance.SetQuestData(data.introSeen, data.visitedTemple, data.defeatedTempleBoss, data.finishedTempleSequence, data.labyrinthDialogueSeen);
         }
 
         // Prepare GameManager for save load to skip default spawn points
@@ -249,7 +250,7 @@ public class SaveSystem : MonoBehaviour
         if (PlayerStats.Instance != null) PlayerStats.Instance.SetStats(1, 0, 0, 1, 1, 1, 1, false, 0);
         if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(10); 
         if (InventoryManager.Instance != null) InventoryManager.Instance.SetSlotData(new bool[10]);
-        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false);
+        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false);
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);
     }
 

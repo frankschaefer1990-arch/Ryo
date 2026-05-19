@@ -19,5 +19,5 @@ MonoBehaviour:
   xpReward: 100
   startHP: 200
   isBoss: 0
-  enemySprite: {fileID: 0}
+  enemySprite: {fileID: -666076803, guid: a58953ae453314e4aa3094a2f0c45b74, type: 3}
   attackSound: {fileID: 0}

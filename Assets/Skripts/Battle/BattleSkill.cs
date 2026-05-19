@@ -76,13 +76,7 @@ public class BattleSkill : ScriptableObject
     public int GetHitCount(int level) 
     {
         if (skillId == "wilde_schlaege") return 3 + (level - 1);
-        if (skillId == "rage") return 1; // Rage hits are handled by the loop if it were multi-hit, but here it's 1 hit per usage usually? Or 5 hits?
-        // User says: "Rage ... Jeder Folgetreffer +8% Schaden (max. 5 Stacks)". 
-        // This implies Rage might be a multi-hit skill or it builds stacks over turns.
-        // Usually basic skills in this game seem to be multi-hit combos.
-        // Let's assume Rage has 3 hits for now or 1? 
-        // Descriptions for Rage says: "Mit jedem erfolgreichen Schlag steigt Ryos Wut".
-        // Let's keep it at 1 and see.
+        if (skillId == "rage") return 5; // Fixed: Rage now has 5 hits to match its 5 stack potential
         if (skillId == "klingenwirbel") return 4 + (level - 1);
         return hitCount;
     }
@@ -107,31 +101,31 @@ public class BattleSkill : ScriptableObject
 
     public float GetDamageMultiplier(int level)
     {
-        if (skillId == "blitzschlag") return damageMultiplier + (level - 1) * 0.3f; 
-        if (skillId == "rage") return 1.0f; // Base multiplier
+        if (skillId == "blitzschlag") return damageMultiplier + (level - 1) * 0.4f; // Increased scaling per level
+        if (skillId == "rage") return 1.0f + (level - 1) * 0.05f; // Added level scaling to base multiplier
         
         // Scaling for spells
-        if (skillId == "donnerspeer") return 1.0f + (level - 1) * 0.15f;
-        if (skillId == "schattenklinge") return 1.0f + (level - 1) * 0.12f;
+        if (skillId == "donnerspeer") return 1.2f + (level - 1) * 0.2f; // Buffed base and scaling
+        if (skillId == "schattenklinge") return 1.1f + (level - 1) * 0.15f;
         if (skillId == "seelenbrand") return 1.0f + (level - 1) * 0.15f;
-        if (skillId == "blutpakt") return 1.0f + (level - 1) * 0.18f;
-        if (skillId == "astralbruch") return 1.0f + (level - 1) * 0.10f;
-        if (skillId == "finstermal") return 1.0f + (level - 1) * 0.05f;
-        if (skillId == "leerenstoss") return 1.0f + (level - 1) * 0.14f;
-        if (skillId == "nachtkralle") return 1.0f + (level - 1) * 0.13f;
-        if (skillId == "hollow_judgment") return 1.0f + (level - 1) * 0.20f;
+        if (skillId == "blutpakt") return 1.3f + (level - 1) * 0.2f;
+        if (skillId == "astralbruch") return 1.0f + (level - 1) * 0.15f;
+        if (skillId == "finstermal") return 1.0f + (level - 1) * 0.08f;
+        if (skillId == "leerenstoss") return 1.2f + (level - 1) * 0.18f;
+        if (skillId == "nachtkralle") return 1.1f + (level - 1) * 0.15f;
+        if (skillId == "hollow_judgment") return 1.5f + (level - 1) * 0.25f;
 
         // Scaling for Basic Skills
-        if (skillId == "wilde_schlaege") return 1.0f; // Handled by hit count
-        if (skillId == "schaedelbrecher") return 1.0f + (level - 1) * 0.10f;
-        if (skillId == "konterklinge") return 1.0f + (level - 1) * 0.15f;
-        if (skillId == "blutschnitt") return 1.0f + (level - 1) * 0.12f;
-        if (skillId == "aufwaertshieb") return 1.0f + (level - 1) * 0.10f;
-        if (skillId == "klingenwirbel") return 1.0f;
-        if (skillId == "eisenbrecher") return 1.0f + (level - 1) * 0.14f;
-        if (skillId == "schattenhieb") return 1.0f + (level - 1) * 0.12f;
-        if (skillId == "zornspalter") return 1.0f + (level - 1) * 0.18f;
-        if (skillId == "seelenklinge") return 1.0f + (level - 1) * 0.20f;
+        if (skillId == "wilde_schlaege") return 1.0f + (level - 1) * 0.1f; // Now scales damage per hit too
+        if (skillId == "schaedelbrecher") return 1.0f + (level - 1) * 0.15f;
+        if (skillId == "konterklinge") return 1.1f + (level - 1) * 0.18f;
+        if (skillId == "blutschnitt") return 1.0f + (level - 1) * 0.14f;
+        if (skillId == "aufwaertshieb") return 1.0f + (level - 1) * 0.12f;
+        if (skillId == "klingenwirbel") return 1.0f + (level - 1) * 0.08f;
+        if (skillId == "eisenbrecher") return 1.1f + (level - 1) * 0.16f;
+        if (skillId == "schattenhieb") return 1.0f + (level - 1) * 0.15f;
+        if (skillId == "zornspalter") return 1.2f + (level - 1) * 0.2f;
+        if (skillId == "seelenklinge") return 1.2f + (level - 1) * 0.22f;
 
         return damageMultiplier;
     }
@@ -141,6 +135,7 @@ public class BattleSkill : ScriptableObject
         switch (skillId)
         {
             // Spells
+            case "blitzschlag": return 150 + (int)(intel * 2.2f);
             case "donnerspeer": return 120 + (int)(intel * 1.6f);
             case "schattenklinge": return 100 + (int)(intel * 1.3f);
             case "seelenbrand": return 35 + (int)(curse * 0.7f);
@@ -152,8 +147,8 @@ public class BattleSkill : ScriptableObject
             case "hollow_judgment": return 180 + (int)(intel * 2.2f);
             
             // Basic Skills
-            case "wilde_schlaege": return 25 + (int)(str * 0.7f);
-            case "rage": return 20 + (int)(str * 0.5f);
+            case "wilde_schlaege": return 30 + (int)(str * 0.8f);
+            case "rage": return 25 + (int)(str * 0.6f);
             case "schaedelbrecher": return 90 + (int)(str * 1.4f);
             case "konterklinge": return 75 + (int)(str * 1.2f);
             case "blutschnitt": return 60 + (int)(str * 1.0f);
@@ -300,13 +295,13 @@ public class BattleSkill : ScriptableObject
             if (skillId == "zornspalter") info += "Effekt: Verbraucht Rage Stacks (+12% Dmg/Stack)\nQTE: Perfekt = Kein Verlust\n";
             if (skillId == "seelenklinge") info += "Effekt: 20% Lifesteal | Perfekt: +10% Dmg\n";
 
-            if (skillId == "donnerspeer") info += "Effekt: -20% Verteidigung (2 Rd.)\n";
-if (skillId == "schattenklinge") info += $"Krit-Bonus: +{30 + (level-1)*5}%\n";
-            if (skillId == "seelenbrand") info += "Effekt: -40% Heilung auf Ziel\n";
+            if (skillId == "donnerspeer") info += "Effekt: -20% Verteidigung (2 Rd.) | Perfekt: -35%\n";
+            if (skillId == "schattenklinge") info += $"Krit-Bonus: +{30 + (level-1)*5}% | Perfekt: Garantierter Krit\n";
+            if (skillId == "seelenbrand") info += "Effekt: -40% Heilung | Perfekt: +20% Schaden\n";
             if (skillId == "blutpakt") info += "Effekt: -15% eigene HP\n";
-            if (skillId == "astralbruch") info += $"Mana Burn: {25 + (level-1)*5}\n";
-            if (skillId == "finstermal") info += $"Schadens-Bonus: +{25 + (level-1)*5}% (2 Rd.)\n";
-            if (skillId == "leerenstoss") info += "Effekt: Ignoriert 35% Def\n";
+            if (skillId == "astralbruch") info += $"Mana Burn: {25 + (level-1)*5} | Perfekt: +50%\n";
+            if (skillId == "finstermal") info += $"Schadens-Bonus: +{25 + (level - 1) * 5}% (2 Rd.) | Perfekt: +40% Bonus\n";
+            if (skillId == "leerenstoss") info += "Effekt: Ignoriert 35% Def | Perfekt: Ignoriert 100%\n";
             if (skillId == "nachtkralle") info += "Effekt: Entfernt Gegner-Buff\n";
             if (skillId == "hollow_judgment") info += "Bonus: +50% DMG wenn Ziel <30% HP\n";
         }

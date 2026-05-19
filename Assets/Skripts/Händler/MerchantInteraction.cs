@@ -21,10 +21,6 @@ public class MerchantInteraction : MonoBehaviour
         {
             shopPanel.SetActive(false);
         }
-
-        // Cursor standardmäßig im Spiel verstecken
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

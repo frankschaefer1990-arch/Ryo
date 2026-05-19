@@ -31,7 +31,7 @@ MonoBehaviour:
   visualScale: {x: 1, y: 1, z: 1}
   randomRotation: 1
   skillSound: {fileID: 0}
-  hasCombo: 0
+  hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0
   isPassiveCurse: 0
@@ -43,6 +43,8 @@ MonoBehaviour:
 
     Dmg Multiplier:
     x1
+
+    Mana Cost: 0
 
     Scaling: +2 Damage per Intelligence point
 

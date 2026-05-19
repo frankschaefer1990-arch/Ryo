@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Lock")]
     public bool canMove = true;
+    public bool isCutsceneMoving = false; // New flag for cutscenes
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -29,6 +30,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Hide ALL Labyrinth Colliders if present
+        GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var obj in allObjects)
+        {
+            if (obj.name.Contains("ColliderPainter"))
+            {
+                // Disable all renderers
+                Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(true);
+                foreach (var r in renderers) r.enabled = false;
+
+                // Also set Tilemap color alpha to 0 just in case
+                var tilemap = obj.GetComponent<UnityEngine.Tilemaps.Tilemap>();
+                if (tilemap != null)
+                {
+                    Color c = tilemap.color;
+                    c.a = 0f;
+                    tilemap.color = c;
+                }
+            }
+        }
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
@@ -65,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         void Update()
-{
+    {
         // =========================
         // SPEED SYSTEM
         // =========================
@@ -86,30 +108,45 @@ public class PlayerMovement : MonoBehaviour
         movement = movement.normalized;
 
         // =========================
-        // MOVEMENT LOCK (z.B. Shop offen oder Dialog)
+        // UI & CURSOR SYSTEM
         // =========================
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
         bool uiPanelOpen = MyUIManager.Instance != null && MyUIManager.Instance.IsAnyPanelOpen();
-        
+        bool isCutscene = !canMove; 
+
+        // PRIORITÄT: Wenn UI offen ist, muss die Maus immer frei sein!
+        if (uiPanelOpen)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (dialogueActive || isCutscene)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        // =========================
+        // MOVEMENT LOCK
+        // =========================
         if (!canMove || dialogueActive || uiPanelOpen)
         {
             movement = Vector2.zero;
-            if (animator != null)
+            if (animator != null && !isCutsceneMoving)
             {
                 animator.SetBool("isMoving", false);
-                // Also ensure the animator knows which way we were last facing
                 animator.SetFloat("MoveX", lastMovement.x);
                 animator.SetFloat("MoveY", lastMovement.y);
             }
-            
-            if (!wasLockedLastFrame)
-            {
-                wasLockedLastFrame = true;
-            }
             return;
         }
-bool isMoving = movement.magnitude > 0;
 
+        bool isMoving = movement.magnitude > 0;
         if (isMoving)
         {
             lastMovement = movement;
@@ -143,23 +180,53 @@ bool isMoving = movement.magnitude > 0;
 
     void FixedUpdate()
     {
-        // Kein Bewegen wenn gelockt
-        if (!canMove)
-            return;
-
-        if (movement == Vector2.zero)
+        if (!canMove || movement == Vector2.zero)
             return;
 
         float moveDistance = speed * Time.fixedDeltaTime;
-        Vector2 targetPosition = rb.position + movement * moveDistance;
 
-        // Directional check: Raycast/CircleCast in movement direction
-        // Radius 0.12f matches the small player scale better, distance 0.1f checks slightly ahead
-        RaycastHit2D hit = Physics2D.CircleCast(rb.position, 0.12f, movement, 0.1f, wallLayer);
+        // Mask setup (ignore self)
+        int mask = wallLayer.value & ~(1 << gameObject.layer);
+        
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(mask);
+        filter.useLayerMask = true;
+        filter.useTriggers = true; 
 
-        if (hit.collider == null)
+        // Use rb.Cast to detect collisions in movement direction
+        // This is more robust than CircleCast because it uses the actual collider shape
+        System.Collections.Generic.List<RaycastHit2D> hits = new System.Collections.Generic.List<RaycastHit2D>();
+        int hitCount = rb.Cast(movement, filter, hits, moveDistance + 0.05f);
+
+        bool isBlocked = false;
+        float minHitDistance = moveDistance;
+
+        if (hitCount > 0)
         {
-            rb.MovePosition(targetPosition);
+            foreach (var hit in hits)
+            {
+                // We block if there's any collider in our way
+                // We use a small threshold to avoid blocking on self/inner edges if any
+                if (hit.distance >= 0)
+                {
+                    minHitDistance = Mathf.Min(minHitDistance, hit.distance);
+                    isBlocked = true;
+                }
+            }
+        }
+
+        if (!isBlocked)
+        {
+            rb.MovePosition(rb.position + movement * moveDistance);
+        }
+        else
+        {
+            // Move as close as possible without overlapping
+            if (minHitDistance > 0.01f)
+            {
+                rb.MovePosition(rb.position + movement * (minHitDistance - 0.01f));
+            }
+            // If distance is nearly 0, we stay where we are (blocked)
         }
     }
 }

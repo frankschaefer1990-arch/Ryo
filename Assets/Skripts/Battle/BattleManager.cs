@@ -65,13 +65,59 @@ public class BattleManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Start()
     {
-        Debug.Log("BattleManager: Start called. Waiting for scene stabilization...");
+        // Hide ALL Labyrinth Colliders if present
+        GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var obj in allObjects)
+        {
+            if (obj.name.Contains("ColliderPainter"))
+            {
+                Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(true);
+                foreach (var r in renderers) r.enabled = false;
+
+                var tilemap = obj.GetComponent<UnityEngine.Tilemaps.Tilemap>();
+                if (tilemap != null)
+                {
+                    Color c = tilemap.color;
+                    c.a = 0f;
+                    tilemap.color = c;
+                }
+            }
+        }
+
+        Debug.Log("BattleManager: Start called. Initializing visuals...");
         state = BattleState.START;
         
+        // Immediately fetch enemy data to avoid visual lag/glitch
+        if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
+        {
+            currentEnemy = QuestManager.Instance.nextBattleEnemy;
+        }
+
+        if (currentEnemy != null && enemyPos != null)
+        {
+            enemyPos.gameObject.SetActive(true);
+            SpriteRenderer esr = enemyPos.GetComponentInChildren<SpriteRenderer>();
+            if (esr != null)
+            {
+                esr.enabled = true;
+                if (currentEnemy.enemySprite != null)
+                {
+                    esr.sprite = currentEnemy.enemySprite;
+                    Debug.Log($"BattleManager (Start): Applied sprite {currentEnemy.enemySprite.name} to {currentEnemy.enemyName}");
+                }
+                else
+                {
+                    Debug.LogWarning($"BattleManager (Start): Enemy {currentEnemy.enemyName} has no sprite assigned!");
+                }
+            }
+        }
+
         // IMMEDIATELY HIDE PERSISTENT PLAYER
         if (GameManager.Instance != null && GameManager.Instance.player != null)
         {
@@ -136,6 +182,14 @@ if (playerAura != null) playerAura.SetActive(false);
         if (AudioManager.Instance != null) AudioManager.Instance.StopAllMusic();
         yield return null;
 
+        // Reset Curse at start of every battle
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.curseValue = 0;
+            shinigamiTurnsLeft = 0;
+            Debug.Log("BattleManager: Curse reset to 0 for new battle.");
+        }
+
         // Double check persistent player is HIDDEN but ACTIVE for stats
         if (GameManager.Instance != null && GameManager.Instance.player != null)
         {
@@ -168,6 +222,15 @@ if (playerAura != null) playerAura.SetActive(false);
             }
 
             if (currentEnemy == null) yield break;
+
+            if (enemyPos != null)
+            {
+                SpriteRenderer esr = enemyPos.GetComponentInChildren<SpriteRenderer>();
+                if (esr != null && currentEnemy.enemySprite != null)
+                {
+                    esr.sprite = currentEnemy.enemySprite;
+                }
+            }
 
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
             
@@ -211,6 +274,23 @@ if (playerAura != null) playerAura.SetActive(false);
         isBlocking = false;
         if (blockVisual != null) blockVisual.SetActive(false);
         
+        // Handle Shinigami Duration
+        if (shinigamiTurnsLeft > 0)
+        {
+            shinigamiTurnsLeft--;
+            Debug.Log($"Shinigami Form: {shinigamiTurnsLeft} turns remaining.");
+            
+            if (shinigamiTurnsLeft <= 0)
+            {
+                if (PlayerStats.Instance != null)
+                {
+                    PlayerStats.Instance.curseValue = 0; // Reset to 0 after form ends
+                    Debug.Log("Shinigami Form ended. Curse reset to 0.");
+                }
+                ApplyCurseVisuals();
+            }
+        }
+
         // Reset playerPos to original world position to prevent drift from animations
         if (playerPos != null) playerPos.position = originalPlayerWorldPos;
 
@@ -365,8 +445,10 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         yield return new WaitForSeconds(1.0f);
         BattleUI.Instance.HideActionMessage();
 
+        // Reset local QTE speed multiplier for the skill execution
+        qteSpeedMult = 1.0f; 
+
         int actualHitCount = skill.GetHitCount(level);
-        float currentQTELimit = skill.GetQTETimeLimit(level) * qteSpeedMult;
         int extraHits = 0;
 
         for (int i = 0; i < actualHitCount + extraHits; i++)
@@ -383,7 +465,18 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                 if (ComboSystem.Instance != null)
                 {
                     bool waiting = true;
-                    float hitSpecificLimit = skill.skillId == "rage" ? Mathf.Max(currentQTELimit * Mathf.Pow(0.9f, i), 0.35f) : currentQTELimit;
+                    float baseLimit = skill.GetQTETimeLimit(level);
+                    float hitSpecificLimit = baseLimit * qteSpeedMult;
+
+                    // Rage gets faster with every hit in the combo
+                    if (skill.skillId == "rage")
+                    {
+                        hitSpecificLimit = Mathf.Max(baseLimit * Mathf.Pow(0.85f, i), 0.3f);
+                    }
+                    else if (skill.skillId == "klingenwirbel")
+                    {
+                        hitSpecificLimit = Mathf.Max(baseLimit * Mathf.Pow(0.92f, i), 0.4f);
+                    }
 
                     if (skill.skillId == "konterklinge") hitSpecificLimit *= 0.7f;
 
@@ -454,14 +547,14 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                     if (qteResult != QTEResult.FAIL)
                     {
                         rageStacks = Mathf.Min(rageStacks + 1, 5);
-                        qteSpeedMult *= 0.9f; 
                     }
-                    totalMultiplier *= (1.0f + (rageStacks * (0.08f + (level - 1) * 0.02f)));
+                    // Damage increases significantly with stacks
+                    totalMultiplier *= (1.0f + (rageStacks * (0.10f + (level - 1) * 0.02f)));
                 }
 
                 if (skill.skillId == "zornspalter")
                 {
-                    totalMultiplier *= (1.0f + (rageStacks * 0.12f));
+                    totalMultiplier *= (1.0f + (rageStacks * 0.15f)); // Higher bonus for consumption
                     if (qteResult != QTEResult.PERFECT) rageStacks = 0;
                 }
 
@@ -482,35 +575,47 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
                 // Mechanics
                 float critChance = 0f;
-                if (skill.skillId == "schattenklinge") critChance = 0.3f + (level - 1) * 0.05f;
+                if (skill.skillId == "schattenklinge")
+                {
+                    critChance = 0.3f + (level - 1) * 0.05f;
+                    if (qteResult == QTEResult.PERFECT) critChance = 1.0f; // Perfect Schattenklinge = Crit
+                }
                 if (skill.skillId == "schattenhieb") critChance = 0.35f;
                 if (skill.skillId == "konterklinge" && qteResult != QTEResult.FAIL) critChance = 1.0f;
                 if (skill.skillId == "schattenhieb" && qteResult == QTEResult.PERFECT) critChance = 1.0f;
 
                 float defIgnore = 0f;
-                if (skill.skillId == "leerenstoss") defIgnore = 0.35f;
+                if (skill.skillId == "leerenstoss")
+                {
+                    defIgnore = (qteResult == QTEResult.PERFECT) ? 1.0f : 0.35f; // Perfect Leerenstoß ignores all def
+                }
                 if (skill.skillId == "eisenbrecher") defIgnore = (qteResult == QTEResult.PERFECT) ? 0.5f : 0.3f;
 
                 if (skill.skillId == "hollow_judgment" && (float)enemyCurrentHP / currentEnemy.maxHP < 0.3f)
                     totalMultiplier *= 1.5f;
                 
                 if (skill.skillId == "seelenklinge" && qteResult == QTEResult.PERFECT)
-                    totalMultiplier *= 1.1f;
+                    totalMultiplier *= 1.15f;
 
                 bool isCrit = Random.value < critChance;
                 if (isCrit) totalMultiplier *= 2f;
 
                 int bonusDmg = customBase > 0 ? 0 : (skill.category == SkillCategory.Basic ? playerStrength : playerIntelligence * 2);
 
+                int finalEnemyDef = Mathf.Max(0, (int)(currentEnemy.defense * (1.0f - defIgnore)) + enemyDefenseMod);
                 int totalDamage = (int)((baseDamage + bonusDmg) * totalMultiplier * enemyDmgTakenMult);
                 
+                // Minimum damage 1
+                totalDamage = Mathf.Max(1, totalDamage - (finalEnemyDef / 2));
+
                 enemyCurrentHP -= totalDamage;
                 if (enemyCurrentHP < 0) enemyCurrentHP = 0;
 
                 // Effects
                 if (skill.skillId == "donnerspeer")
                 {
-                    enemyDefenseMod = -(int)(currentEnemy.defense * 0.2f);
+                    float reduction = (qteResult == QTEResult.PERFECT) ? 0.35f : 0.2f;
+                    enemyDefenseMod = -(int)(currentEnemy.defense * reduction);
                     enemyDefenseTimer = 2;
                 }
                 if (skill.skillId == "aufwaertshieb")
@@ -522,6 +627,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                 if (skill.skillId == "seelenbrand")
                 {
                     activeDotDamage = (int)(customBase * totalMultiplier);
+                    if (qteResult == QTEResult.PERFECT) activeDotDamage = (int)(activeDotDamage * 1.2f);
                     activeDotTurns = 3;
                     enemyHealReductionMult = 0.6f;
                     enemyHealReductionTimer = 3;
@@ -541,11 +647,13 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                 if (skill.skillId == "astralbruch")
                 {
                     int burn = 25 + (level - 1) * 5;
+                    if (qteResult == QTEResult.PERFECT) burn = (int)(burn * 1.5f);
                     ShowBattleMessage($"{burn} Mana des Gegners verbrannt!");
                 }
                 if (skill.skillId == "finstermal")
                 {
-                    enemyDmgTakenMult = 1.25f + (level - 1) * 0.05f;
+                    float bonus = (qteResult == QTEResult.PERFECT) ? 0.4f : 0.25f;
+                    enemyDmgTakenMult = 1.0f + bonus + (level - 1) * 0.05f;
                     enemyDmgTakenTimer = 2;
                 }
                 if (skill.skillId == "nachtkralle")
@@ -561,11 +669,12 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
                 if (skill.skillId == "seelenklinge" && stats != null)
                 {
-                    stats.Heal((int)(totalDamage * 0.2f));
+                    float lifeSteal = (qteResult == QTEResult.PERFECT) ? 0.35f : 0.2f;
+                    stats.Heal((int)(totalDamage * lifeSteal));
                 }
 
                 // Blutzoll (Skill 4): Heal 5% of damage if curse active
-if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
+                if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
                 {
                     int curseHeal = (int)(totalDamage * 0.05f);
                     if (curseHeal > 0) stats.Heal(curseHeal);
@@ -578,7 +687,7 @@ if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
                     BattleUI.Instance.UpdatePlayerHP((float)stats.currentHealth / stats.maxHealth, stats.currentHealth, stats.maxHealth);
                 }
 
-                DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), (int)(baseDamage * totalMultiplier), (int)(bonusDmg * totalMultiplier), damageFont);
+                DamagePopup.Create(enemyPos.position + new Vector3(Random.Range(-0.5f, 0.5f), 1.5f, 0), totalDamage, damageFont);
                 
                 // Nachtmahr (Skill 6): Shadow Attack (+20% extra hit)
                 if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(6))
@@ -625,7 +734,7 @@ if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
                 }
 
                 StartCoroutine(PlayHurtAnimation(enemyPos)); 
-    BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+                BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
                 if (enemyCurrentHP <= 0) break;
             }
             else { ShowBattleMessage("Combo unterbrochen!"); break; }
@@ -772,6 +881,14 @@ if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
         if (state == BattleState.WON)
         {
             if (enemyPos != null) enemyPos.gameObject.SetActive(false);
+            
+            // Record defeat for per-visit persistence
+            if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.lastEnemyTriggerID))
+            {
+                GameManager.Instance.defeatedEnemiesInCurrentScene.Add(GameManager.Instance.lastEnemyTriggerID);
+                Debug.Log($"BattleManager: Enemy {GameManager.Instance.lastEnemyTriggerID} recorded as defeated.");
+            }
+
             ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP und 50 Gold erhalten.");
             if (currentEnemy.isBoss && QuestManager.Instance != null) QuestManager.Instance.defeatedTempleBoss = true;
             if (PlayerStats.Instance != null)
@@ -781,9 +898,28 @@ if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
                 if (goldMgr != null) goldMgr.AddGold(50);
             }
             yield return new WaitForSeconds(3f);
-            if (GameManager.Instance != null) GameManager.Instance.LoadScene("Temple", "BossDefeatedSpawn"); 
-            else UnityEngine.SceneManagement.SceneManager.LoadScene("Temple");
-        }
+            
+            if (GameManager.Instance != null)
+            {
+                // Specifically return to Temple for the boss sequence
+                if (currentEnemy.isBoss && currentEnemy.enemyName == "Skelettkrieger")
+                {
+                    GameManager.Instance.LoadScene("Temple", "BossDefeatedSpawn");
+                }
+                else
+                {
+                    // Generic return for other enemies like Sensenmann
+                    string lastScene = !string.IsNullOrEmpty(GameManager.Instance.lastGameplayScene) 
+                        ? GameManager.Instance.lastGameplayScene 
+                        : "Legend of Ryo";
+                    GameManager.Instance.LoadScene(lastScene, "ReturnFromBattle");
+                }
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Temple");
+            }
+            }
         else { 
             ShowBattleMessage("Niederlage..."); 
             yield return new WaitForSeconds(1f); 
@@ -807,7 +943,7 @@ if (stats != null && stats.IsCursePassiveActive() && stats.HasCursePassive(4))
 
     private void ShowBattleMessage(string message)
     {
-        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Ryo", message, 1.5f);
+        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Ryo", message, 1.0f);
         else if (BattleUI.Instance != null) BattleUI.Instance.ShowActionMessage("Ryo", message);
     }
 

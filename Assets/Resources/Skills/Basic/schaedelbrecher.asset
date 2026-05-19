@@ -35,7 +35,18 @@ MonoBehaviour:
   healMultiplier: 0
   isCurseUnlocker: 0
   isPassiveCurse: 0
-  effectSummary: 
+  effectSummary: 'CATEGORY: Basic
+
+    TYPE: Active
+
+    Base Hits: 1
+
+    Dmg Multiplier:
+    x1
+
+    Scaling: +1 Damage per Strength point
+
+'
   canStun: 0
   baseStunChance: 0.1
   stunChancePerLevel: 0.05

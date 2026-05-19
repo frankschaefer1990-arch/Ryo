@@ -9,13 +9,15 @@ public class QuestManager : MonoBehaviour
     public bool visitedTemple = false;
     public bool defeatedTempleBoss = false;
     public bool finishedTempleSequence = false;
+    public bool labyrinthDialogueSeen = false;
 
-    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished)
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth)
     {
         introSeen = intro;
         visitedTemple = visited;
         defeatedTempleBoss = defeated;
         finishedTempleSequence = finished;
+        labyrinthDialogueSeen = labyrinth;
     }
 
     [Header("Battle Setup")]

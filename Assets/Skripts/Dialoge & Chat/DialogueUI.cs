@@ -21,7 +21,7 @@ public class DialogueUI : MonoBehaviour
     public string defaultSpeakerName = "Ryo";
 
     [Header("Typewriter Settings")]
-    public float letterDelay = 0.05f; 
+    public float letterDelay = 0.035f; 
 
     private Coroutine currentRoutine;
     private bool isShowing = false;
@@ -127,7 +127,7 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    public void ShowMessage(string speakerName, string message, float visibleDuration = 2.5f)
+    public void ShowMessage(string speakerName, string message, float visibleDuration = 1.5f)
     {
         // Check if we are in a battle scene
         string sceneName = SceneManager.GetActiveScene().name.ToLower();

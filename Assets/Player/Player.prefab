@@ -123,7 +123,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &2105772294247722155
 MonoBehaviour:
@@ -142,7 +142,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   canMove: 1
-  upScaleMultiplier: 1.1
+  isCutsceneMoving: 0
+  upScaleMultiplier: 1
   baseMoveSpeed: 5
 --- !u!95 &4048747875721026948
 Animator:
@@ -272,6 +273,6 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.0168805, y: 0.29659212}
-  m_Size: {x: 7.0337687, y: 11.982798}
+  m_Offset: {x: 1.101705, y: -2.954208}
+  m_Size: {x: 4.5475693, y: 5.3890104}
   m_Direction: 0

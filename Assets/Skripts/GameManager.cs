@@ -23,6 +23,12 @@ public class GameManager : MonoBehaviour
     public string spawnPointName = "";
     public bool isLoadingSave = false; 
 
+    [Header("Return System")]
+    public string lastGameplayScene = "";
+    public Vector3 lastGameplayPosition;
+    public string lastEnemyTriggerID = "";
+    public System.Collections.Generic.List<string> defeatedEnemiesInCurrentScene = new System.Collections.Generic.List<string>();
+
     private bool isSceneLoading = false;
 
     public static System.Action OnSystemsReady;
@@ -293,6 +299,13 @@ public class GameManager : MonoBehaviour
     {
         if (PersistentPlayer == null) return;
         
+        if (spawnPointName == "ReturnFromBattle")
+        {
+            PersistentPlayer.transform.position = lastGameplayPosition;
+            Debug.Log($"GameManager: Player returned to battle position: {lastGameplayPosition}");
+            return;
+        }
+
         GameObject spawn = null;
         if (!string.IsNullOrEmpty(spawnPointName))
         {
@@ -313,6 +326,43 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(string sceneName, string spawnPoint = "")
     {
+        bool isNextBattle = sceneName.ToLower().Contains("battle") || sceneName.ToLower().Contains("kampf");
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        bool isCurrentBattle = currentSceneName.ToLower().Contains("battle") || currentSceneName.ToLower().Contains("kampf");
+
+        if (isNextBattle)
+        {
+            lastGameplayScene = currentSceneName;
+            if (PersistentPlayer != null)
+            {
+                lastGameplayPosition = PersistentPlayer.transform.position;
+            }
+        }
+        else
+        {
+            // Transitioning to a gameplay scene.
+            if (!isCurrentBattle)
+            {
+                // Simple transition between gameplay scenes -> Reset visit list
+                defeatedEnemiesInCurrentScene.Clear();
+                Debug.Log("GameManager: Cleared defeated enemies list (transition between gameplay scenes).");
+            }
+            else
+            {
+                // Returning from battle.
+                // Clear ONLY if we are NOT returning to the scene we came from.
+                if (sceneName != lastGameplayScene)
+                {
+                    defeatedEnemiesInCurrentScene.Clear();
+                    Debug.Log($"GameManager: Returned from battle to DIFFERENT scene ({sceneName} != {lastGameplayScene}). Cleared defeated enemies.");
+                }
+                else
+                {
+                    Debug.Log($"GameManager: Returned from battle to SAME scene ({sceneName}). Defeated enemies count: {defeatedEnemiesInCurrentScene.Count}");
+                }
+                }
+        }
+
         spawnPointName = spawnPoint;
         isSceneLoading = true;
         SceneManager.LoadScene(sceneName);

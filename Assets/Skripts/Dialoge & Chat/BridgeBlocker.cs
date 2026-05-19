@@ -27,11 +27,17 @@ public class BridgeBlocker : MonoBehaviour
         }
 
         // QuestManager holen
-        questManager = FindFirstObjectByType<QuestManager>();
+        questManager = QuestManager.Instance;
+        if (questManager == null) questManager = FindAnyObjectByType<QuestManager>();
 
-        if (questManager == null)
+        if (questManager != null)
         {
-            Debug.LogWarning("QuestManager fehlt! Bridge bleibt vorerst aktiv.");
+            // Initial state based on quest progress
+            if (bridgeWall != null)
+            {
+                bridgeWall.SetActive(!questManager.defeatedTempleBoss);
+            }
+            if (questManager.defeatedTempleBoss) this.enabled = false;
         }
 
         // DialogueUI prüfen
@@ -46,13 +52,11 @@ public class BridgeBlocker : MonoBehaviour
     // =========================
     private void Update()
     {
-        // Kein QuestManager -> nichts prüfen
+        // QuestManager holen falls noch nicht vorhanden
         if (questManager == null)
         {
-            questManager = FindFirstObjectByType<QuestManager>();
-
-            if (questManager == null)
-                return;
+            questManager = QuestManager.Instance;
+            if (questManager == null) return;
         }
 
         // Boss besiegt -> Brücke freigeben
@@ -61,14 +65,20 @@ public class BridgeBlocker : MonoBehaviour
             if (bridgeWall != null && bridgeWall.activeSelf)
             {
                 bridgeWall.SetActive(false);
+                Debug.Log("BridgeBlocker: Boss besiegt. Brücke geöffnet.");
             }
-
-            // Nur die Blocker-Logik deaktivieren, NICHT das ganze GameObject 
-            // (da sonst das ScenePortal zum Labyrinth ebenfalls deaktiviert wird!)
             this.enabled = false;
-            Debug.Log("BridgeBlocker: Boss besiegt. Blocker deaktiviert, Portal bleibt aktiv.");
         }
+        else
+        {
+            // Boss noch da -> Brücke MUSS gesperrt sein
+            if (bridgeWall != null && !bridgeWall.activeSelf)
+            {
+                bridgeWall.SetActive(true);
+                Debug.Log("BridgeBlocker: Boss lebt noch. Brücke gesperrt.");
+            }
         }
+    }
 
         // =========================
         // PLAYER BETRITT BLOCKER

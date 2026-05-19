@@ -61,11 +61,11 @@ public class TempleIntroController : MonoBehaviour
         var cutscene = GetComponent<TempleCutscene>();
         if (cutscene != null) cutscene.enabled = false;
 
-        // NEW: Deactivate skeleton immediately if quest progress says it's dead
-        if (QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss && skeleton != null)
+        // NEW: Deactivate skeleton immediately if the entire temple sequence is already finished
+        if (QuestManager.Instance != null && QuestManager.Instance.finishedTempleSequence && skeleton != null)
         {
             skeleton.gameObject.SetActive(false);
-            Debug.Log("TempleIntroController: Skeleton deactivated in Awake (already defeated).");
+            Debug.Log("TempleIntroController: Skeleton deactivated in Awake (sequence already finished).");
         }
         }
 
@@ -177,6 +177,10 @@ public class TempleIntroController : MonoBehaviour
     private IEnumerator PostBattleSequence()
     {
         Debug.Log("TempleIntroController: PostBattleSequence started.");
+        
+        FindSkeleton();
+        if (skeleton != null) skeleton.gameObject.SetActive(true);
+
         GameObject player = GetPlayer();
         while (player == null) { 
             Debug.Log("TempleIntroController: Waiting for player in PostBattle...");
@@ -198,11 +202,11 @@ public class TempleIntroController : MonoBehaviour
         while (di == null) { di = DialogueUI.Instance; yield return null; }
 
         Debug.Log("TempleIntroController: PostBattle Dialogue 1.");
-        di.ShowMessage("Ryo", "Ich... habe gewonnen...?", 1.5f); yield return WaitForDialogue(di, "Ryo: Gewonnen?");
+        di.ShowMessage("Ryo", "Ich... habe gewonnen...?", 1.0f); yield return WaitForDialogue(di, "Ryo: Gewonnen?");
 
         if (skeleton != null) {
             Debug.Log("TempleIntroController: Skeleton Final Words.");
-            di.ShowMessage("Skelettkrieger", "Du... bist... der...", 2.5f); yield return WaitForDialogue(di, "Krieger: Final");
+            di.ShowMessage("Skelettkrieger", "Du... bist... der...", 1.8f); yield return WaitForDialogue(di, "Krieger: Final");
             
             Debug.Log("TempleIntroController: Fading out skeleton.");
             yield return StartCoroutine(FadeOutSkeleton(4.0f));
@@ -215,13 +219,13 @@ public class TempleIntroController : MonoBehaviour
             }
             skeleton.gameObject.SetActive(false);
             
-            di.ShowMessage("Ryo", "Was ist das?", 1.5f); yield return WaitForDialogue(di, "Ryo: Was ist das?");
+            di.ShowMessage("Ryo", "Was ist das?", 1.0f); yield return WaitForDialogue(di, "Ryo: Was ist das?");
             
             yield return new WaitForSeconds(1.0f);
             Debug.Log("TempleIntroController: Soul Absorption.");
             yield return StartCoroutine(SoulAbsorptionEffect(player.transform));
             
-            di.ShowMessage("System", "Seele von Skelettkrieger wurde verschlungen... Ryo wurde verflucht!\nShinigamiform freigeschalten, passiver Skill 'Dunkler Keim' gelernt!", 4.5f); 
+            di.ShowMessage("System", "Seele von Skelettkrieger wurde verschlungen... Ryo wurde verflucht!\nShinigamiform freigeschalten, passiver Skill 'Dunkler Keim' gelernt!", 3.2f); 
             
             if (SkillManager.Instance != null && dunklerKeimSkill != null)
             {
@@ -254,8 +258,8 @@ public class TempleIntroController : MonoBehaviour
         }
 
         Debug.Log("TempleIntroController: mysterious voice.");
-        di.ShowMessage("Stimme / ???", "Hunger...", 4.0f); yield return WaitForDialogue(di, "Voice: Hunger");
-        di.ShowMessage("Ryo", "Wer ist da?!", 1.5f); yield return WaitForDialogue(di, "Ryo: Wer ist da?");
+        di.ShowMessage("Stimme / ???", "Hunger...", 2.8f); yield return WaitForDialogue(di, "Voice: Hunger");
+        di.ShowMessage("Ryo", "Wer ist da?!", 1.0f); yield return WaitForDialogue(di, "Ryo: Wer ist da?");
 
         if (pm != null && meister != null) {
             Debug.Log("TempleIntroController: Ryo walking to meister.");
@@ -267,8 +271,8 @@ public class TempleIntroController : MonoBehaviour
 
         if (meister != null) {
             Debug.Log("TempleIntroController: Meister final dialogue.");
-            di.ShowMessage("Meister", "Sie suchen... den Seelenverschlinger...", 2.5f); yield return WaitForDialogue(di, "Meister: Final 1");
-            di.ShowMessage("Meister", "Ryo... du... bi...", 2.5f); yield return WaitForDialogue(di, "Meister: Final 2");
+            di.ShowMessage("Meister", "Sie suchen... den Seelenverschlinger...", 1.8f); yield return WaitForDialogue(di, "Meister: Final 1");
+            di.ShowMessage("Meister", "Ryo... du... bi...", 1.8f); yield return WaitForDialogue(di, "Meister: Final 2");
             SpriteRenderer msr = meister.GetComponentInChildren<SpriteRenderer>();
             if (msr != null) msr.color = new Color(0.3f, 0.3f, 0.3f, 1f);
         }
@@ -343,6 +347,10 @@ public class TempleIntroController : MonoBehaviour
         float distance = Vector3.Distance(startPos, targetPos);
         if (distance < 0.05f) yield break;
         float walkTime = distance / speed; float elapsed = 0;
+        
+        PlayerMovement pm = p.GetComponent<PlayerMovement>();
+        if (pm != null) pm.isCutsceneMoving = true;
+
         Animator anim = p.GetComponentInChildren<Animator>();
         if (anim != null) {
             anim.SetBool("isMoving", true);
@@ -356,6 +364,7 @@ public class TempleIntroController : MonoBehaviour
         }
         p.transform.position = targetPos;
         if (anim != null) anim.SetBool("isMoving", false);
+        if (pm != null) pm.isCutsceneMoving = false;
     }
 
     private IEnumerator WaitForDialogue(DialogueUI di, string debugLabel = "")

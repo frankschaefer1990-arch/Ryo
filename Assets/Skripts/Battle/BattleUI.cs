@@ -207,6 +207,26 @@ public class BattleUI : MonoBehaviour
             int count = 0;
             if (InventoryManager.Instance != null) count = InventoryManager.Instance.GetPotionCount();
             if (itemButtonText != null) itemButtonText.text = count + "x Heiltrank";
+            
+            // Wire the button if possible
+            Button b = itemPanel.GetComponentInChildren<Button>();
+            if (b != null)
+            {
+                b.onClick.RemoveAllListeners();
+                b.onClick.AddListener(OnPotionButton);
+            }
+        }
+    }
+
+    public void OnPotionButton()
+    {
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.UsePotionInBattle();
+            // Refresh text after use
+            int count = 0;
+            if (InventoryManager.Instance != null) count = InventoryManager.Instance.GetPotionCount();
+            if (itemButtonText != null) itemButtonText.text = count + "x Heiltrank";
         }
     }
 

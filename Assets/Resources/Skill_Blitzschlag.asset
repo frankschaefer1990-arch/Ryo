@@ -31,7 +31,7 @@ MonoBehaviour:
   visualScale: {x: 1, y: 1, z: 1}
   randomRotation: 1
   skillSound: {fileID: 8300000, guid: 397bc8e3f24e97b48b5d6b55c47e14e4, type: 3}
-  hasCombo: 0
+  hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0
   isPassiveCurse: 0

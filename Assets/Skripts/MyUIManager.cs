@@ -133,6 +133,14 @@ if (bottomMenuPanel != null)
         if (isLocked || dialogueActive || inBattle) return;
 
         // Shortcuts
+        if (UnityEngine.EventSystems.EventSystem.current != null && 
+            UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null &&
+            (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField>() != null ||
+             UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<UnityEngine.UI.InputField>() != null))
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(backpackKey)) ToggleBackpack();
         if (Input.GetKeyDown(inventoryKey)) ToggleInventory();
         if (Input.GetKeyDown(attributeKey)) ToggleAttributes();
@@ -239,13 +247,18 @@ if (bottomMenuPanel != null)
     {
         bool anyPanelOpen = IsAnyPanelOpen();
         bool isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
-
-        if (anyPanelOpen || inBattle || isMainMenu) {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        } else {
+        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+        
+        // Der Mauszeiger soll immer sichtbar sein, außer in Dialogen (Immersions-Modus)
+        if (dialogueActive)
+        {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
     }
 
@@ -474,7 +487,7 @@ if (bottomMenuPanel != null)
             SaveSystem.Instance.Save();
             Debug.Log("MyUIManager: Spielstand gespeichert.");
             if (DialogueUI.Instance != null)
-                DialogueUI.Instance.ShowMessage("System", "Spielstand erfolgreich gespeichert!", 2.0f);
+                DialogueUI.Instance.ShowMessage("System", "Spielstand erfolgreich gespeichert!", 1.4f);
         }
     }
 

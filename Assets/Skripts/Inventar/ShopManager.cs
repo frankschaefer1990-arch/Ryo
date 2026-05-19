@@ -300,10 +300,6 @@ public class ShopManager : MonoBehaviour
 
         // Bewegung zurück
         LockPlayerMovement(false);
-
-        // Cursor wieder verstecken
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // =========================

@@ -16,8 +16,8 @@ MonoBehaviour:
   maxHP: 150
   attack: 25
   defense: 10
-  xpReward: 100
+  xpReward: 20
   startHP: 0
   isBoss: 0
   enemySprite: {fileID: 21300000, guid: f46c1b10687c545418df0bcf63499221, type: 3}
-  attackSound: {fileID: 0}
+  attackSound: {fileID: 8300000, guid: a26c993ba37acec4ca0c4e95743ee975, type: 3}

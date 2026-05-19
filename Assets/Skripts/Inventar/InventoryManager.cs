@@ -110,10 +110,22 @@ public class InventoryManager : MonoBehaviour
         
         if (slotOccupied == null || slotOccupied.Length == 0) 
             slotOccupied = new bool[count];
-        else if (slotOccupied.Length != count) {
+        else if (slotOccupied.Length < count) {
+            // Only grow, never shrink if we have items
             bool[] newOcc = new bool[count];
-            System.Array.Copy(slotOccupied, newOcc, Mathf.Min(slotOccupied.Length, count));
+            System.Array.Copy(slotOccupied, newOcc, slotOccupied.Length);
             slotOccupied = newOcc;
+        }
+        else if (slotOccupied.Length > count) {
+            // If shrinking, only do it if the slots beyond 'count' are empty
+            bool itemsBeyondCount = false;
+            for(int i = count; i < slotOccupied.Length; i++) if(slotOccupied[i]) itemsBeyondCount = true;
+            
+            if(!itemsBeyondCount) {
+                bool[] newOcc = new bool[count];
+                System.Array.Copy(slotOccupied, newOcc, count);
+                slotOccupied = newOcc;
+            }
         }
 
         for (int i = 0; i < count; i++) {

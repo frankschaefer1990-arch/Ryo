@@ -78,6 +78,7 @@ public class TempleCutscene : MonoBehaviour
             if (playerMove != null && skeleton != null)
             {
             Debug.Log("TempleCutscene: Ryo walking to skeleton slowly.");
+            playerMove.isCutsceneMoving = true;
             float walkTime = 3.5f; // Noch langsamer
             float elapsed = 0;
             Vector3 startPos = playerMove.transform.position;
@@ -100,6 +101,7 @@ public class TempleCutscene : MonoBehaviour
             }
 
             if (anim != null) anim.SetBool("isMoving", false);
+            playerMove.isCutsceneMoving = false;
             }
 
         // Transition to Battle

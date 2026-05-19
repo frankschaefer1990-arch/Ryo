@@ -20,7 +20,7 @@ MonoBehaviour:
   levelRequirement: 3
   prerequisiteSkill: {fileID: 11400000, guid: d835ae71b4a4002418aa33a6c730afce, type: 2}
   maxLevel: 5
-  hitCount: 4
+  hitCount: 5
   damageMultiplier: 1.4
   isSpell: 0
   manaCost: 0
