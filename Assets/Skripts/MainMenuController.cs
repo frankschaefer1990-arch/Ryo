@@ -116,12 +116,17 @@ public class MainMenuController : MonoBehaviour
         else if (loadPanel != null)
         {
             loadPanel.SetActive(true);
-            loadPanel.transform.SetAsLastSibling(); 
-            
-            if (SaveSystem.Instance != null)
-                saveInfoText.text = SaveSystem.Instance.GetSaveInfo();
+            var ssm = loadPanel.GetComponent<SaveSlotManager>();
+            if (ssm != null)
+            {
+                ssm.Open(true);
+            }
             else
-                saveInfoText.text = "Kein Spielstand gefunden";
+            {
+                loadPanel.transform.SetAsLastSibling(); 
+                if (SaveSystem.Instance != null && saveInfoText != null)
+                    saveInfoText.text = SaveSystem.Instance.GetSaveInfo();
+            }
         }
     }
 

@@ -47,9 +47,10 @@ public class BattleUI : MonoBehaviour
     
     [Header("Texts")]
     public TMP_Text itemButtonText;
+    public TMP_Text manaItemButtonText;
 
     public Color qteSuccessColor = Color.green;
-    public Color qteFailColor = Color.red;
+public Color qteFailColor = Color.red;
 
     [Header("Smooth Animation")]
     public float lerpSpeed = 2f;
@@ -204,16 +205,46 @@ public class BattleUI : MonoBehaviour
         HideAllSubPanels();
         if (itemPanel != null) {
             itemPanel.SetActive(true);
-            int count = 0;
-            if (InventoryManager.Instance != null) count = InventoryManager.Instance.GetPotionCount();
-            if (itemButtonText != null) itemButtonText.text = count + "x Heiltrank";
+            int healthCount = 0;
+            if (InventoryManager.Instance != null) healthCount = InventoryManager.Instance.GetPotionCount();
             
-            // Wire the button if possible
-            Button b = itemPanel.GetComponentInChildren<Button>();
-            if (b != null)
+            int manaCount = 0;
+            if (InventoryManager.Instance != null) manaCount = InventoryManager.Instance.GetItemCount(2);
+
+            // Wire the buttons
+            Button[] buttons = itemPanel.GetComponentsInChildren<Button>(true);
+            
+            // Try by name first, then by index
+            Button healthBtn = buttons.FirstOrDefault(b => b.name.Contains("Health") || b.name == "PotionButton" || b.name.Contains("Heil"));
+            Button manaBtn = buttons.FirstOrDefault(b => b.name.Contains("Mana"));
+
+            if (healthBtn == null && buttons.Length > 0) healthBtn = buttons[0];
+            if (manaBtn == null && buttons.Length > 1) manaBtn = buttons[1];
+
+            if (healthBtn != null)
             {
-                b.onClick.RemoveAllListeners();
-                b.onClick.AddListener(OnPotionButton);
+                healthBtn.onClick.RemoveAllListeners();
+                healthBtn.onClick.AddListener(OnPotionButton);
+                healthBtn.interactable = healthCount > 0;
+                healthBtn.gameObject.SetActive(true);
+                var t = healthBtn.GetComponentInChildren<TMP_Text>();
+                if (t != null) t.text = healthCount + "x Heiltrank";
+            }
+
+            if (manaBtn != null)
+            {
+                manaBtn.onClick.RemoveAllListeners();
+                manaBtn.onClick.AddListener(OnManaPotionButton);
+                manaBtn.interactable = manaCount > 0;
+                manaBtn.gameObject.SetActive(true);
+                var t = manaBtn.GetComponentInChildren<TMP_Text>();
+                if (t != null) t.text = manaCount + "x Manatrank";
+            }
+
+            // Hide extra buttons
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                if (buttons[i] != healthBtn && buttons[i] != manaBtn) buttons[i].gameObject.SetActive(false);
             }
         }
     }
@@ -223,10 +254,28 @@ public class BattleUI : MonoBehaviour
         if (BattleManager.Instance != null)
         {
             BattleManager.Instance.UsePotionInBattle();
-            // Refresh text after use
-            int count = 0;
-            if (InventoryManager.Instance != null) count = InventoryManager.Instance.GetPotionCount();
+            RefreshItemCounts();
+        }
+    }
+
+    public void OnManaPotionButton()
+    {
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.UseManaPotionInBattle();
+            RefreshItemCounts();
+        }
+    }
+
+    private void RefreshItemCounts()
+    {
+        if (InventoryManager.Instance != null)
+        {
+            int count = InventoryManager.Instance.GetPotionCount();
             if (itemButtonText != null) itemButtonText.text = count + "x Heiltrank";
+            
+            int manaCount = InventoryManager.Instance.GetItemCount(2);
+            if (manaItemButtonText != null) manaItemButtonText.text = manaCount + "x Manatrank";
         }
     }
 

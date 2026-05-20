@@ -2,10 +2,49 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ChestUI : MonoBehaviour
 {
-    public static ChestUI Instance;
+    private static ChestUI _instance;
+    public static ChestUI Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // Fallback 1: Standard search
+                _instance = Object.FindAnyObjectByType<ChestUI>(FindObjectsInactive.Include);
+                
+                // Fallback 2: Search by name on Canvas
+                if (_instance == null)
+                {
+                    GameObject canvas = GameObject.Find("Canvas");
+                    if (canvas != null)
+                    {
+                        var found = canvas.GetComponentsInChildren<ChestUI>(true).FirstOrDefault();
+                        if (found != null) _instance = found;
+                    }
+                }
+
+                // Fallback 3: Search for ANY object named ChestUI
+                if (_instance == null)
+                {
+                    var allGOs = Resources.FindObjectsOfTypeAll<GameObject>();
+                    foreach(var go in allGOs)
+                    {
+                        if(go.name == "ChestUI" || go.name == "ChestPanel")
+                        {
+                            var ui = go.GetComponent<ChestUI>();
+                            if(ui != null) { _instance = ui; break; }
+                        }
+                    }
+                }
+            }
+            return _instance;
+        }
+        private set => _instance = value;
+    }
 
     [Header("UI References")]
     public GameObject chestPanel;
@@ -17,16 +56,26 @@ public class ChestUI : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        Debug.Log($"ChestUI: Awake on {gameObject.name} (ActiveInHierarchy: {gameObject.activeInHierarchy})");
+        if (_instance != null && _instance != this)
+        {
+            Debug.Log($"ChestUI: Duplicate found on {gameObject.name}, destroying.");
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
+        // Panel should be inactive by default
         if (chestPanel != null) chestPanel.SetActive(false);
     }
 
     public void Open(Chest chest)
     {
         currentChest = chest;
-        chestPanel.SetActive(true);
+        // We ensure the root is active
+        gameObject.SetActive(true);
+        if (chestPanel != null) chestPanel.SetActive(true);
         RefreshUI();
-        
+
         // Disable player movement if needed
         var player = Object.FindAnyObjectByType<PlayerMovement>();
         if (player != null) player.canMove = false;
@@ -95,18 +144,25 @@ public class ChestUI : MonoBehaviour
 
         if (InventoryManager.Instance != null)
         {
+            bool success = false;
             if (itemName == "Heiltrank")
             {
-                if (InventoryManager.Instance.AddPotion())
-                {
-                    currentChest.items.Remove(itemName);
-                    RefreshUI();
-                    if (currentChest.items.Count == 0) Close();
-                }
-                else
-                {
-                    Debug.Log("Inventory Full!");
-                }
+                success = InventoryManager.Instance.AddPotion();
+            }
+            else if (itemName == "Manatrank" || itemName == "Mana Trank")
+            {
+                success = InventoryManager.Instance.AddManaPotion();
+            }
+
+            if (success)
+            {
+                currentChest.items.Remove(itemName);
+                RefreshUI();
+                if (currentChest.items.Count == 0) Close();
+            }
+            else
+            {
+                Debug.Log("Inventory Full!");
             }
         }
     }
@@ -118,16 +174,23 @@ public class ChestUI : MonoBehaviour
         List<string> itemsToTake = new List<string>(currentChest.items);
         foreach (var item in itemsToTake)
         {
+            bool success = false;
             if (item == "Heiltrank")
             {
-                if (InventoryManager.Instance != null && InventoryManager.Instance.AddPotion())
-                {
-                    currentChest.items.Remove(item);
-                }
-                else
-                {
-                    break; // Full
-                }
+                success = InventoryManager.Instance != null && InventoryManager.Instance.AddPotion();
+            }
+            else if (item == "Manatrank")
+            {
+                success = InventoryManager.Instance != null && InventoryManager.Instance.AddManaPotion();
+            }
+
+            if (success)
+            {
+                currentChest.items.Remove(item);
+            }
+            else
+            {
+                break; // Full
             }
         }
         

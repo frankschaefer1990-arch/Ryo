@@ -107,9 +107,11 @@ public class InventoryManager : MonoBehaviour
         }
         
         if (manaPotionSprite == null) {
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
             manaPotionSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Händler/Mana Trank.png");
-#endif
+            if (manaPotionSprite == null) 
+                manaPotionSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Händler/ManaTrank.png");
+    #endif
         }
 
         if (backpackPanel == null) return;

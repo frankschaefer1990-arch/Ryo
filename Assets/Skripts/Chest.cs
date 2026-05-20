@@ -42,18 +42,27 @@ public class Chest : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) playerInside = true;
+        if (other.CompareTag("Player"))
+        {
+            playerInside = true;
+            Debug.Log($"Chest: Player entered range of {gameObject.name}");
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) playerInside = false;
+        if (other.CompareTag("Player"))
+        {
+            playerInside = false;
+            Debug.Log($"Chest: Player left range of {gameObject.name}");
+        }
     }
 
     private void Update()
     {
         if (playerInside && Input.GetKeyDown(interactKey) && !isPermanentlyEmpty)
         {
+            Debug.Log($"Chest: Opening {gameObject.name}");
             if (!isOpened)
             {
                 StartCoroutine(OpenChestRoutine());

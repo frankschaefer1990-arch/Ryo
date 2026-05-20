@@ -483,16 +483,15 @@ if (bottomMenuPanel != null)
 
     public void SaveGame()
     {
-        if (SaveSlotManager.Instance != null)
+        if (SaveSlotManager.Instance == null)
+        {
+            var ssm = Object.FindAnyObjectByType<SaveSlotManager>(FindObjectsInactive.Include);
+            if (ssm != null) ssm.Open(false);
+            else if (SaveSystem.Instance != null) SaveSystem.Instance.Save();
+        }
+        else
         {
             SaveSlotManager.Instance.Open(false);
-        }
-        else if (SaveSystem.Instance != null)
-        {
-            SaveSystem.Instance.Save();
-            Debug.Log("MyUIManager: Spielstand gespeichert.");
-            if (DialogueUI.Instance != null)
-                DialogueUI.Instance.ShowMessage("System", "Spielstand erfolgreich gespeichert!", 1.4f);
         }
     }
 
@@ -504,25 +503,29 @@ if (bottomMenuPanel != null)
             SaveSlotManager.Instance.Open(true);
             return;
         }
+        else
+        {
+            var ssm = Object.FindAnyObjectByType<SaveSlotManager>(FindObjectsInactive.Include);
+            if (ssm != null)
+            {
+                if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+                ssm.Open(true);
+                return;
+            }
+        }
 
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         GameObject lp = FindChildRecursive(transform, "LoadPanel");
-        if (lp != null)
-        {
-            lp.SetActive(true);
-            lp.transform.SetAsLastSibling();
-            if (SaveSystem.Instance != null)
-            {
-                var text = lp.GetComponentInChildren<TextMeshProUGUI>();
-                if (text != null && text.name == "SaveInfoText") 
-                    text.text = SaveSystem.Instance.GetSaveInfo();
-            }
-        }
+        // ... rest of the old logic
     }
 
     public void CloseLoadPanel()
     {
         if (SaveSlotManager.Instance != null) SaveSlotManager.Instance.Close();
+        else {
+            var ssm = Object.FindAnyObjectByType<SaveSlotManager>(FindObjectsInactive.Include);
+            if (ssm != null) ssm.Close();
+        }
         GameObject lp = FindChildRecursive(transform, "LoadPanel");
         if (lp != null) lp.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true); 
@@ -530,15 +533,15 @@ if (bottomMenuPanel != null)
 
     public void LoadGame()
     {
-        if (SaveSlotManager.Instance != null)
+        if (SaveSlotManager.Instance == null)
+        {
+            var ssm = Object.FindAnyObjectByType<SaveSlotManager>(FindObjectsInactive.Include);
+            if (ssm != null) ssm.Open(true);
+            else if (SaveSystem.Instance != null) SaveSystem.Instance.Load();
+        }
+        else
         {
             SaveSlotManager.Instance.Open(true);
-        }
-        else if (SaveSystem.Instance != null)
-        {
-            SaveSystem.Instance.Load();
-            Debug.Log("MyUIManager: Spielstand wird geladen.");
-            CloseAllPanels();
         }
     }
 

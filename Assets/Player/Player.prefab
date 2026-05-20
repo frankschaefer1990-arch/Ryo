@@ -140,7 +140,7 @@ MonoBehaviour:
   speed: 5
   wallLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 80
   canMove: 1
   isCutsceneMoving: 0
   upScaleMultiplier: 1
@@ -273,6 +273,6 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.101705, y: -2.954208}
-  m_Size: {x: 4.5475693, y: 5.3890104}
+  m_Offset: {x: 1.2032545, y: -2.7326121}
+  m_Size: {x: 4.4338684, y: 5.694415}
   m_Direction: 0

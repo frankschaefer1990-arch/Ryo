@@ -10,6 +10,7 @@ public class SaveSlotManager : MonoBehaviour
     public GameObject saveSlotPanel;
     public SaveSlotUI[] slots;
     public TMP_InputField nameInputField;
+    public TextMeshProUGUI titleText;
     
     private int selectedSlot = -1;
     private bool isLoadingMode = true;
@@ -23,8 +24,14 @@ public class SaveSlotManager : MonoBehaviour
     public void Open(bool loadMode)
     {
         isLoadingMode = loadMode;
+        gameObject.SetActive(true); // Ensure the root is active
         if (saveSlotPanel != null) saveSlotPanel.SetActive(true);
         if (nameInputField != null) nameInputField.gameObject.SetActive(!loadMode);
+        
+        if (titleText != null)
+        {
+            titleText.text = loadMode ? "SPIEL LADEN" : "SPIEL SPEICHERN";
+        }
         
         RefreshSlots();
     }

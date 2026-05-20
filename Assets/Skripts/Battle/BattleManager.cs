@@ -407,8 +407,46 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                 BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
             }
             
-            ShowBattleMessage("Ryo verwendet einen Trank!");
+            ShowBattleMessage("Ryo verwendet einen Heiltrank!");
             StartCoroutine(EnemyTurnAfterDelay(1.2f));
+        }
+    }
+
+    public void UseManaPotionInBattle()
+    {
+        if (state != BattleState.PLAYERTURN) return;
+
+        if (InventoryManager.Instance != null && InventoryManager.Instance.GetItemCount(2) > 0)
+        {
+            playerActionTakenInTurn = true;
+            BattleUI.Instance.HideAllSubPanels();
+            BattleUI.Instance.ToggleCommandPanel(false);
+            
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.RestoreMana(30);
+                // We need a method to remove mana potion
+                RemoveItemFromInventory(2);
+                BattleUI.Instance.UpdatePlayerMana((float)PlayerStats.Instance.currentMana / PlayerStats.Instance.maxMana, PlayerStats.Instance.currentMana, PlayerStats.Instance.maxMana);
+            }
+            
+            ShowBattleMessage("Ryo verwendet einen Manatrank!");
+            StartCoroutine(EnemyTurnAfterDelay(1.2f));
+        }
+    }
+
+    private void RemoveItemFromInventory(int type)
+    {
+        if (InventoryManager.Instance == null) return;
+        var types = InventoryManager.Instance.GetSlotItemTypes();
+        for (int i = types.Length - 1; i >= 0; i--)
+        {
+            if (types[i] == type)
+            {
+                types[i] = 0;
+                InventoryManager.Instance.RefreshInventory();
+                return;
+            }
         }
     }
 

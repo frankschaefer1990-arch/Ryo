@@ -109,6 +109,9 @@ public class CameraFollow : MonoBehaviour
         {
             FindPlayer();
             if (player == null) return;
+            
+            // Snap to player on first find
+            transform.position = new Vector3(player.position.x, player.position.y, -10f);
         }
 
         camHalfHeight = GetComponent<Camera>().orthographicSize;
@@ -117,14 +120,19 @@ public class CameraFollow : MonoBehaviour
         float targetX = player.position.x;
         float targetY = player.position.y;
 
-        float clampedX = Mathf.Clamp(targetX, minX + camHalfWidth, maxX - camHalfWidth);
-        float clampedY = Mathf.Clamp(targetY, minY + camHalfHeight, maxY - camHalfHeight);
+        float clampedX = targetX;
+        float clampedY = targetY;
 
-        Vector3 targetPos = new Vector3(clampedX, clampedY, -10f);
+        // Only clamp if the bounds are larger than the camera view
+        if (maxX - minX > camHalfWidth * 2)
+        {
+            clampedX = Mathf.Clamp(targetX, minX + camHalfWidth, maxX - camHalfWidth);
+        }
         
-        // Safety check: if the clamping range is invalid, use target directly
-        if (minX + camHalfWidth > maxX - camHalfWidth) clampedX = targetX;
-        if (minY + camHalfHeight > maxY - camHalfHeight) clampedY = targetY;
+        if (maxY - minY > camHalfHeight * 2)
+        {
+            clampedY = Mathf.Clamp(targetY, minY + camHalfHeight, maxY - camHalfHeight);
+        }
 
         transform.position = new Vector3(clampedX, clampedY, -10f);
     }

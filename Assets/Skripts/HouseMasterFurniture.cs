@@ -26,38 +26,113 @@ public class HouseMasterFurniture : MonoBehaviour
 
     private bool playerInRange = false;
     private int deskPage = 0;
+    private bool isDialogueRunning = false;
 
     private void Start()
     {
+        FindUIReferences();
         if (interactionPanel != null) interactionPanel.SetActive(false);
-        if (sleepButton != null) sleepButton.onClick.AddListener(StartSleep);
-        if (cancelButton != null) cancelButton.onClick.AddListener(CloseUI);
+    }
+
+    private void FindUIReferences()
+    {
+        // Try to find the FurnitureUIConnector in the scene
+        var connector = Object.FindAnyObjectByType<FurnitureUIConnector>(FindObjectsInactive.Include);
+        if (connector != null)
+        {
+            if (interactionPanel == null) interactionPanel = connector.panel;
+            if (textDisplay == null) textDisplay = connector.textDisplay;
+            if (choiceButtons == null) choiceButtons = connector.choiceButtons;
+            if (sleepButton == null) sleepButton = connector.sleepButton;
+            if (cancelButton == null) cancelButton = connector.cancelButton;
+        }
+
+        // Wire buttons if found
+        if (sleepButton != null)
+        {
+            sleepButton.onClick.RemoveAllListeners();
+            sleepButton.onClick.AddListener(StartSleep);
+        }
+        if (cancelButton != null)
+        {
+            cancelButton.onClick.RemoveAllListeners();
+            cancelButton.onClick.AddListener(CloseUI);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) playerInRange = true;
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            Debug.Log($"Furniture: Player entered range of {gameObject.name}");
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) playerInRange = false;
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = false;
+            Debug.Log($"Furniture: Player left range of {gameObject.name}");
+        }
     }
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(interactKey))
+        if (playerInRange && Input.GetKeyDown(interactKey) && !isDialogueRunning)
         {
-            if (interactionPanel != null && interactionPanel.activeSelf)
+            Debug.Log($"Furniture: Interacting with {gameObject.name}");
+
+            if (type == FurnitureType.Desk)
             {
-                if (type == FurnitureType.Desk) AdvanceDeskText();
-                else CloseUI();
+                StartCoroutine(DeskDialogueRoutine());
             }
             else
             {
-                OpenUI();
+                if (interactionPanel == null) FindUIReferences();
+
+                if (interactionPanel != null && interactionPanel.activeSelf)
+                {
+                    CloseUI();
+                }
+                else
+                {
+                    OpenUI();
+                }
             }
         }
+    }
+
+    private IEnumerator DeskDialogueRoutine()
+    {
+        if (isDialogueRunning) yield break;
+        isDialogueRunning = true;
+
+        var pm = Object.FindAnyObjectByType<PlayerMovement>();
+        if (pm != null)
+        {
+            pm.canMove = false;
+            pm.ResetMovementState();
+        }
+
+        if (DialogueUI.Instance != null)
+        {
+            // Duration calculation: typewriter time + visible time + buffer
+            float letterTime = 0.04f;
+            
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage, 3.5f);
+            yield return new WaitForSeconds(deskMessage.Length * letterTime + 3.5f + 0.5f);
+            
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage2, 3.5f);
+            yield return new WaitForSeconds(deskMessage2.Length * letterTime + 3.5f + 0.5f);
+            
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage3, 3.0f);
+            yield return new WaitForSeconds(deskMessage3.Length * letterTime + 3.0f + 0.5f);
+        }
+
+        if (pm != null) pm.canMove = true;
+        isDialogueRunning = false;
     }
 
     private void OpenUI()

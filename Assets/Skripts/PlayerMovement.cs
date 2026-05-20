@@ -96,16 +96,23 @@ public class PlayerMovement : MonoBehaviour
         // =========================
         // INPUT
         // =========================
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+        float inputX = Input.GetAxisRaw("Horizontal");
+        float inputY = Input.GetAxisRaw("Vertical");
 
-        // Kein diagonales Laufen
-        if (movement.y != 0)
+        // Strict cardinal movement (no diagonals)
+        // Priority to vertical movement if both are pressed
+        if (Mathf.Abs(inputY) > 0.1f)
         {
-            movement.x = 0;
+            movement = new Vector2(0, inputY).normalized;
         }
-
-        movement = movement.normalized;
+        else if (Mathf.Abs(inputX) > 0.1f)
+        {
+            movement = new Vector2(inputX, 0).normalized;
+        }
+        else
+        {
+            movement = Vector2.zero;
+        }
 
         // =========================
         // UI & CURSOR SYSTEM
@@ -191,26 +198,50 @@ public class PlayerMovement : MonoBehaviour
         ContactFilter2D filter = new ContactFilter2D();
         filter.SetLayerMask(mask);
         filter.useLayerMask = true;
-        filter.useTriggers = true; 
+        filter.useTriggers = false; 
 
-        // Use rb.Cast to detect collisions in movement direction
-        // This is more robust than CircleCast because it uses the actual collider shape
-        System.Collections.Generic.List<RaycastHit2D> hits = new System.Collections.Generic.List<RaycastHit2D>();
-        int hitCount = rb.Cast(movement, filter, hits, moveDistance + 0.05f);
+        // Use BoxCast for superior solid collision detection
+        CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
+        Vector2 worldSize = Vector2.one;
+        Vector2 worldOffset = Vector2.zero;
+        if (capsule != null)
+        {
+            // IMPORTANT: Use absolute values for size, as scale might be negative when flipped
+            worldSize = new Vector2(Mathf.Abs(capsule.size.x * transform.lossyScale.x), Mathf.Abs(capsule.size.y * transform.lossyScale.y));
+            worldOffset = new Vector2(capsule.offset.x * transform.lossyScale.x, capsule.offset.y * transform.lossyScale.y);
+        }
+        
+        Vector2 castOrigin = rb.position + worldOffset;
+        
+        // Safety buffer (skin)
+        float skinWidth = 0.05f; 
+        RaycastHit2D[] hits = new RaycastHit2D[5];
+        
+        // Box size slightly smaller to avoid "grazing" side walls, but cast distance includes skin
+        int hitCount = Physics2D.BoxCast(castOrigin, worldSize * 0.9f, 0, movement, filter, hits, moveDistance + skinWidth);
 
         bool isBlocked = false;
-        float minHitDistance = moveDistance;
+        float finalMoveDist = moveDistance;
 
         if (hitCount > 0)
         {
-            foreach (var hit in hits)
+            for (int i = 0; i < hitCount; i++)
             {
-                // We block if there's any collider in our way
-                // We use a small threshold to avoid blocking on self/inner edges if any
-                if (hit.distance >= 0)
+                var hit = hits[i];
+                // Ignore overlaps (distance near 0) - this allows moving OUT of a wall
+                if (hit.distance > 0.0001f)
                 {
-                    minHitDistance = Mathf.Min(minHitDistance, hit.distance);
+                    if (hit.distance < finalMoveDist + skinWidth)
+                    {
+                        finalMoveDist = Mathf.Max(0, hit.distance - skinWidth);
+                        isBlocked = true;
+                    }
+                }
+                else
+                {
+                    // If we are already deep inside, block any movement that doesn't fix it
                     isBlocked = true;
+                    finalMoveDist = 0;
                 }
             }
         }
@@ -219,14 +250,9 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.MovePosition(rb.position + movement * moveDistance);
         }
-        else
+        else if (finalMoveDist > 0.001f)
         {
-            // Move as close as possible without overlapping
-            if (minHitDistance > 0.01f)
-            {
-                rb.MovePosition(rb.position + movement * (minHitDistance - 0.01f));
-            }
-            // If distance is nearly 0, we stay where we are (blocked)
+            rb.MovePosition(rb.position + movement * finalMoveDist);
         }
     }
 }
