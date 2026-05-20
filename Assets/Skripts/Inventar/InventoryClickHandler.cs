@@ -16,13 +16,11 @@ public class InventoryClickHandler : MonoBehaviour, IPointerClickHandler
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            // Try to find a potion in this slot and use it
-            PotionItem potion = GetComponent<PotionItem>();
-            if (potion == null) potion = GetComponentInChildren<PotionItem>();
-            
-            if (potion != null)
+            if (InventoryManager.Instance != null)
             {
-                potion.UsePotion();
+                // Select first to ensure correct slot is used, then use
+                InventoryManager.Instance.SelectSlot(slotIndex);
+                InventoryManager.Instance.UseSelectedItem();
             }
         }
     }

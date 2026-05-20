@@ -8,18 +8,29 @@ public class InventoryManager : MonoBehaviour
     [Header("Backpack Panel")]
     public Transform backpackPanel;
 
-    [Header("Potion Item")]
+    [Header("Item Sprites")]
     public Sprite potionSprite;
+    public Sprite manaPotionSprite;
 
     private Image[] inventorySlots;
     private Image[] slotBackgrounds;
-    private bool[] slotOccupied;
+    private int[] slotItemType; // 0 = empty, 1 = health, 2 = mana
     private int selectedSlotIndex = -1;
 
-    public bool[] GetSlotData() => slotOccupied;
-    public void SetSlotData(bool[] data) 
+    // Legacy Support
+    public bool[] GetSlotData() 
+    {
+        if (slotItemType == null) return new bool[0];
+        bool[] data = new bool[slotItemType.Length];
+        for (int i = 0; i < data.Length; i++) data[i] = slotItemType[i] > 0;
+        return data;
+    }
+
+    public int[] GetSlotItemTypes() => slotItemType;
+    
+    public void SetSlotData(int[] data) 
     { 
-        slotOccupied = data; 
+        slotItemType = data; 
         RefreshInventory(); 
     }
 
@@ -29,11 +40,8 @@ public class InventoryManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) 
         {
-            if (Instance.potionSprite == null && this.potionSprite != null)
-            {
-                Instance.potionSprite = this.potionSprite;
-            }
-            Debug.Log($"InventoryManager: Duplicate script on {gameObject.name} removed.");
+            if (Instance.potionSprite == null && this.potionSprite != null) Instance.potionSprite = this.potionSprite;
+            if (Instance.manaPotionSprite == null && this.manaPotionSprite != null) Instance.manaPotionSprite = this.manaPotionSprite;
             Destroy(this);
             return; 
         }
@@ -41,9 +49,9 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
         if (transform.parent == null) DontDestroyOnLoad(gameObject);
         
-        if (slotOccupied == null || slotOccupied.Length == 0)
+        if (slotItemType == null || slotItemType.Length == 0)
         {
-            slotOccupied = new bool[10]; // Default
+            slotItemType = new int[10]; // Default
         }
     }
 
@@ -80,10 +88,6 @@ public class InventoryManager : MonoBehaviour
 
         backpackPanel = FindChildRecursive(target.transform, "BackpackPanel");
         if (backpackPanel == null) backpackPanel = FindChildRecursive(target.transform, "Backpack");
-        
-        if (backpackPanel != null) {
-            Debug.Log($"InventoryManager: BackpackPanel found on {backpackPanel.name}");
-        }
     }
 
     private Transform FindChildRecursive(Transform parent, string name)
@@ -98,8 +102,14 @@ public class InventoryManager : MonoBehaviour
             var allPotions = FindObjectsByType<PotionItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             foreach(var p in allPotions) {
                 var img = p.GetComponent<UnityEngine.UI.Image>();
-                if (img != null && img.sprite != null) { potionSprite = img.sprite; break; }
+                if (img != null && img.sprite != null && !img.sprite.name.Contains("Mana")) { potionSprite = img.sprite; break; }
             }
+        }
+        
+        if (manaPotionSprite == null) {
+#if UNITY_EDITOR
+            manaPotionSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Händler/Mana Trank.png");
+#endif
         }
 
         if (backpackPanel == null) return;
@@ -108,24 +118,12 @@ public class InventoryManager : MonoBehaviour
         inventorySlots = new Image[count];
         slotBackgrounds = new Image[count];
         
-        if (slotOccupied == null || slotOccupied.Length == 0) 
-            slotOccupied = new bool[count];
-        else if (slotOccupied.Length < count) {
-            // Only grow, never shrink if we have items
-            bool[] newOcc = new bool[count];
-            System.Array.Copy(slotOccupied, newOcc, slotOccupied.Length);
-            slotOccupied = newOcc;
-        }
-        else if (slotOccupied.Length > count) {
-            // If shrinking, only do it if the slots beyond 'count' are empty
-            bool itemsBeyondCount = false;
-            for(int i = count; i < slotOccupied.Length; i++) if(slotOccupied[i]) itemsBeyondCount = true;
-            
-            if(!itemsBeyondCount) {
-                bool[] newOcc = new bool[count];
-                System.Array.Copy(slotOccupied, newOcc, count);
-                slotOccupied = newOcc;
-            }
+        if (slotItemType == null || slotItemType.Length == 0) 
+            slotItemType = new int[count];
+        else if (slotItemType.Length != count) {
+            int[] newType = new int[count];
+            System.Array.Copy(slotItemType, newType, Mathf.Min(slotItemType.Length, count));
+            slotItemType = newType;
         }
 
         for (int i = 0; i < count; i++) {
@@ -153,7 +151,7 @@ public class InventoryManager : MonoBehaviour
 
     public void SelectSlot(int idx)
     {
-        if (idx < 0 || idx >= slotOccupied.Length || !slotOccupied[idx]) selectedSlotIndex = -1;
+        if (idx < 0 || idx >= slotItemType.Length || slotItemType[idx] == 0) selectedSlotIndex = -1;
         else {
             selectedSlotIndex = idx;
             ShopManager shop = FindFirstObjectByType<ShopManager>();
@@ -172,25 +170,16 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public bool AddPotion()
+    public bool AddItem(int type)
     {
-        if (slotOccupied == null || slotOccupied.Length == 0) {
+        if (slotItemType == null || slotItemType.Length == 0) {
             int count = (backpackPanel != null) ? backpackPanel.childCount : 10;
-            slotOccupied = new bool[count];
+            slotItemType = new int[count];
         }
 
-        if (potionSprite == null) {
-            var allManagers = FindObjectsByType<InventoryManager>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach(var mgr in allManagers) if (mgr != this && mgr.potionSprite != null) { potionSprite = mgr.potionSprite; break; }
-        }
-
-        if (potionSprite == null) return false;
-
-        if (inventorySlots == null || inventorySlots.Length == 0 || inventorySlots[0] == null) RefreshInventory();
-
-        for (int i = 0; i < slotOccupied.Length; i++) {
-            if (!slotOccupied[i]) { 
-                slotOccupied[i] = true; 
+        for (int i = 0; i < slotItemType.Length; i++) {
+            if (slotItemType[i] == 0) { 
+                slotItemType[i] = type; 
                 RestoreInventoryVisuals(); 
                 return true; 
             }
@@ -198,29 +187,41 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public bool RemoveSelectedPotion()
+    public bool AddPotion() => AddItem(1);
+    public bool AddManaPotion() => AddItem(2);
+
+    public bool RemoveSelected()
     {
-        if (selectedSlotIndex == -1 || !slotOccupied[selectedSlotIndex]) return false;
-        slotOccupied[selectedSlotIndex] = false;
+        if (selectedSlotIndex == -1 || slotItemType[selectedSlotIndex] == 0) return false;
+        slotItemType[selectedSlotIndex] = 0;
         selectedSlotIndex = -1;
         RestoreInventoryVisuals();
         UpdateSlotHighlights();
         return true;
     }
 
-    public bool RemoveOnePotion()
-    {
-        if (slotOccupied == null) return false;
-        if (selectedSlotIndex != -1 && slotOccupied[selectedSlotIndex]) return RemoveSelectedPotion();
-        for (int i = slotOccupied.Length - 1; i >= 0; i--) if (slotOccupied[i]) { slotOccupied[i] = false; RestoreInventoryVisuals(); return true; }
+    public bool RemoveSelectedPotion() => RemoveSelected();
+
+    public bool RemoveOnePotion() {
+        for (int i = slotItemType.Length - 1; i >= 0; i--) if (slotItemType[i] == 1) { slotItemType[i] = 0; RestoreInventoryVisuals(); return true; }
         return false;
     }
 
-    public void RemovePotion(Image usedSlot)
-    {
+    public void RemovePotion(Image usedSlot) {
         if (usedSlot == null || inventorySlots == null) return;
         for (int i = 0; i < inventorySlots.Length; i++) {
-            if (inventorySlots[i] == usedSlot) { slotOccupied[i] = false; if (selectedSlotIndex == i) selectedSlotIndex = -1; RestoreInventoryVisuals(); UpdateSlotHighlights(); return; }
+            if (inventorySlots[i] == usedSlot) { slotItemType[i] = 0; if (selectedSlotIndex == i) selectedSlotIndex = -1; RestoreInventoryVisuals(); UpdateSlotHighlights(); return; }
+        }
+    }
+
+    public void UseSelectedItem()
+    {
+        if (selectedSlotIndex == -1) return;
+        int type = slotItemType[selectedSlotIndex];
+        if (type == 1) {
+            if (PlayerStats.Instance != null) { PlayerStats.Instance.Heal(50); RemoveSelected(); }
+        } else if (type == 2) {
+            if (PlayerStats.Instance != null) { PlayerStats.Instance.RestoreMana(30); RemoveSelected(); }
         }
     }
 
@@ -236,11 +237,16 @@ public class InventoryManager : MonoBehaviour
 
     private void RestoreVisualsInternal()
     {
-        if (inventorySlots == null || slotOccupied == null) return;
+        if (inventorySlots == null || slotItemType == null) return;
         for (int i = 0; i < inventorySlots.Length; i++) {
             if (inventorySlots[i] == null) continue;
-            if (i < slotOccupied.Length && slotOccupied[i]) { 
+            int type = (i < slotItemType.Length) ? slotItemType[i] : 0;
+            if (type == 1) { 
                 inventorySlots[i].sprite = potionSprite; 
+                inventorySlots[i].color = Color.white; 
+                inventorySlots[i].gameObject.SetActive(true);
+            } else if (type == 2) {
+                inventorySlots[i].sprite = manaPotionSprite; 
                 inventorySlots[i].color = Color.white; 
                 inventorySlots[i].gameObject.SetActive(true);
             }
@@ -251,11 +257,14 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public int GetPotionCount()
+    public int GetPotionCount() => GetItemCount(1);
+    public int GetItemCount(int type)
     {
-        if (slotOccupied == null) return 0;
+        if (slotItemType == null) return 0;
         int count = 0;
-        foreach (bool b in slotOccupied) if (b) count++;
+        foreach (int t in slotItemType) if (t == type) count++;
         return count;
     }
 }
+
+

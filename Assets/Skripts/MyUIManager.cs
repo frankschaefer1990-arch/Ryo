@@ -169,8 +169,9 @@ if (bottomMenuPanel != null)
         bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
         bool saveOpen = SaveSlotManager.Instance != null && SaveSlotManager.Instance.saveSlotPanel != null && SaveSlotManager.Instance.saveSlotPanel.activeInHierarchy;
         bool menuOpen = mainMenuPanel != null && mainMenuPanel.activeInHierarchy;
+        bool chestOpen = ChestUI.Instance != null && ChestUI.Instance.chestPanel != null && ChestUI.Instance.chestPanel.activeInHierarchy;
 
-        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen;
+        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen;
     }
 
     private bool IsInBattleScene()
@@ -317,10 +318,14 @@ if (bottomMenuPanel != null)
         }
 
         bool shouldOpen = !backpackPanel.activeSelf;
-        Debug.Log($"MyUIManager: Toggling backpack. ShouldOpen: {shouldOpen}. Current state: {backpackPanel.activeSelf}");
+        
+        // Reset selection when opening
+        if (shouldOpen && InventoryManager.Instance != null) {
+            InventoryManager.Instance.DeselectSlot();
+        }
 
         if (shouldOpen)
-        {
+{
             ResetLayout();
             inventoryPanel.SetActive(true);
             backpackPanel.SetActive(true);

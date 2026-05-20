@@ -10,6 +10,7 @@ public class SaveData
     // Stats
     public int level;
     public int currentXP;
+    public int xpToNextLevel;
     public int attributePoints;
     public int strength, vitality, defense, agility;
     public int currentHealth, currentMana;
@@ -20,7 +21,8 @@ public class SaveData
     public int gold;
     
     // Inventory
-    public bool[] inventorySlots;
+    public bool[] inventorySlots; // Legacy compatibility
+    public int[] inventoryItemTypes; // New type storage
     
     // Quests
     public bool introSeen;
@@ -104,8 +106,11 @@ public class SaveSystem : MonoBehaviour
         if (PlayerGold.Instance != null) data.gold = PlayerGold.Instance.currentGold;
         
         // Inventory
-        if (InventoryManager.Instance != null) data.inventorySlots = InventoryManager.Instance.GetSlotData();
-        
+        if (InventoryManager.Instance != null) {
+            data.inventorySlots = InventoryManager.Instance.GetSlotData();
+            data.inventoryItemTypes = InventoryManager.Instance.GetSlotItemTypes();
+        }
+
         // Quests
         if (QuestManager.Instance != null)
         {
@@ -211,8 +216,17 @@ public class SaveSystem : MonoBehaviour
         
         // 3. Gold & Inventory
         if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(data.gold);
-        if (InventoryManager.Instance != null && data.inventorySlots != null) InventoryManager.Instance.SetSlotData(data.inventorySlots);
-        
+        if (InventoryManager.Instance != null) {
+            if (data.inventoryItemTypes != null && data.inventoryItemTypes.Length > 0) {
+                InventoryManager.Instance.SetSlotData(data.inventoryItemTypes);
+            } else if (data.inventorySlots != null) {
+                // Legacy fallback: convert bool[] to int[] (1 for health potion, 0 for empty)
+                int[] legacyTypes = new int[data.inventorySlots.Length];
+                for(int i=0; i<data.inventorySlots.Length; i++) legacyTypes[i] = data.inventorySlots[i] ? 1 : 0;
+                InventoryManager.Instance.SetSlotData(legacyTypes);
+            }
+        }
+
         // 4. Skills
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(data.learnedSkillIds, data.learnedSkillLevels, data.skillPoints);
         
@@ -249,8 +263,8 @@ public class SaveSystem : MonoBehaviour
         
         if (PlayerStats.Instance != null) PlayerStats.Instance.SetStats(1, 0, 0, 1, 1, 1, 1, false, 0);
         if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(10); 
-        if (InventoryManager.Instance != null) InventoryManager.Instance.SetSlotData(new bool[10]);
-        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false);
+        if (InventoryManager.Instance != null) InventoryManager.Instance.SetSlotData(new int[10]);
+if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false);
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);
     }
 

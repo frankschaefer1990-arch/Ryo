@@ -7,33 +7,36 @@ public class ShopManager : MonoBehaviour
 {
     [Header("UI")]
     public GameObject shopPanel;
+    public TextMeshProUGUI goldText;
 
     [Header("Buttons")]
     public Button buyButton;
     public Button sellButton;
     public Button leaveButton;
-    public Button potionSlotButton;
+    public Button healthSlotButton;
+    public Button manaSlotButton;
 
-    [Header("Potion UI")]
-    public GameObject selectionHighlight;
-    public TextMeshProUGUI goldText;
-    public TextMeshProUGUI potionPriceText;
+    [Header("Highlights")]
+    public GameObject healthHighlight;
+    public GameObject manaHighlight;
+
+    [Header("Prices")]
+    public int healthPrice = 10;
+    public int manaPrice = 10;
+    public TextMeshProUGUI healthPriceText;
+    public TextMeshProUGUI manaPriceText;
 
     [Header("Settings")]
-    public int potionPrice = 10;
     public float interactionRange = 2f;
     public KeyCode interactKey = KeyCode.R;
     public float dialogueDuration = 1.2f;
 
     private Transform player;
     private bool playerInRange = false;
-    private bool potionSelected = false;
+    private int selectedShopItem = 0; // 0=none, 1=health, 2=mana
     private bool isShopOpen = false;
     private bool isOpeningShop = false;
 
-    // =========================
-    // START
-    // =========================
     private void OnEnable()
     {
         GameManager.OnSystemsReady += ReconnectShop;
@@ -49,406 +52,196 @@ public class ShopManager : MonoBehaviour
     private void Start()
     {
         ReconnectShop();
-
-        // Shop zu Beginn schließen
-        if (shopPanel != null)
-            shopPanel.SetActive(false);
-
-        // Auswahl aus
-        if (selectionHighlight != null)
-            selectionHighlight.SetActive(false);
-
+        if (shopPanel != null) shopPanel.SetActive(false);
+        DeselectShopItem();
         UpdateGoldUI();
         SetupButtonsPublic();
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     private void Update()
     {
         FindPlayer();
-
-        if (player == null)
-            return;
-
+        if (player == null) return;
         CheckRange();
 
-        // =========================
-        // SHOP ÖFFNEN
-        // =========================
-        if (playerInRange &&
-            Input.GetKeyDown(interactKey) &&
-            !isShopOpen &&
-            !isOpeningShop)
+        if (playerInRange && Input.GetKeyDown(interactKey) && !isShopOpen && !isOpeningShop)
         {
             OpenShop();
         }
-        }
+    }
 
-    // =========================
-    // PLAYER FINDEN
-    // =========================
     private void FindPlayer()
     {
         if (player == null)
         {
-            if (GameManager.Instance != null && GameManager.Instance.player != null)
-            {
-                player = GameManager.Instance.player.transform;
-            }
+            if (GameManager.Instance != null && GameManager.Instance.player != null) player = GameManager.Instance.player.transform;
             else
             {
                 GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
-                if (foundPlayer != null)
-                    player = foundPlayer.transform;
+                if (foundPlayer != null) player = foundPlayer.transform;
             }
         }
     }
 
-    // =========================
-    // RANGE CHECK
-    // =========================
     private void CheckRange()
     {
         float distance = Vector2.Distance(transform.position, player.position);
         playerInRange = distance <= interactionRange;
     }
 
-    // =========================
-    // SHOP UI RECONNECT
-    // =========================
     public void ReconnectShop()
     {
         Canvas targetCanvas = null;
         Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        
         foreach (var c in canvases)
         {
-            if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor")
-            {
-                targetCanvas = c;
-                break;
-            }
+            if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor") { targetCanvas = c; break; }
         }
 
-        if (targetCanvas == null)
-        {
-            Debug.LogError("ShopManager: Kein gültiges Canvas gefunden!");
-            return;
-        }
+        if (targetCanvas == null) return;
 
-        // Suche ShopPanel rekursiv im Canvas
-        if (shopPanel == null)
-        {
-            shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel")?.gameObject;
-        }
+        if (shopPanel == null) shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel")?.gameObject;
 
         if (shopPanel != null)
         {
-            buyButton = shopPanel.transform.Find("BuyButton")?.GetComponent<Button>();
-            if (buyButton == null) buyButton = shopPanel.transform.Find("KaufenButton")?.GetComponent<Button>();
-            if (buyButton == null) buyButton = shopPanel.transform.Find("Buy")?.GetComponent<Button>();
+            buyButton = FindChildRecursive(shopPanel.transform, "BuyButton")?.GetComponent<Button>();
+            sellButton = FindChildRecursive(shopPanel.transform, "SellButton")?.GetComponent<Button>();
+            leaveButton = FindChildRecursive(shopPanel.transform, "LeaveButton")?.GetComponent<Button>();
+            
+            healthSlotButton = FindChildRecursive(shopPanel.transform, "PotionSlot")?.GetComponent<Button>();
+            if (healthSlotButton != null) {
+                healthHighlight = FindChildRecursive(healthSlotButton.transform, "SelectionHighlight")?.gameObject;
+                healthPriceText = FindChildRecursive(healthSlotButton.transform, "PotionPriceText")?.GetComponent<TextMeshProUGUI>();
+            }
 
-            sellButton = shopPanel.transform.Find("SellButton")?.GetComponent<Button>();
-            if (sellButton == null) sellButton = shopPanel.transform.Find("VerkaufenButton")?.GetComponent<Button>();
+            manaSlotButton = FindChildRecursive(shopPanel.transform, "ManaSlot")?.GetComponent<Button>();
+            if (manaSlotButton != null) {
+                manaHighlight = FindChildRecursive(manaSlotButton.transform, "SelectionHighlight")?.gameObject;
+                manaPriceText = FindChildRecursive(manaSlotButton.transform, "ManaPriceText")?.GetComponent<TextMeshProUGUI>();
+            }
 
-            leaveButton = shopPanel.transform.Find("LeaveButton")?.GetComponent<Button>();
-            if (leaveButton == null) leaveButton = shopPanel.transform.Find("BeendenButton")?.GetComponent<Button>();
-
-            potionSlotButton = shopPanel.transform.Find("PotionSlot")?.GetComponent<Button>();
-            selectionHighlight = shopPanel.transform.Find("PotionSlot/SelectionHighlight")?.gameObject;
-            goldText = shopPanel.transform.Find("GoldText")?.GetComponent<TextMeshProUGUI>();
-            potionPriceText = shopPanel.transform.Find("PotionSlot/PotionPriceText")?.GetComponent<TextMeshProUGUI>();
+            goldText = FindChildRecursive(shopPanel.transform, "GoldText")?.GetComponent<TextMeshProUGUI>();
         }
-        else
-        {
-            Debug.LogWarning("ShopManager: ShopPanel konnte nicht gefunden werden!");
-        }
-
         SetupButtonsPublic();
     }
 
     private Transform FindChildRecursive(Transform parent, string name)
     {
-        foreach (Transform t in parent.GetComponentsInChildren<Transform>(true))
-        {
-            if (t.name == name) return t;
-        }
+        foreach (Transform t in parent.GetComponentsInChildren<Transform>(true)) if (t.name == name) return t;
         return null;
     }
 
-    // =========================
-    // BUTTONS VERBINDEN
-    // =========================
     public void SetupButtonsPublic()
     {
-        // BUY
-        if (buyButton != null)
-        {
-            buyButton.onClick.RemoveAllListeners();
-            buyButton.onClick.AddListener(BuyPotion);
-        }
-
-        // SELL
-        if (sellButton != null)
-        {
-            sellButton.onClick.RemoveAllListeners();
-            sellButton.onClick.AddListener(SellPotion);
-        }
-
-        // LEAVE
-        if (leaveButton != null)
-        {
-            leaveButton.onClick.RemoveAllListeners();
-            leaveButton.onClick.AddListener(CloseShop);
-        }
-
-        // POTION SLOT
-        if (potionSlotButton != null)
-        {
-            potionSlotButton.onClick.RemoveAllListeners();
-            potionSlotButton.onClick.AddListener(SelectPotion);
-        }
+        if (buyButton != null) { buyButton.onClick.RemoveAllListeners(); buyButton.onClick.AddListener(BuyItem); }
+        if (sellButton != null) { sellButton.onClick.RemoveAllListeners(); sellButton.onClick.AddListener(SellItem); }
+        if (leaveButton != null) { leaveButton.onClick.RemoveAllListeners(); leaveButton.onClick.AddListener(CloseShop); }
+        if (healthSlotButton != null) { healthSlotButton.onClick.RemoveAllListeners(); healthSlotButton.onClick.AddListener(() => SelectShopItem(1)); }
+        if (manaSlotButton != null) { manaSlotButton.onClick.RemoveAllListeners(); manaSlotButton.onClick.AddListener(() => SelectShopItem(2)); }
     }
 
-    // =========================
-    // EXTERNE ÖFFNUNG (Vom Händler)
-    // =========================
     public void OpenShopFromMerchant()
     {
         if (isShopOpen) return;
-
-        // Sicherstellen, dass Referenzen da sind (nach Szenenwechsel)
         ReconnectShop();
         UpdateGoldUI();
-
-        // Auswahl reset
-        potionSelected = false;
-        if (selectionHighlight != null)
-            selectionHighlight.SetActive(false);
-
-        // UI direkt öffnen ohne erneuten Dialog (der kam schon vom Händler)
-        if (shopPanel != null)
-            shopPanel.SetActive(true);
-
+        DeselectShopItem();
+        if (shopPanel != null) shopPanel.SetActive(true);
         isShopOpen = true;
         isOpeningShop = false;
-
-        // Rucksack miteröffnen und Layout anpassen
-        if (MyUIManager.Instance != null)
-        {
-            MyUIManager.Instance.SetShopLayout(true);
-        }
-
-        // Bewegung sperren
+        if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(true);
         LockPlayerMovement(true);
-
-        // Maus zeigen
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        Debug.Log("ShopManager: Cursor aktiviert.");
-
-        UpdateGoldUI();
-        SetupButtonsPublic();
     }
 
-    // =========================
-    // SHOP STARTEN (Eigene Interaktion)
-    // =========================
     private void OpenShop()
     {
         isOpeningShop = true;
-        potionSelected = false;
-        if (selectionHighlight != null) selectionHighlight.SetActive(false);
-
-        if (DialogueUI.Instance != null)
-        {
-            DialogueUI.Instance.ShowMessage("Händler", "Schau dir meine Waren an!", dialogueDuration);
-        }
-
+        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Händler", "Schau dir meine Waren an!", dialogueDuration);
         Invoke(nameof(OpenShopAfterDialogue), dialogueDuration);
     }
 
-    private void OpenShopAfterDialogue()
-    {
-        OpenShopFromMerchant();
-    }
+    private void OpenShopAfterDialogue() => OpenShopFromMerchant();
 
-    // =========================
-    // SHOP SCHLIESSEN
-    // =========================
     public void CloseShop()
     {
-        if (shopPanel != null)
-            shopPanel.SetActive(false);
-
-        // Rucksack schließen und Layout reset
-        if (MyUIManager.Instance != null)
-        {
-            MyUIManager.Instance.SetShopLayout(false);
-        }
-
-        // Auswahl reset
-        potionSelected = false;
-
-        if (selectionHighlight != null)
-            selectionHighlight.SetActive(false);
-
+        if (shopPanel != null) shopPanel.SetActive(false);
+        if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(false);
+        DeselectShopItem();
         isShopOpen = false;
         isOpeningShop = false;
-
-        // Bewegung zurück
         LockPlayerMovement(false);
     }
 
-    // =========================
-    // PLAYER MOVEMENT LOCK
-    // =========================
     private void LockPlayerMovement(bool locked)
     {
         if (player == null) FindPlayer();
-        if (player == null) return;
-
-        PlayerMovement movement = player.GetComponent<PlayerMovement>();
-        if (movement != null)
-        {
-            movement.canMove = !locked;
+        if (player != null) {
+            PlayerMovement movement = player.GetComponent<PlayerMovement>();
+            if (movement != null) movement.canMove = !locked;
         }
     }
 
-    public void SelectPotion()
+    public void SelectShopItem(int type)
     {
-        Debug.Log("ShopManager: Potion ausgewählt.");
-        potionSelected = true;
-
-        if (selectionHighlight != null)
-            selectionHighlight.SetActive(true);
-
-        // Inventar-Auswahl aufheben
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.DeselectSlot();
-        }
+        selectedShopItem = type;
+        if (healthHighlight != null) healthHighlight.SetActive(type == 1);
+        if (manaHighlight != null) manaHighlight.SetActive(type == 2);
+        if (InventoryManager.Instance != null) InventoryManager.Instance.DeselectSlot();
     }
 
     public void DeselectShopItem()
     {
-        potionSelected = false;
-        if (selectionHighlight != null)
-            selectionHighlight.SetActive(false);
+        selectedShopItem = 0;
+        if (healthHighlight != null) healthHighlight.SetActive(false);
+        if (manaHighlight != null) manaHighlight.SetActive(false);
     }
 
-    public void BuyPotion()
+    public void BuyItem()
     {
-        Debug.Log("ShopManager: BuyPotion clicked.");
-
-        if (!potionSelected)
-        {
-            Debug.LogWarning("ShopManager: No item selected in shop.");
-            return;
-        }
-
+        if (selectedShopItem == 0) return;
+        int price = (selectedShopItem == 1) ? healthPrice : manaPrice;
         PlayerGold gold = PlayerGold.GetInstance();
+        if (gold == null) return;
 
-        if (gold == null)
+        if (gold.SpendGold(price))
         {
-            // Try one last time to find it
-            gold = Object.FindAnyObjectByType<PlayerGold>();
-            if (gold != null) PlayerGold.Instance = gold;
+            bool success = false;
+            if (selectedShopItem == 1) success = InventoryManager.Instance.AddPotion();
+            else if (selectedShopItem == 2) success = InventoryManager.Instance.AddManaPotion();
+
+            if (!success) gold.AddGold(price);
         }
-
-        if (gold == null)
-        {
-            Debug.LogError("ShopManager: PlayerGold Instance missing! Current scene: " + SceneManager.GetActiveScene().name);
-            return;
-        }
-
-        Debug.Log($"ShopManager: Gold vor Kauf: {gold.currentGold}, Preis: {potionPrice}");
-
-        if (!gold.SpendGold(potionPrice))
-        {
-            Debug.LogWarning("ShopManager: Nicht genug Gold!");
-            return;
-        }
-
-        InventoryManager inventory = InventoryManager.Instance;
-        if (inventory == null) inventory = FindAnyObjectByType<InventoryManager>();
-
-        if (inventory == null)
-        {
-            Debug.LogError("ShopManager: InventoryManager fehlt!");
-            gold.AddGold(potionPrice);
-            return;
-        }
-
-        bool success = inventory.AddPotion();
-        if (success)
-        {
-            Debug.Log("ShopManager: Potion erfolgreich gekauft.");
-        }
-        else
-        {
-            Debug.LogError("ShopManager: Potion konnte nicht zum Inventar hinzugefügt werden!");
-            gold.AddGold(potionPrice);
-        }
-
         UpdateGoldUI();
-        SetupButtonsPublic();
     }
 
-    // =========================
-    // VERKAUFEN
-    // =========================
-    public void SellPotion()
+    public void SellItem()
     {
-        PlayerGold gold = PlayerGold.GetInstance();
-        
-        InventoryManager inventory = InventoryManager.Instance;
-        if (inventory == null) inventory = FindAnyObjectByType<InventoryManager>();
+        InventoryManager inv = InventoryManager.Instance;
+        if (inv == null) return;
+        int idx = inv.GetSelectedSlotIndex();
+        if (idx == -1) return;
 
-        if (inventory == null)
-        {
-            Debug.LogError("InventoryManager nicht gefunden!");
-            return;
-        }
+        int[] types = inv.GetSlotItemTypes();
+        int type = (types != null && idx < types.Length) ? types[idx] : 0;
+        if (type == 0) return;
 
-        // 1. Prüfen ob im INVENTAR etwas selektiert ist
-        int selectedIdx = inventory.GetSelectedSlotIndex();
+        int price = (type == 1) ? healthPrice : manaPrice;
 
-        if (selectedIdx == -1)
+        if (inv.RemoveSelected())
         {
-            Debug.Log("Bitte wähle zuerst einen Trank in deinem Rucksack aus, um ihn zu verkaufen!");
-            return;
+            PlayerGold gold = PlayerGold.GetInstance();
+            if (gold != null) gold.AddGold(price / 2);
         }
-
-        // 2. Den selektierten Trank aus dem Inventar entfernen
-        if (inventory.RemoveSelectedPotion())
-        {
-            if (gold != null)
-            {
-                gold.AddGold(potionPrice / 2);
-            }
-            UpdateGoldUI();
-            Debug.Log("Trank aus Inventar verkauft für " + (potionPrice / 2) + " Gold.");
-        }
-        else
-        {
-            Debug.Log("Fehler beim Verkauf oder Slot war leer.");
-        }
+        UpdateGoldUI();
     }
 
-    // =========================
-    // UI UPDATE
-    // =========================
     private void UpdateGoldUI()
     {
         PlayerGold gold = PlayerGold.GetInstance();
-        
-        if (goldText != null && gold != null)
-            goldText.text = gold.currentGold.ToString();
-
-        if (potionPriceText != null)
-            potionPriceText.text = potionPrice.ToString();
+        if (goldText != null && gold != null) goldText.text = gold.currentGold.ToString();
+        if (healthPriceText != null) healthPriceText.text = healthPrice.ToString();
+        if (manaPriceText != null) manaPriceText.text = manaPrice.ToString();
     }
 }
