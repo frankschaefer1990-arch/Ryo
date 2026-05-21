@@ -56,6 +56,8 @@ public class ChestUI : MonoBehaviour
         if (slotTemplate == null && slotContainer != null)
             slotTemplate = slotContainer.Find("SlotTemplate")?.gameObject;
 
+        if (slotTemplate != null) slotTemplate.SetActive(false);
+
         if (takeAllButton == null && chestPanel != null)
             takeAllButton = chestPanel.GetComponentsInChildren<Button>(true).FirstOrDefault(b => b.name == "TakeAllButton");
 

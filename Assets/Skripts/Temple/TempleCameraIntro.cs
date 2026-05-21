@@ -73,6 +73,11 @@ public class TempleCameraIntro : MonoBehaviour
             pm.canMove = false;
         }
 
+        if (MyUIManager.Instance != null)
+        {
+            MyUIManager.Instance.isLocked = true;
+        }
+
         // =========================
         // CAMERA FOLLOW AUS
         // =========================
@@ -165,6 +170,11 @@ public class TempleCameraIntro : MonoBehaviour
         if (pm != null)
         {
             pm.canMove = true;
+        }
+
+        if (MyUIManager.Instance != null)
+        {
+            MyUIManager.Instance.isLocked = false;
         }
 
         introRunning = false;

@@ -138,18 +138,19 @@ public class MyUIManager : MonoBehaviour
         UpdateCursorState(inBattle);
         UpdateSoftwareCursor();
 
+        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
+
         // Update BottomMenuPanel visibility
-if (bottomMenuPanel != null)
+        if (bottomMenuPanel != null)
         {
-            // Deactivate in Battle, SplashScreen, MainMenu, or during Cutscenes (isLocked)
-            bool shouldBeVisible = !inBattle && !isSplash && !isMainMenu && !isLocked;
+            // Deactivate in Battle, SplashScreen, MainMenu, during Dialogues, or when UI is Locked (Cutscenes)
+            bool shouldBeVisible = !inBattle && !isSplash && !isMainMenu && !dialogueActive && !isLocked;
             if (bottomMenuPanel.activeSelf != shouldBeVisible)
             {
                 bottomMenuPanel.SetActive(shouldBeVisible);
             }
         }
 
-        bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
         
         // Debug: press Alt+L to see lock status
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L))
@@ -336,13 +337,6 @@ if (bottomMenuPanel != null)
         mainMenuPanel = FindChildRecursive(searchRoot, "MainMenuPanel");
         if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(searchRoot, "MenuPanel");
         if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(searchRoot, "MenuContainer");
-
-        // Ensure proper scale
-        if (bottomMenuPanel != null)
-        {
-            RectTransform rt = bottomMenuPanel.GetComponent<RectTransform>();
-            if (rt != null) rt.localScale = Vector3.one;
-        }
 
         if (inventoryPanel != null) {
             var btn = inventoryPanel.transform.Find("BackpackButton")?.GetComponent<UnityEngine.UI.Button>();
