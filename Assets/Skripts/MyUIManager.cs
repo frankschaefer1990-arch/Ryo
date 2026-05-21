@@ -15,6 +15,8 @@ public class MyUIManager : MonoBehaviour
     public GameObject bottomMenuPanel;
     public GameObject lockedDoorPopup;
     public GameObject shopPanel;
+    public GameObject furniturePanel;
+    public ChestUI chestUI;
     public TextMeshProUGUI backpackGoldText;
 
     [Header("Keys")]
@@ -32,16 +34,54 @@ public class MyUIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null && Instance != this && Instance.gameObject != null)
         {
-            Destroy(gameObject);
-            return;
+            // If the other instance is on a "Canvas" (spawned prefab) and we are "MasterCanvas" (scene persistent), take over
+            if (Instance.gameObject.name == "Canvas" && gameObject.name == "MasterCanvas")
+            {
+                Debug.Log("MyUIManager: MasterCanvas found, replacing spawned Canvas instance.");
+                DestroyImmediate(Instance.gameObject);
+                Instance = this;
+            }
+            else if (Instance.gameObject.scene.name == "DontDestroyOnLoad")
+            {
+                Debug.Log("MyUIManager: Destroying duplicate, persistent instance exists.");
+                Destroy(gameObject);
+                return;
+            }
         }
-        Instance = this;
         
+        Instance = this;
         if (transform.parent != null) transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
-        Debug.Log("MyUIManager: Initialized and persistent.");
+        Debug.Log("MyUIManager: Persistent singleton initialized on " + gameObject.name);
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void EnsureCanvasExists()
+    {
+        if (Instance == null)
+        {
+            var found = Object.FindAnyObjectByType<MyUIManager>(FindObjectsInactive.Include);
+            if (found != null)
+            {
+                Instance = found;
+                return;
+            }
+
+            Debug.Log("MyUIManager: Auto-spawning MasterCanvas...");
+            GameObject prefab = Resources.Load<GameObject>("Canvas");
+            #if UNITY_EDITOR
+            if (prefab == null) prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefix/Canvas.prefab");
+            #endif
+
+            if (prefab != null)
+            {
+                GameObject inst = Instantiate(prefab);
+                inst.name = "Canvas";
+                Instance = inst.GetComponent<MyUIManager>();
+            }
+        }
     }
 
     private void OnEnable()
@@ -169,10 +209,11 @@ if (bottomMenuPanel != null)
         bool lockOpen = lockedDoorPopup != null && lockedDoorPopup.activeInHierarchy;
         bool saveOpen = SaveSlotManager.Instance != null && SaveSlotManager.Instance.saveSlotPanel != null && SaveSlotManager.Instance.saveSlotPanel.activeInHierarchy;
         bool menuOpen = mainMenuPanel != null && mainMenuPanel.activeInHierarchy;
-        bool chestOpen = ChestUI.Instance != null && ChestUI.Instance.chestPanel != null && ChestUI.Instance.chestPanel.activeInHierarchy;
+        bool chestOpen = chestUI != null && chestUI.chestPanel != null && chestUI.chestPanel.activeInHierarchy;
+        bool furnitureOpen = furniturePanel != null && furniturePanel.activeInHierarchy;
 
-        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen;
-    }
+        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen || furnitureOpen;
+        }
 
     private bool IsInBattleScene()
     {
@@ -265,25 +306,43 @@ if (bottomMenuPanel != null)
 
     public void ReconnectUIFromGameManager()
     {
-        if (inventoryPanel != null && inventoryPanel.transform.root.gameObject.scene.name == "DontDestroyOnLoad") return;
+        // Use own transform if we are already a persistent Canvas root
+        Transform searchRoot = transform;
+        
+        // If we are NOT the Canvas root (unlikely given Awake logic), find target
+        if (GetComponent<Canvas>() == null)
+        {
+            GameObject targetCanvas = GetTargetCanvas();
+            if (targetCanvas != null) searchRoot = targetCanvas.transform;
+        }
 
-        GameObject targetCanvas = GetTargetCanvas();
-        if (targetCanvas == null) return;
-
-        inventoryPanel = FindChildRecursive(targetCanvas.transform, "InventoryPanel");
-        backpackPanel = FindChildRecursive(targetCanvas.transform, "BackpackPanel");
+        inventoryPanel = FindChildRecursive(searchRoot, "InventoryPanel");
+        backpackPanel = FindChildRecursive(searchRoot, "BackpackPanel");
         if (backpackPanel == null && inventoryPanel != null) {
             backpackPanel = FindChildRecursive(inventoryPanel.transform, "BackpackPanel");
         }
-        attributePanel = FindChildRecursive(targetCanvas.transform, "AttributePanel");
-        skillPanel = FindChildRecursive(targetCanvas.transform, "SkillPanel");
-        shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel");
-        lockedDoorPopup = FindChildRecursive(targetCanvas.transform, "LockedDoorPopup");
+        attributePanel = FindChildRecursive(searchRoot, "AttributePanel");
+        skillPanel = FindChildRecursive(searchRoot, "SkillPanel");
+        shopPanel = FindChildRecursive(searchRoot, "ShopPanel");
+        lockedDoorPopup = FindChildRecursive(searchRoot, "LockedDoorPopup");
+        furniturePanel = FindChildRecursive(searchRoot, "FurniturePanel");
+        bottomMenuPanel = FindChildRecursive(searchRoot, "BottomMenuPanel");
+        
+        // Link ChestUI
+        var chestUIObj = FindChildRecursive(searchRoot, "ChestUI");
+        if (chestUIObj != null) chestUI = chestUIObj.GetComponent<ChestUI>();
         
         // RECONNECT MainMenuPanel
-        mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MainMenuPanel");
-        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MenuPanel");
-        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(targetCanvas.transform, "MenuContainer");
+        mainMenuPanel = FindChildRecursive(searchRoot, "MainMenuPanel");
+        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(searchRoot, "MenuPanel");
+        if (mainMenuPanel == null) mainMenuPanel = FindChildRecursive(searchRoot, "MenuContainer");
+
+        // Ensure proper scale
+        if (bottomMenuPanel != null)
+        {
+            RectTransform rt = bottomMenuPanel.GetComponent<RectTransform>();
+            if (rt != null) rt.localScale = Vector3.one;
+        }
 
         if (inventoryPanel != null) {
             var btn = inventoryPanel.transform.Find("BackpackButton")?.GetComponent<UnityEngine.UI.Button>();

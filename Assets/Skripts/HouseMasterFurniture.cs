@@ -137,8 +137,11 @@ public class HouseMasterFurniture : MonoBehaviour
 
     private void OpenUI()
     {
-        if (interactionPanel == null) return;
+        if (interactionPanel == null) FindUIReferences();
+        if (interactionPanel == null) { Debug.LogError("Furniture: InteractionPanel is NULL!"); return; }
+        
         interactionPanel.SetActive(true);
+        Debug.Log($"Furniture: Opened UI for {gameObject.name}");
         
         if (type == FurnitureType.Bed)
         {
@@ -153,9 +156,16 @@ public class HouseMasterFurniture : MonoBehaviour
         }
 
         var pm = Object.FindAnyObjectByType<PlayerMovement>();
-        if (pm != null) pm.canMove = false;
+        if (pm != null)
+        {
+            pm.canMove = false;
+            pm.ResetMovementState();
+        }
+        
+        // Force cursor state
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        Debug.Log("Furniture: Cursor released.");
     }
 
     private void ShowDeskPage()

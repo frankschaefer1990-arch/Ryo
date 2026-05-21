@@ -129,6 +129,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (dialogueActive || isCutscene)
         {
+            // Only lock if we are NOT in a UI panel that isn't registered yet
+            // But we should register panels.
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }

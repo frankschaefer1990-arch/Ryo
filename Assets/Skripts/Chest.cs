@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Chest : MonoBehaviour
 {
@@ -60,38 +61,95 @@ public class Chest : MonoBehaviour
 
     private void Update()
     {
-        if (playerInside && Input.GetKeyDown(interactKey) && !isPermanentlyEmpty)
+        // Debug key detection
+        if (Input.GetKeyDown(interactKey))
         {
-            Debug.Log($"Chest: Opening {gameObject.name}");
-            if (!isOpened)
+            Debug.Log($"Chest: '{interactKey}' pressed. playerInside={playerInside}, isOpened={isOpened}, isPermanentlyEmpty={isPermanentlyEmpty}");
+            
+            // Interaction logic
+            if (playerInside && !isPermanentlyEmpty)
             {
-                StartCoroutine(OpenChestRoutine());
+                if (!isOpened) StartCoroutine(OpenChestRoutine());
+                else OpenChestUI();
             }
-            else
+            else if (!playerInside && !isPermanentlyEmpty)
             {
-                OpenChestUI();
+                // Distance-based fallback in case Trigger fails
+                var player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null && Vector2.Distance(transform.position, player.transform.position) < 2.5f)
+                {
+                    Debug.Log("Chest: Trigger failed but distance check succeeded. Opening...");
+                    playerInside = true; 
+                    if (!isOpened) StartCoroutine(OpenChestRoutine());
+                    else OpenChestUI();
+                }
             }
         }
     }
 
     private IEnumerator OpenChestRoutine()
     {
+        Debug.Log($"Chest: Starting opening animation for {gameObject.name}");
         isOpened = true;
-        spriteRenderer.sprite = halfOpenSprite;
+        if (spriteRenderer != null) spriteRenderer.sprite = halfOpenSprite;
         yield return new WaitForSeconds(animationDelay);
-        spriteRenderer.sprite = openSprite;
+        if (spriteRenderer != null) spriteRenderer.sprite = openSprite;
         OpenChestUI();
     }
 
     private void OpenChestUI()
     {
-        if (ChestUI.Instance != null)
+        Debug.Log($"Chest: Attempting to open UI for {gameObject.name}. Item count: {items.Count}");
+        ChestUI ui = FindChestUI();
+
+        if (ui != null)
         {
-            ChestUI.Instance.Open(this);
+            Debug.Log($"Chest: Found UI on '{ui.gameObject.name}'. Calling Open().");
+            ui.Open(this);
         }
         else
         {
-            Debug.LogError("ChestUI Instance not found!");
+            Debug.LogError("Chest: ChestUI could NOT be found in scene or via MyUIManager! Retrying...");
+            StartCoroutine(OpenChestRetry());
+        }
+    }
+
+    private ChestUI FindChestUI()
+    {
+        // 1. Try MyUIManager link
+        if (MyUIManager.Instance != null && MyUIManager.Instance.chestUI != null) 
+        {
+            Debug.Log("Chest: Found UI via MyUIManager link.");
+            return MyUIManager.Instance.chestUI;
+        }
+
+        // 2. Try static Instance
+        var ui = ChestUI.Instance;
+        if (ui != null && ui.gameObject != null) 
+        {
+            Debug.Log("Chest: Found UI via ChestUI.Instance.");
+            return ui;
+        }
+
+        // 3. Last resort: Deep scene search
+        var allUIs = Object.FindObjectsByType<ChestUI>(FindObjectsInactive.Include);
+        var found = allUIs.OrderByDescending(x => x.gameObject.scene.name == "DontDestroyOnLoad").FirstOrDefault();
+        if (found != null) Debug.Log($"Chest: Found UI via deep scene search on '{found.gameObject.name}'.");
+        
+        return found;
+    }
+
+    private IEnumerator OpenChestRetry()
+    {
+        yield return new WaitForSeconds(0.1f);
+        var ui = FindChestUI();
+        if (ui != null)
+        {
+            ui.Open(this);
+        }
+        else
+        {
+            Debug.LogError("ChestUI Instance not found even after retry! Please check if the 'ChestUI' component exists on your MasterCanvas and that the MasterCanvas is active.");
         }
     }
 

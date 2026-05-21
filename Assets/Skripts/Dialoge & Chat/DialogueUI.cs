@@ -29,11 +29,19 @@ public class DialogueUI : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null && Instance != this && Instance.gameObject != null)
         {
-            Debug.Log($"DialogueUI: Local duplicate found on {gameObject.name}, destroying.");
-            Destroy(gameObject);
-            return;
+            if (!Instance.gameObject.activeInHierarchy || (gameObject.name == "DialogueManager" && Instance.name != "DialogueManager"))
+            {
+                Destroy(Instance.gameObject);
+                Instance = this;
+            }
+            else
+            {
+                Debug.Log($"DialogueUI: Local duplicate found on {gameObject.name}, destroying.");
+                Destroy(gameObject);
+                return;
+            }
         }
         
         Instance = this;
@@ -76,28 +84,22 @@ public class DialogueUI : MonoBehaviour
 
     private void InitializeComponents()
     {
+        if (DialogueFrameNew == null) LocalReconnect();
+
         if (DialogueFrameNew != null)
         {
             frameCanvasGroup = DialogueFrameNew.GetComponent<CanvasGroup>();
             if (frameCanvasGroup == null) frameCanvasGroup = DialogueFrameNew.AddComponent<CanvasGroup>();
             
-            // Re-find children if they were lost but frame is still here
-            if (popupText == null) {
-                foreach (Transform t in DialogueFrameNew.GetComponentsInChildren<Transform>(true)) {
-                    if (t.name == "PopupText" || t.name == "Text" || t.name == "DialogueText") {
-                        popupTextObject = t.gameObject;
-                        popupText = t.GetComponent<TextMeshProUGUI>();
-                        break;
-                    }
-                }
-            }
-            
-            // Always search for speaker name text to ensure it's the correct one
+            // Re-find children
             foreach (Transform t in DialogueFrameNew.GetComponentsInChildren<Transform>(true)) {
+                if (t.name == "PopupText" || t.name == "Text" || t.name == "DialogueText") {
+                    popupTextObject = t.gameObject;
+                    popupText = t.GetComponent<TextMeshProUGUI>();
+                }
                 if (t.name == "SpeakerNameText" || t.name == "TextPlayerName" || t.name == "Name") {
                     speakerNameObject = t.gameObject;
                     speakerNameText = t.GetComponent<TextMeshProUGUI>();
-                    if (t.name == "SpeakerNameText") break; // Prefer SpeakerNameText
                 }
             }
         }
@@ -129,6 +131,8 @@ public class DialogueUI : MonoBehaviour
 
     public void ShowMessage(string speakerName, string message, float visibleDuration = 1.5f)
     {
+        Debug.Log($"DialogueUI: ShowMessage called. Speaker: {speakerName}, Msg: {message}");
+
         // Check if we are in a battle scene
         string sceneName = SceneManager.GetActiveScene().name.ToLower();
         if (sceneName.Contains("battle") || sceneName.Contains("kampf"))
@@ -138,7 +142,10 @@ public class DialogueUI : MonoBehaviour
         }
 
         if (DialogueFrameNew == null) LocalReconnect();
-if (DialogueFrameNew == null) return;
+        if (DialogueFrameNew == null) {
+            Debug.LogError("DialogueUI: DialogueFrameNew is NULL even after reconnect!");
+            return;
+        }
 
         if (currentRoutine != null) StopCoroutine(currentRoutine);
         isShowing = true;
