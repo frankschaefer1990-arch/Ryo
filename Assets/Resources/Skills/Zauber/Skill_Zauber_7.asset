@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: astralbruch
   skillName: Astralbruch
-  icon: {fileID: 0}
+  icon: {fileID: 8867859431572186041, guid: ee4623f4a1fe8ae4db3edc6d4f6a6a5a, type: 3}
   description: "Zerrei\xDFt die magische Essenz des Gegners."
   category: 1
   levelRequirement: 9
@@ -24,13 +24,13 @@ MonoBehaviour:
   damageMultiplier: 1
   isSpell: 1
   manaCost: 0
-  effectColor: {r: 0, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
-  slashDuration: 0.2
+  effectColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  customSlashSprite: {fileID: -8419350149049450925, guid: ee4623f4a1fe8ae4db3edc6d4f6a6a5a, type: 3}
+  slashDuration: 0.8
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
-  randomRotation: 1
-  skillSound: {fileID: 0}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 0
+  skillSound: {fileID: 8300000, guid: 5a5fe5f936239b94a93ef5dae9d6d26d, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

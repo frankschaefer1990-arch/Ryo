@@ -284,11 +284,17 @@ if (playerAura != null) playerAura.SetActive(false);
             {
                 if (PlayerStats.Instance != null)
                 {
-                    PlayerStats.Instance.curseValue = 0; // Reset to 0 after form ends
+                    PlayerStats.Instance.curseValue = 0; // Reset to 0 after 3 rounds
                     Debug.Log("Shinigami Form ended. Curse reset to 0.");
                 }
                 ApplyCurseVisuals();
             }
+        }
+        else if (PlayerStats.Instance != null && PlayerStats.Instance.curseValue >= 100)
+        {
+            // If we just reached 100, set the turns
+            shinigamiTurnsLeft = 3;
+            Debug.Log("Shinigami Form aktiviert für 3 Züge!");
         }
 
         // Reset playerPos to original world position to prevent drift from animations
@@ -303,7 +309,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 {
             // Always decay at start of turn
             int decay = PlayerStats.Instance.HasCursePassive(10) ? -5 : -15; // Slightly faster decay to ensure it ends
-            if (PlayerStats.Instance.GetCurseForm() == 3) decay -= 5; // Extra decay in Shinigami form
+            if (shinigamiTurnsLeft > 0 || PlayerStats.Instance.GetCurseForm() == 3) decay -= 5; // Extra decay in Shinigami form
             
             PlayerStats.Instance.ChangeCurseValue(decay);
             ApplyCurseVisuals();
@@ -457,19 +463,31 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         StartCoroutine(EnemyTurn());
     }
 
-    private Vector3 GetEffectCenter(Transform target)
+    private Vector3 GetEffectCenter(Transform target, bool isSpell = false)
     {
         if (target == null) return Vector3.zero;
         SpriteRenderer sr = target.GetComponentInChildren<SpriteRenderer>();
-        return sr != null ? sr.bounds.center : target.position + Vector3.up;
+        if (sr != null)
+        {
+            if (isSpell)
+            {
+                // Use the SpriteRenderer's position (Pivot) for the Y coordinate.
+                // If the sprite pivot is at the feet, this is the ground level.
+                // We still use bounds.center.x for the horizontal middle.
+                return new Vector3(sr.bounds.center.x, sr.transform.position.y, sr.bounds.center.z);
+            }
+            return sr.bounds.center;
+        }
+        return target.position + (isSpell ? Vector3.zero : Vector3.up);
     }
 
     private IEnumerator ExecuteSkill(BattleSkill skill, int level)
     {
         state = BattleState.BUSY;
-        Vector3 effectCenter = GetEffectCenter(enemyPos);
+        Vector3 effectCenter = GetEffectCenter(enemyPos, skill.isSpell);
         var stats = PlayerStats.Instance;
         int currentForm = stats != null ? stats.GetCurseForm() : 0;
+        if (shinigamiTurnsLeft > 0) currentForm = 3;
 
         if (stats != null && skill.isSpell)
         {
@@ -493,6 +511,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         {
             // CHECK FORM MID-COMBO
             currentForm = stats != null ? stats.GetCurseForm() : 0;
+            if (shinigamiTurnsLeft > 0) currentForm = 3;
             
             bool hitSuccess = true;
             QTEResult qteResult = QTEResult.SUCCESS;
@@ -606,7 +625,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                 }
 
                 // Todeshauch (Skill 11): +50% total damage in Shinigami form
-                if (stats != null && stats.GetCurseForm() == 3 && stats.HasCursePassive(11))
+                if (stats != null && currentForm == 3 && stats.HasCursePassive(11))
                 {
                     totalMultiplier *= 1.5f;
                 }
@@ -994,27 +1013,34 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
         int form = stats.GetCurseForm();
         
-        // Duration Logic: Set to 3 when entering form 3
+        // Duration Logic: Set to 3 when entering form 3 (if not already in it)
         if (form == 3 && shinigamiTurnsLeft <= 0)
         {
             shinigamiTurnsLeft = 3;
             Debug.Log("Shinigami Form aktiviert für 3 Züge!");
         }
 
-        if (playerAura != null) playerAura.SetActive(form >= 1 && form < 3);
-        if (form == 2) sr.color = new Color(0.5f, 0f, 0.5f, 1f);
-        else sr.color = Color.white;
+        // Use shinigamiTurnsLeft to force form 3 visuals even if curseValue decayed
+        bool isShinigami = shinigamiTurnsLeft > 0;
 
-        if (form == 3 && shinigamiSprite != null) 
+        if (playerAura != null) playerAura.SetActive((form >= 1 || isShinigami) && !isShinigami);
+        
+        if (isShinigami)
         {
-            sr.sprite = shinigamiSprite;
-            sr.transform.localPosition = originalRendererLocalPos + shinigamiOffset;
+            sr.color = Color.white;
+            if (shinigamiSprite != null) 
+            {
+                sr.sprite = shinigamiSprite;
+                sr.transform.localPosition = originalRendererLocalPos + shinigamiOffset;
+            }
         }
-        else 
+        else
         {
+            if (form == 2) sr.color = new Color(0.5f, 0f, 0.5f, 1f);
+            else sr.color = Color.white;
+
             if (humanSprite != null) sr.sprite = humanSprite;
             sr.transform.localPosition = originalRendererLocalPos;
-            if (form < 3) shinigamiTurnsLeft = 0; // Reset
         }
-}
+    }
 }

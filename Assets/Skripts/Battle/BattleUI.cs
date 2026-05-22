@@ -150,11 +150,11 @@ public Color qteFailColor = Color.red;
             }
             else
             {
-                if (ratio < 0.5f)
-                    curseFill.color = Color.Lerp(new Color(0.3f, 0f, 0.5f), Color.red, ratio * 2f);
-                else
-                    curseFill.color = Color.Lerp(Color.red, new Color(0.6f, 0f, 1f), (ratio - 0.5f) * 2f); // Vibrant Purple for high curse
-                }
+                // Always Purple: Dark Purple at 0, Glowing/Bright Purple at 1
+                Color darkPurple = new Color(0.15f, 0f, 0.25f); // Very dark purple
+                Color brightPurple = new Color(0.8f, 0f, 1f);   // Bright, glowing purple
+                curseFill.color = Color.Lerp(darkPurple, brightPurple, ratio);
+            }
         }
 
         if (curseValueText != null)

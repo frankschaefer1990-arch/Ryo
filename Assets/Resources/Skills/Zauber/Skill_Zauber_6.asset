@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: blutpakt
   skillName: Blutpakt
-  icon: {fileID: 0}
+  icon: {fileID: 3907848055805514410, guid: df16c5e29a056c048ba2760fadd0c1ca, type: 3}
   description: "Opfere eigenes Leben f\xFCr verbotene Macht."
   category: 1
   levelRequirement: 7
@@ -24,13 +24,13 @@ MonoBehaviour:
   damageMultiplier: 1
   isSpell: 1
   manaCost: 0
-  effectColor: {r: 0.5, g: 0, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
-  slashDuration: 0.2
+  effectColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  customSlashSprite: {fileID: -2102911183, guid: df16c5e29a056c048ba2760fadd0c1ca, type: 3}
+  slashDuration: 0.8
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
-  randomRotation: 1
-  skillSound: {fileID: 0}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 0
+  skillSound: {fileID: 8300000, guid: 97a2524433ffc704d890abc56f921bef, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

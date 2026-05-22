@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: donnerspeer
   skillName: Donnerspeer
-  icon: {fileID: 0}
+  icon: {fileID: -7811651723266531050, guid: 66d31c1e0c25b8a478c23c499fb45a12, type: 3}
   description: Ein verdichteter Blitzspeer durchbohrt das Ziel.
   category: 1
   levelRequirement: 1
@@ -24,13 +24,13 @@ MonoBehaviour:
   damageMultiplier: 1
   isSpell: 1
   manaCost: 0
-  effectColor: {r: 0, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
-  slashDuration: 0.2
+  effectColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  customSlashSprite: {fileID: -1494585091, guid: 66d31c1e0c25b8a478c23c499fb45a12, type: 3}
+  slashDuration: 0.8
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
-  randomRotation: 1
-  skillSound: {fileID: 0}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 0
+  skillSound: {fileID: 8300000, guid: 5a5fe5f936239b94a93ef5dae9d6d26d, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

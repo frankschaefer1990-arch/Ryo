@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: klingenwirbel
   skillName: Klingenwirbel
-  icon: {fileID: 0}
+  icon: {fileID: 9196372843578588575, guid: 78b097667dfcae24a8663cac59c80f28, type: 3}
   description: Rasante Schwertwirbel-Serie.
   category: 0
   levelRequirement: 13
@@ -25,12 +25,12 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
+  customSlashSprite: {fileID: -466752671, guid: 78b097667dfcae24a8663cac59c80f28, type: 3}
   slashDuration: 0.2
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
   randomRotation: 1
-  skillSound: {fileID: 0}
+  skillSound: {fileID: 8300000, guid: 5a60a4c8ccc5d7447bd6addfdc0a5d60, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

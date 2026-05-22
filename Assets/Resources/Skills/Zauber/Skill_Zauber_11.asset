@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: hollow_judgment
   skillName: Hollow Judgment
-  icon: {fileID: 0}
+  icon: {fileID: -1849460128671758871, guid: 2019d3eefa3486d4aaf1e837d898e0c1, type: 3}
   description: "Ein verheerender Richtschlag aus Hollow-Macht vernichtet geschw\xE4chte
     Feinde."
   category: 1
@@ -25,12 +25,12 @@ MonoBehaviour:
   damageMultiplier: 1
   isSpell: 1
   manaCost: 0
-  effectColor: {r: 0, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
-  slashDuration: 0.2
+  effectColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  customSlashSprite: {fileID: -6344851314664156942, guid: 2019d3eefa3486d4aaf1e837d898e0c1, type: 3}
+  slashDuration: 0.8
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
-  randomRotation: 1
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 0
   skillSound: {fileID: 0}
   hasCombo: 1
   healMultiplier: 0

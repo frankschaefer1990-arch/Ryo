@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: zornspalter
   skillName: Zornspalter
-  icon: {fileID: 0}
+  icon: {fileID: 8703923972640120212, guid: ed8e2afcd6197c148993b108f9f0d1df, type: 3}
   description: "Verbrauchte Rage wird in einem zerst\xF6rerischen Schlag entladen."
   category: 0
   levelRequirement: 19
@@ -25,12 +25,12 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
+  customSlashSprite: {fileID: -1914539516, guid: ed8e2afcd6197c148993b108f9f0d1df, type: 3}
   slashDuration: 0.2
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
   randomRotation: 1
-  skillSound: {fileID: 0}
+  skillSound: {fileID: 8300000, guid: 5a60a4c8ccc5d7447bd6addfdc0a5d60, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

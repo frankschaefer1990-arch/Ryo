@@ -378,7 +378,7 @@ public class MyUIManager : MonoBehaviour
         }
 
         if (shouldOpen)
-{
+    {
             ResetLayout();
             inventoryPanel.SetActive(true);
             backpackPanel.SetActive(true);
@@ -394,6 +394,7 @@ public class MyUIManager : MonoBehaviour
         else
         {
             backpackPanel.SetActive(false);
+            if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
             Debug.Log("MyUIManager: Set backpack to inactive.");
         }
     }
@@ -416,6 +417,7 @@ public class MyUIManager : MonoBehaviour
         {
             inventoryPanel.SetActive(false);
             backpackPanel.SetActive(false);
+            if (TooltipManager.Instance != null) TooltipManager.Instance.HideTooltip();
         }
     }
 

@@ -30,7 +30,7 @@ MonoBehaviour:
   visualOffset: {x: 0, y: 0, z: 0}
   visualScale: {x: 0.8, y: 0.8, z: 1}
   randomRotation: 1
-  skillSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}
+  skillSound: {fileID: 8300000, guid: 5a60a4c8ccc5d7447bd6addfdc0a5d60, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
 
     TYPE: Active
 
-    Base Hits: 4
+    Base Hits: 5
 
     Dmg Multiplier:
     x1,4

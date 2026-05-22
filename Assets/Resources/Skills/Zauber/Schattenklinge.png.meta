@@ -1,0 +1,318 @@
+fileFormatVersion: 2
+guid: 56e373db0b77fe74f9b926acc0876a84
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4015558002777110911
+    second: Schattenklinge_0
+  - first:
+      213: 3703972861046454826
+    second: Schattenklinge_1
+  - first:
+      213: 4553013530019586776
+    second: Schattenklinge_2
+  - first:
+      213: -68804322037993786
+    second: Schattenklinge_3
+  - first:
+      213: 622027114435387147
+    second: Schattenklinge_4
+  - first:
+      213: 2866979926162260467
+    second: Schattenklinge_5
+  - first:
+      213: 2486219394717753784
+    second: Schattenklinge_6
+  - first:
+      213: 2789106871759710807
+    second: Schattenklinge_7
+  - first:
+      213: 2587221980132040585
+    second: Schattenklinge_8
+  - first:
+      213: 2192108698714607348
+    second: Schattenklinge_9
+  - first:
+      213: -8743237530023092570
+    second: Schattenklinge_10
+  - first:
+      213: -8570812659596820940
+    second: Schattenklinge_11
+  - first:
+      213: -2182901088718183374
+    second: Schattenklinge_12
+  - first:
+      213: -4896238936201378952
+    second: Schattenklinge_13
+  - first:
+      213: 8960875099745869863
+    second: Schattenklinge_14
+  - first:
+      213: 5956504282375760331
+    second: Schattenklinge_15
+  - first:
+      213: 491477642415138672
+    second: Schattenklinge_16
+  - first:
+      213: 4204769959986964642
+    second: Schattenklinge_17
+  - first:
+      213: -3148961142575415462
+    second: Schattenklinge_18
+  - first:
+      213: -1049756519086070811
+    second: Schattenklinge_19
+  - first:
+      213: -6584325804775126187
+    second: Schattenklinge_20
+  - first:
+      213: 1997014252333691320
+    second: Schattenklinge_21
+  - first:
+      213: 6477234128829550105
+    second: Schattenklinge_22
+  - first:
+      213: -2194458869747835252
+    second: Schattenklinge_23
+  - first:
+      213: 3363141692611163150
+    second: Schattenklinge_24
+  - first:
+      213: 595628186693895807
+    second: Schattenklinge_25
+  - first:
+      213: -1423188400128300193
+    second: Schattenklinge_26
+  - first:
+      213: 2776921408919882358
+    second: Schattenklinge_27
+  - first:
+      213: 8371523624832655860
+    second: Schattenklinge_28
+  - first:
+      213: 8336549488396186170
+    second: Schattenklinge_29
+  - first:
+      213: -3047108581288872289
+    second: Schattenklinge_30
+  - first:
+      213: -2198980354733663709
+    second: Schattenklinge_31
+  - first:
+      213: 324731477749213587
+    second: Schattenklinge_32
+  - first:
+      213: 2054671095719142461
+    second: Schattenklinge_33
+  - first:
+      213: 8882591105887040455
+    second: Schattenklinge_34
+  - first:
+      213: 4050817576725215081
+    second: Schattenklinge_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Schattenklinge_26
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 246
+        width: 360
+        height: 331
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 13}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5b65e1c0b1df3ce0800000000000000
+      internalID: -1423188400128300193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Schattenklinge_27
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 204
+        width: 745
+        height: 484
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67ac8d30f4b998620800000000000000
+      internalID: 2776921408919882358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3d83fbc9a261a0545894c3ac1bd3fea3
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Schattenklinge_0: -4015558002777110911
+      Schattenklinge_1: 3703972861046454826
+      Schattenklinge_10: -8743237530023092570
+      Schattenklinge_11: -8570812659596820940
+      Schattenklinge_12: -2182901088718183374
+      Schattenklinge_13: -4896238936201378952
+      Schattenklinge_14: 8960875099745869863
+      Schattenklinge_15: 5956504282375760331
+      Schattenklinge_16: 491477642415138672
+      Schattenklinge_17: 4204769959986964642
+      Schattenklinge_18: -3148961142575415462
+      Schattenklinge_19: -1049756519086070811
+      Schattenklinge_2: 4553013530019586776
+      Schattenklinge_20: -6584325804775126187
+      Schattenklinge_21: 1997014252333691320
+      Schattenklinge_22: 6477234128829550105
+      Schattenklinge_23: -2194458869747835252
+      Schattenklinge_24: 3363141692611163150
+      Schattenklinge_25: 595628186693895807
+      Schattenklinge_26: -1423188400128300193
+      Schattenklinge_27: 2776921408919882358
+      Schattenklinge_28: 8371523624832655860
+      Schattenklinge_29: 8336549488396186170
+      Schattenklinge_3: -68804322037993786
+      Schattenklinge_30: -3047108581288872289
+      Schattenklinge_31: -2198980354733663709
+      Schattenklinge_32: 324731477749213587
+      Schattenklinge_33: 2054671095719142461
+      Schattenklinge_34: 8882591105887040455
+      Schattenklinge_35: 4050817576725215081
+      Schattenklinge_4: 622027114435387147
+      Schattenklinge_5: 2866979926162260467
+      Schattenklinge_6: 2486219394717753784
+      Schattenklinge_7: 2789106871759710807
+      Schattenklinge_8: 2587221980132040585
+      Schattenklinge_9: 2192108698714607348
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

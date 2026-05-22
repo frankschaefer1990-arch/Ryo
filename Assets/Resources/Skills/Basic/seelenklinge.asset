@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: seelenklinge
   skillName: Seelenklinge
-  icon: {fileID: 0}
+  icon: {fileID: -264153731977626209, guid: 827a8570967678e4b84947fdfcda22a3, type: 3}
   description: "Schwert und Seele verschmelzen f\xFCr einen verfluchten Pr\xE4zisionsschnitt."
   category: 0
   levelRequirement: 21
@@ -25,12 +25,12 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
+  customSlashSprite: {fileID: 977349062, guid: 827a8570967678e4b84947fdfcda22a3, type: 3}
   slashDuration: 0.2
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
   randomRotation: 1
-  skillSound: {fileID: 0}
+  skillSound: {fileID: 8300000, guid: 5a60a4c8ccc5d7447bd6addfdc0a5d60, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

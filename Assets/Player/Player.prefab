@@ -140,7 +140,7 @@ MonoBehaviour:
   speed: 5
   wallLayer:
     serializedVersion: 2
-    m_Bits: 80
+    m_Bits: 4294967295
   canMove: 1
   isCutsceneMoving: 0
   upScaleMultiplier: 1

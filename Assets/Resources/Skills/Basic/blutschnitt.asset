@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: blutschnitt
   skillName: Blutschnitt
-  icon: {fileID: 0}
+  icon: {fileID: -581315013600663737, guid: e5131b7f541431f40a0eb9ae1c88289c, type: 3}
   description: Tiefer Schnitt verursacht Blutung.
   category: 0
   levelRequirement: 9
@@ -25,12 +25,12 @@ MonoBehaviour:
   isSpell: 0
   manaCost: 0
   effectColor: {r: 1, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
+  customSlashSprite: {fileID: 2613701294628204879, guid: e5131b7f541431f40a0eb9ae1c88289c, type: 3}
   slashDuration: 0.2
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
+  visualScale: {x: 0.8, y: 0.8, z: 1}
   randomRotation: 1
-  skillSound: {fileID: 0}
+  skillSound: {fileID: 8300000, guid: 5a60a4c8ccc5d7447bd6addfdc0a5d60, type: 3}
   hasCombo: 1
   healMultiplier: 0
   isCurseUnlocker: 0

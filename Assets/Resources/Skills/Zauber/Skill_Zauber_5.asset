@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSkill
   skillId: seelenbrand
   skillName: Seelenbrand
-  icon: {fileID: 0}
+  icon: {fileID: -6797089786795182612, guid: 3941519281fc9f4429770b5b34606802, type: 3}
   description: Violettes Fluchfeuer frisst an der Seele des Gegners.
   category: 1
   levelRequirement: 5
@@ -24,12 +24,12 @@ MonoBehaviour:
   damageMultiplier: 1
   isSpell: 1
   manaCost: 0
-  effectColor: {r: 0, g: 1, b: 1, a: 1}
-  customSlashSprite: {fileID: 0}
-  slashDuration: 0.2
+  effectColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  customSlashSprite: {fileID: 5770778660943433539, guid: 3941519281fc9f4429770b5b34606802, type: 3}
+  slashDuration: 0.8
   visualOffset: {x: 0, y: 0, z: 0}
-  visualScale: {x: 1, y: 1, z: 1}
-  randomRotation: 1
+  visualScale: {x: 0.8, y: 0.8, z: 1}
+  randomRotation: 0
   skillSound: {fileID: 0}
   hasCombo: 1
   healMultiplier: 0
