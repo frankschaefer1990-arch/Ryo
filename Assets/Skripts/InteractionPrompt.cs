@@ -62,12 +62,20 @@ public class InteractionPrompt : MonoBehaviour
 
     private bool CheckForInteractables()
     {
-        // Hide if dialogue or UI is open
+        // Hide if dialogue, UI is open, or movement is locked (Cutscenes)
         if (DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive()) return false;
         if (MyUIManager.Instance != null && MyUIManager.Instance.IsAnyPanelOpen()) return false;
+        
+        // Hide during camera blends or explicit cutscenes
+        var player = GameManager.Instance?.player;
+        if (player != null)
+        {
+            PlayerMovement pm = player.GetComponent<PlayerMovement>();
+            if (pm != null && !pm.canMove) return false;
+        }
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
-        foreach (var hit in hits)
+foreach (var hit in hits)
         {
             // Skip the player itself and its children
             if (hit.gameObject == gameObject || hit.transform.IsChildOf(transform)) continue;

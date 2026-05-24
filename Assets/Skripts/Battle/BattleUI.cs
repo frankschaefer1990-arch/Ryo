@@ -204,9 +204,14 @@ public GameObject gameOverPanel;
 
         public void UpdateEnemyMana(float ratio, int curr, int max)
         {
-        targetEnemyMana = ratio;
-        if (enemyManaFill != null) enemyManaFill.fillAmount = ratio;
-        if (enemyManaText != null) enemyManaText.text = curr + " / " + max;
+            targetEnemyMana = ratio;
+            if (enemyManaFill != null) enemyManaFill.fillAmount = ratio;
+        
+            if (enemyManaText != null)
+            {
+                if (max <= 0) enemyManaText.text = ""; 
+                else enemyManaText.text = curr + " / " + max;
+            }
         }
 
     public void SetEnemyName(string name) { 

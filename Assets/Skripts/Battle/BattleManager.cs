@@ -244,7 +244,10 @@ if (playerAura != null) playerAura.SetActive(false);
             }
 
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
-            enemyCurrentMana = currentEnemy.startMana > 0 ? currentEnemy.startMana : currentEnemy.maxMana;
+            
+            // Check if enemy actually has skills that use mana
+            bool hasManaSkills = currentEnemy.skills != null && currentEnemy.skills.Exists(s => s != null && s.isSpell);
+            enemyCurrentMana = hasManaSkills ? (currentEnemy.startMana > 0 ? currentEnemy.startMana : currentEnemy.maxMana) : 0;
             
             if (BattleUI.Instance != null) {
                 var stats = PlayerStats.Instance ?? FindFirstObjectByType<PlayerStats>();
@@ -252,8 +255,15 @@ if (playerAura != null) playerAura.SetActive(false);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
                 BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
 
-                float enemyManaRatio = currentEnemy.maxMana > 0 ? (float)enemyCurrentMana / currentEnemy.maxMana : 1f;
-                BattleUI.Instance.UpdateEnemyMana(enemyManaRatio, enemyCurrentMana, currentEnemy.maxMana);
+                if (hasManaSkills)
+                {
+                    float enemyManaRatio = currentEnemy.maxMana > 0 ? (float)enemyCurrentMana / currentEnemy.maxMana : 1f;
+                    BattleUI.Instance.UpdateEnemyMana(enemyManaRatio, enemyCurrentMana, currentEnemy.maxMana);
+                }
+                else
+                {
+                    BattleUI.Instance.UpdateEnemyMana(0, 0, 0);
+                }
 
                 if (stats != null)
                 {

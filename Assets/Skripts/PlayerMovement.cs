@@ -141,21 +141,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // =========================
-        // SCALE FIX
-        // =========================
-        float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
-        float xDirection = lastMovement.x < 0 ? -1f : 1f;
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.transform.localScale = new Vector3(
-                Mathf.Abs(originalScale.x) * scaleMultiplier * xDirection,
-                Mathf.Abs(originalScale.y) * scaleMultiplier,
-                originalScale.z
-            );
-        }
-
-        // =========================
         // MOVEMENT LOCK
         // =========================
         if (!canMove || dialogueActive || uiPanelOpen)
@@ -167,7 +152,36 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetFloat("MoveX", lastMovement.x);
                 animator.SetFloat("MoveY", lastMovement.y);
             }
-            return;
+        }
+        else
+        {
+            bool isMoving = movement.sqrMagnitude > 0.01f;
+            if (isMoving)
+            {
+                lastMovement = movement.normalized;
+            }
+
+            if (animator != null)
+            {
+                animator.SetFloat("MoveX", lastMovement.x);
+                animator.SetFloat("MoveY", lastMovement.y);
+                animator.SetBool("isMoving", isMoving);
+            }
+        }
+
+        // =========================
+        // SCALE FIX (Always apply based on lastMovement)
+        // =========================
+        float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
+        float xDirection = lastMovement.x < 0 ? -1f : 1f;
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.transform.localScale = new Vector3(
+                Mathf.Abs(originalScale.x) * scaleMultiplier * xDirection,
+                Mathf.Abs(originalScale.y) * scaleMultiplier,
+                originalScale.z
+            );
         }
 }
 
