@@ -13,9 +13,11 @@ public class BattleUI : MonoBehaviour
     public TMP_Text playerHPText;
     public Image enemyHPFill;
     public TMP_Text enemyHPText;
+    public Image enemyManaFill;
+    public TMP_Text enemyManaText;
 
     [Header("Mana Bar")]
-    public Image playerManaFill;
+public Image playerManaFill;
     public TMP_Text playerManaText;
 
     [Header("Curse Bar")]
@@ -34,9 +36,10 @@ public class BattleUI : MonoBehaviour
     public Image qteShrinkRing;
     public Image qteButtonCore;
     public QTERingController qteController;
+    public TMP_Text qteFeedbackText; // New
 
     [Header("Skill Display")]
-    public GameObject battleInfoPanel;
+public GameObject battleInfoPanel;
     public TMP_Text skillNameText;
 
     [Header("Panels")]
@@ -57,9 +60,10 @@ public Color qteFailColor = Color.red;
     public float targetPlayerHP = 1f;
     public float targetEnemyHP = 1f;
     public float targetPlayerMana = 1f;
+    public float targetEnemyMana = 1f;
 
     [Header("GameOver")]
-    public GameObject gameOverPanel;
+public GameObject gameOverPanel;
 
     [Header("Skill Assets")]
     public List<BattleSkill> allSkills;
@@ -129,7 +133,13 @@ public Color qteFailColor = Color.red;
             playerManaFill.fillAmount = Mathf.Lerp(playerManaFill.fillAmount, targetPlayerMana, Time.deltaTime * lerpSpeed);
             if (Mathf.Abs(playerManaFill.fillAmount - targetPlayerMana) < 0.001f) playerManaFill.fillAmount = targetPlayerMana;
         }
-    }
+
+        if (enemyManaFill != null)
+        {
+            enemyManaFill.fillAmount = Mathf.Lerp(enemyManaFill.fillAmount, targetEnemyMana, Time.deltaTime * lerpSpeed);
+            if (Mathf.Abs(enemyManaFill.fillAmount - targetEnemyMana) < 0.001f) enemyManaFill.fillAmount = targetEnemyMana;
+        }
+        }
 
     public void UpdateCurseBar()
     {
@@ -189,7 +199,15 @@ public Color qteFailColor = Color.red;
         }
         
         if (enemyHPFill != null) targetEnemyHP = enemyHPFill.fillAmount;
-    }
+        if (enemyManaFill != null) targetEnemyMana = enemyManaFill.fillAmount;
+        }
+
+        public void UpdateEnemyMana(float ratio, int curr, int max)
+        {
+        targetEnemyMana = ratio;
+        if (enemyManaFill != null) enemyManaFill.fillAmount = ratio;
+        if (enemyManaText != null) enemyManaText.text = curr + " / " + max;
+        }
 
     public void SetEnemyName(string name) { 
         if (enemyNameText != null) {
@@ -441,4 +459,36 @@ public Color qteFailColor = Color.red;
         else { if (commandPanel != null) commandPanel.SetActive(false); HideAllSubPanels(); }
         if (commandPanel != null) { foreach(var b in commandPanel.GetComponentsInChildren<Button>()) b.interactable = show; }
     }
-}
+
+    public void ShowQTEFeedbackText(QTEResult result)
+    {
+        if (qteFeedbackText == null) return;
+
+        if (result == QTEResult.FAIL)
+        {
+            qteFeedbackText.gameObject.SetActive(false);
+            return;
+        }
+
+        qteFeedbackText.gameObject.SetActive(true);
+        if (result == QTEResult.PERFECT)
+        {
+            qteFeedbackText.text = "Perfekt";
+            qteFeedbackText.color = new Color(0f, 1f, 0f, 0.6f); // Semi-transparent Green
+        }
+        else if (result == QTEResult.SUCCESS)
+        {
+            qteFeedbackText.text = "Gut";
+            qteFeedbackText.color = new Color(1f, 0.6f, 0f, 0.6f); // Semi-transparent Orange
+        }
+
+        // Hide after a short duration
+        CancelInvoke(nameof(HideQTEFeedbackText));
+        Invoke(nameof(HideQTEFeedbackText), 1.0f);
+    }
+
+    private void HideQTEFeedbackText()
+    {
+        if (qteFeedbackText != null) qteFeedbackText.gameObject.SetActive(false);
+    }
+    }

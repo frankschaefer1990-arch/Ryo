@@ -9,7 +9,10 @@ public class EnemyData : ScriptableObject
     public int defense;
     public int xpReward;
     public int startHP; 
+    public int maxMana = 100;
+    public int startMana = 100;
     public bool isBoss;
-    public Sprite enemySprite;
+public Sprite enemySprite;
     public AudioClip attackSound;
+    public System.Collections.Generic.List<BattleSkill> skills;
     }

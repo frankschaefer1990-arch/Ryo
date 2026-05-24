@@ -141,37 +141,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // =========================
-        // MOVEMENT LOCK
-        // =========================
-        if (!canMove || dialogueActive || uiPanelOpen)
-        {
-            movement = Vector2.zero;
-            if (animator != null && !isCutsceneMoving)
-            {
-                animator.SetBool("isMoving", false);
-                animator.SetFloat("MoveX", lastMovement.x);
-                animator.SetFloat("MoveY", lastMovement.y);
-            }
-            return;
-        }
-
-        bool isMoving = movement.magnitude > 0;
-        if (isMoving)
-        {
-            lastMovement = movement;
-        }
-
-        // =========================
-        // ANIMATOR
-        // =========================
-        if (animator != null)
-        {
-            animator.SetFloat("MoveX", lastMovement.x);
-            animator.SetFloat("MoveY", lastMovement.y);
-            animator.SetBool("isMoving", isMoving);
-        }
-
-        // =========================
         // SCALE FIX
         // =========================
         float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
@@ -185,7 +154,22 @@ public class PlayerMovement : MonoBehaviour
                 originalScale.z
             );
         }
-    }
+
+        // =========================
+        // MOVEMENT LOCK
+        // =========================
+        if (!canMove || dialogueActive || uiPanelOpen)
+        {
+            movement = Vector2.zero;
+            if (animator != null && !isCutsceneMoving)
+            {
+                animator.SetBool("isMoving", false);
+                animator.SetFloat("MoveX", lastMovement.x);
+                animator.SetFloat("MoveY", lastMovement.y);
+            }
+            return;
+        }
+}
 
     void FixedUpdate()
     {

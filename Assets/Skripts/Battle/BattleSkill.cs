@@ -33,9 +33,10 @@ public class BattleSkill : ScriptableObject
     public AudioClip skillSound;
     public bool hasCombo = false;
     public float healMultiplier = 0f; 
+    public int cooldownTurns = 0; // For enemy/boss skills
 
     [Header("Curse System")]
-    public bool isCurseUnlocker = false; // "Dunkler Keim"
+public bool isCurseUnlocker = false; // "Dunkler Keim"
     public bool isPassiveCurse = false;  // Skills 2-11
 
     [Header("Inspector Preview")]
@@ -298,14 +299,16 @@ public class BattleSkill : ScriptableObject
             if (skillId == "donnerspeer") info += "Effekt: -20% Verteidigung (2 Rd.) | Perfekt: -35%\n";
             if (skillId == "schattenklinge") info += $"Krit-Bonus: +{30 + (level-1)*5}% | Perfekt: Garantierter Krit\n";
             if (skillId == "seelenbrand") info += "Effekt: -40% Heilung | Perfekt: +20% Schaden\n";
-            if (skillId == "blutpakt") info += "Effekt: -15% eigene HP\n";
+            if (skillId == "blutpakt") info += "Effekt: -15% eigene HP | Perfekt: +20% Schaden\n";
             if (skillId == "astralbruch") info += $"Mana Burn: {25 + (level-1)*5} | Perfekt: +50%\n";
             if (skillId == "finstermal") info += $"Schadens-Bonus: +{25 + (level - 1) * 5}% (2 Rd.) | Perfekt: +40% Bonus\n";
             if (skillId == "leerenstoss") info += "Effekt: Ignoriert 35% Def | Perfekt: Ignoriert 100%\n";
-            if (skillId == "nachtkralle") info += "Effekt: Entfernt Gegner-Buff\n";
-            if (skillId == "hollow_judgment") info += "Bonus: +50% DMG wenn Ziel <30% HP\n";
-        }
-        else
+            if (skillId == "nachtkralle") info += "Effekt: Entfernt Gegner-Buff | Perfekt: +20% Schaden\n";
+            if (skillId == "hollow_judgment") info += "Bonus: +50% DMG wenn Ziel <30% HP | Perfekt: +20% Schaden\n";
+            if (skillId == "blitzschlag") info += "Perfekt: +20% Schaden\n";
+            if (skillId == "soulreap") info += "Perfekt: +20% Schaden & Heilung\n";
+            }
+else
         {
             string bonusStr = bonusDmg > 0 ? $" <color=#00FF00>+{bonusDmg}</color>" : "";
             if (skillId == "wilde_schlaege" || skillId == "rage" || skillId == "soulreap") info += $"Schläge: {GetHitCount(level)}\n";
@@ -350,8 +353,10 @@ if (!string.IsNullOrEmpty(bonusInfo)) info += bonusInfo + "\n";
                 if (skillId == "leerenstoss") info += "Scaling: +14% Schaden\n";
                 if (skillId == "nachtkralle") info += "Scaling: +13% Schaden\n";
                 if (skillId == "hollow_judgment") info += "Scaling: +20% Schaden\n";
-            }
-            else
+                if (skillId == "blitzschlag") info += "Scaling: +40% Schaden\n";
+                if (skillId == "soulreap") info += "Scaling: +10% Heilung\n";
+                }
+else
             {
                 if (skillId == "wilde_schlaege" || skillId == "rage") info += $"Schläge: {GetHitCount(level + 1)}\n";
                 if (skillId == "blitzschlag") info += $"Schaden: x{GetDamageMultiplier(level + 1):F1} (Mana: {GetManaCost(level + 1)})\n";

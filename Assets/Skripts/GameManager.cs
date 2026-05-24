@@ -231,10 +231,10 @@ public class GameManager : MonoBehaviour
                     foreach (var r in renderers) r.enabled = !isBattle;
 
                     PersistentPlayer.transform.SetParent(null); // Ensure it's root
-                    PersistentPlayer.transform.localScale = new Vector3(0.1f, 0.1f, 1f);
+                    // PersistentPlayer.transform.localScale = new Vector3(0.1f, 0.1f, 1f); // Removed to maintain consistent scale
                     
                     if (!isBattle)
-                    {
+{
                         var sr = PersistentPlayer.GetComponentInChildren<SpriteRenderer>();
                         if (sr != null) 
                         {

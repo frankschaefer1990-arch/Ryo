@@ -21,7 +21,7 @@ public class DialogueUI : MonoBehaviour
     public string defaultSpeakerName = "Ryo";
 
     [Header("Typewriter Settings")]
-    public float letterDelay = 0.035f; 
+    public float letterDelay = 0.02f; 
 
     private Coroutine currentRoutine;
     private bool isShowing = false;
@@ -129,7 +129,7 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    public void ShowMessage(string speakerName, string message, float visibleDuration = 1.5f)
+    public void ShowMessage(string speakerName, string message, float visibleDuration = 1.0f)
     {
         Debug.Log($"DialogueUI: ShowMessage called. Speaker: {speakerName}, Msg: {message}");
 

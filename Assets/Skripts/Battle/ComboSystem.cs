@@ -112,8 +112,9 @@ public class ComboSystem : MonoBehaviour
         }
 
         BattleUI.Instance.SetQTEFeedback(result != QTEResult.FAIL);
+        BattleUI.Instance.ShowQTEFeedbackText(result); // New line
         yield return new WaitForSeconds(0.3f);
-        BattleUI.Instance.HideComboPrompt();
+BattleUI.Instance.HideComboPrompt();
         isWaitingForInput = false;
         onResult?.Invoke(result);
     }

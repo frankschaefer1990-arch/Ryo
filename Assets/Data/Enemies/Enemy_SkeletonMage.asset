@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0836200ca45a824f85945f9973ff77a, type: 3}
-  m_Name: Enemy_Skelettkrieger
+  m_Name: Enemy_SkeletonMage
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Skelettkrieger
-  maxHP: 2000
-  attack: 17
-  defense: 5
-  xpReward: 30
-  startHP: 200
+  enemyName: Skelett Magier
+  maxHP: 1000
+  attack: 25
+  defense: 20
+  xpReward: 150
+  startHP: 1000
   isBoss: 1
-  enemySprite: {fileID: -666076803, guid: a58953ae453314e4aa3094a2f0c45b74, type: 3}
+  enemySprite: {fileID: 21300000, guid: 8852ab596ca8a354f994a00b0c681c83, type: 3}
   attackSound: {fileID: 0}
+  skills:
+  - {fileID: 11400000, guid: aea8f8c33521d8f46b7bd2ada87047d3, type: 2}
+  - {fileID: 11400000, guid: 677d67fcc6cc7a04cabd88a260401254, type: 2}

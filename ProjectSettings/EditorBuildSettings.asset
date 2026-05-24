@@ -26,5 +26,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Kreuzung.unity
     guid: cc13681f31c87c84680ca1568d42a35e
+  - enabled: 1
+    path: Assets/Scenes/Friedhof.unity
+    guid: 59366e31bcbfd91498c2082b4614babf
+  - enabled: 1
+    path: Assets/Scenes/Krypta.unity
+    guid: 31c2a6e063902bc4cbdf3ed62df6dca7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

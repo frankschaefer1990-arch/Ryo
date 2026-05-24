@@ -38,9 +38,16 @@ public class BattleManager : MonoBehaviour
     private bool playerActionTakenInTurn = false;
     private bool isBlocking = false;
     private int shinigamiTurnsLeft = 0;
+    private Dictionary<string, int> enemySkillCooldowns = new Dictionary<string, int>();
+
+    // Player Status Effects
+    private int playerArmorBreakTurns = 0;
+    private int playerSoulBurnTurns = 0;
+    private int playerSoulBurnDamage = 10;
 
     public BattleState state;
     private int enemyCurrentHP;
+    private int enemyCurrentMana;
     private bool enemyIsStunned = false;
 
     // New: Debuff and DoT tracking
@@ -124,6 +131,10 @@ public class BattleManager : MonoBehaviour
             var renderers = GameManager.Instance.player.GetComponentsInChildren<Renderer>(true);
             foreach (var r in renderers) r.enabled = false;
             
+            // Disable PlayerMovement to prevent it from locking the cursor
+            var pm = GameManager.Instance.player.GetComponent<PlayerMovement>();
+            if (pm != null) pm.enabled = false;
+
             // Move out of view just in case
             GameManager.Instance.player.transform.position = new Vector3(-1000, -1000, 0);
         }
@@ -233,13 +244,17 @@ if (playerAura != null) playerAura.SetActive(false);
             }
 
             enemyCurrentHP = currentEnemy.startHP > 0 ? currentEnemy.startHP : currentEnemy.maxHP;
+            enemyCurrentMana = currentEnemy.startMana > 0 ? currentEnemy.startMana : currentEnemy.maxMana;
             
             if (BattleUI.Instance != null) {
                 var stats = PlayerStats.Instance ?? FindFirstObjectByType<PlayerStats>();
                 BattleUI.Instance.SetEnemyName(currentEnemy.enemyName);
                 float enemyRatio = currentEnemy.maxHP > 0 ? (float)enemyCurrentHP / currentEnemy.maxHP : 1f;
                 BattleUI.Instance.UpdateEnemyHP(enemyRatio, enemyCurrentHP, currentEnemy.maxHP);
-                
+
+                float enemyManaRatio = currentEnemy.maxMana > 0 ? (float)enemyCurrentMana / currentEnemy.maxMana : 1f;
+                BattleUI.Instance.UpdateEnemyMana(enemyManaRatio, enemyCurrentMana, currentEnemy.maxMana);
+
                 if (stats != null)
                 {
                     stats.RecalculateStats();
@@ -273,9 +288,26 @@ if (playerAura != null) playerAura.SetActive(false);
         state = BattleState.PLAYERTURN;
         isBlocking = false;
         if (blockVisual != null) blockVisual.SetActive(false);
+
+        // Tick Player Status Effects
+        if (playerSoulBurnTurns > 0)
+        {
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.TakeDamage(playerSoulBurnDamage);
+                DamagePopup.Create(playerPos.position + Vector3.up * 2f, playerSoulBurnDamage, damageFont, new Color(0.6f, 0f, 1f));
+                BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
+            }
+            playerSoulBurnTurns--;
+        }
+
+        if (playerArmorBreakTurns > 0)
+        {
+            playerArmorBreakTurns--;
+        }
         
         // Handle Shinigami Duration
-        if (shinigamiTurnsLeft > 0)
+if (shinigamiTurnsLeft > 0)
         {
             shinigamiTurnsLeft--;
             Debug.Log($"Shinigami Form: {shinigamiTurnsLeft} turns remaining.");
@@ -362,7 +394,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
         playerActionTakenInTurn = true;
         BattleUI.Instance.ToggleCommandPanel(false);
-        StartCoroutine(ExecuteSkill(skill, level));
+        StartCoroutine(ExecuteSkill(skill, level, enemyPos));
     }
 
     public void OnRunButton() { if (state == BattleState.PLAYERTURN) StartCoroutine(TryRun()); }
@@ -481,12 +513,16 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         return target.position + (isSpell ? Vector3.zero : Vector3.up);
     }
 
-    private IEnumerator ExecuteSkill(BattleSkill skill, int level)
+    private IEnumerator ExecuteSkill(BattleSkill skill, int level, Transform target)
     {
         state = BattleState.BUSY;
-        Vector3 effectCenter = GetEffectCenter(enemyPos, skill.isSpell);
+        Vector3 effectCenter = GetEffectCenter(target, skill.isSpell);
+        
+        // Add visual offset from the skill
+        effectCenter += skill.visualOffset;
+
         var stats = PlayerStats.Instance;
-        int currentForm = stats != null ? stats.GetCurseForm() : 0;
+int currentForm = stats != null ? stats.GetCurseForm() : 0;
         if (shinigamiTurnsLeft > 0) currentForm = 3;
 
         if (stats != null && skill.isSpell)
@@ -548,12 +584,22 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                     }, hitSpecificLimit);
 
                     while (waiting) yield return null;
-                    hitSuccess = qteResult != QTEResult.FAIL;
-                }
-            }
+                    
+                    // Spells always hit, but only get bonuses on success/perfect
+                    // Basic skills/Combos fail damage on QTE fail
+                    if (skill.isSpell) hitSuccess = true;
+                    else hitSuccess = qteResult != QTEResult.FAIL;
 
-            if (hitSuccess)
-            {
+                    // If a combo hit fails, stop the sequence
+                    if (skill.hasCombo && !skill.isSpell && qteResult == QTEResult.FAIL)
+                    {
+                        break; 
+                    }
+                    }
+                    }
+
+                    if (hitSuccess)
+{
                 // Wilde Schläge: Perfect = +1 extra hit
                 if (skill.skillId == "wilde_schlaege" && qteResult == QTEResult.PERFECT && extraHits < 3)
                 {
@@ -652,10 +698,21 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                     totalMultiplier *= 1.5f;
                 
                 if (skill.skillId == "seelenklinge" && qteResult == QTEResult.PERFECT)
-                    totalMultiplier *= 1.15f;
+                    totalMultiplier *= 1.10f;
+
+                // Perfect QTE Bonus for Spells without unique effects (Blitzschlag, Soulreap, Blutpakt, Nachtkralle, Hollow Judgment)
+                if (skill.isSpell && qteResult == QTEResult.PERFECT)
+                {
+                    if (skill.skillId == "blitzschlag" || skill.skillId == "soulreap" || 
+                        skill.skillId == "blutpakt" || skill.skillId == "nachtkralle" || 
+                        skill.skillId == "hollow_judgment")
+                    {
+                        totalMultiplier *= 1.20f;
+                    }
+                }
 
                 bool isCrit = Random.value < critChance;
-                if (isCrit) totalMultiplier *= 2f;
+if (isCrit) totalMultiplier *= 2f;
 
                 int bonusDmg = customBase > 0 ? 0 : (skill.category == SkillCategory.Basic ? playerStrength : playerIntelligence * 2);
 
@@ -690,7 +747,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
                     enemyHealReductionTimer = 3;
                 }
                 if (skill.skillId == "blutschnitt")
-                {
+{
                     activeBleedDamage = (int)(15 + playerStrength * 0.3f);
                     if (qteResult == QTEResult.PERFECT) activeBleedDamage *= 2;
                     activeBleedTurns = 3;
@@ -726,7 +783,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
                 if (skill.skillId == "seelenklinge" && stats != null)
                 {
-                    float lifeSteal = (qteResult == QTEResult.PERFECT) ? 0.35f : 0.2f;
+                    float lifeSteal = 0.2f; // Fixed 20% as per tooltip
                     stats.Heal((int)(totalDamage * lifeSteal));
                 }
 
@@ -833,8 +890,17 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         state = BattleState.BUSY;
         yield return new WaitForSeconds(1.0f);
 
+        // Tick Enemy Cooldowns
+        List<string> keys = new List<string>(enemySkillCooldowns.Keys);
+        foreach (var key in keys) if (enemySkillCooldowns[key] > 0) enemySkillCooldowns[key]--;
+
+        // Regenerate Enemy Mana
+        enemyCurrentMana = Mathf.Min(currentEnemy.maxMana, enemyCurrentMana + 10);
+        float enemyManaRatioStart = currentEnemy.maxMana > 0 ? (float)enemyCurrentMana / currentEnemy.maxMana : 1f;
+        BattleUI.Instance.UpdateEnemyMana(enemyManaRatioStart, enemyCurrentMana, currentEnemy.maxMana);
+
         // DoT Logic (Curse)
-        if (activeDotTurns > 0)
+if (activeDotTurns > 0)
         {
             enemyCurrentHP -= activeDotDamage;
             DamagePopup.Create(enemyPos.position + Vector3.up * 2f, activeDotDamage, damageFont, new Color(0.6f, 0f, 1f));
@@ -870,7 +936,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
         }
 
         if (enemyIsStunned)
-{
+        {
             enemyIsStunned = false;
             ShowBattleMessage(currentEnemy.enemyName + " ist betäubt!");
             yield return new WaitForSeconds(1.5f);
@@ -878,7 +944,26 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             yield break;
         }
 
-        BattleUI.Instance.ShowActionMessage(currentEnemy.enemyName, "greift an!");
+        // SKILL SELECTION
+        BattleSkill skill = null;
+        if (currentEnemy != null && currentEnemy.skills != null && currentEnemy.skills.Count > 0)
+        {
+            List<BattleSkill> available = currentEnemy.skills.FindAll(s => 
+                s != null &&
+                (!enemySkillCooldowns.ContainsKey(s.skillId) || enemySkillCooldowns[s.skillId] <= 0) &&
+                (!s.isSpell || enemyCurrentMana >= s.GetManaCost(1))
+            );
+
+            if (available.Count > 0)
+            {
+                // Prefer Spell if available (Soul Eruption)
+                skill = available.Find(s => s.isSpell);
+                if (skill == null) skill = available[Random.Range(0, available.Count)];
+            }
+        }
+
+        string actionName = skill != null ? skill.skillName : "greift an";
+        BattleUI.Instance.ShowActionMessage(currentEnemy.enemyName, actionName + "!");
         yield return new WaitForSeconds(1.0f);
         BattleUI.Instance.HideActionMessage();
 
@@ -892,7 +977,13 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             stats.ChangeCurseValue(3);
             ApplyCurseVisuals();
 
-            int damage = currentEnemy.attack;
+            float multiplier = skill != null ? skill.damageMultiplier : 1.0f;
+            int baseDmg = currentEnemy.attack;
+            int damage = (int)(baseDmg * multiplier);
+            
+            // Armor Break logic
+            if (playerArmorBreakTurns > 0) damage = (int)(damage * 1.3f);
+
             if (isBlocking)
             {
                 damage = Mathf.Max(damage / 2, 1);
@@ -903,6 +994,57 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             DamagePopup.Create(playerPos.position + Vector3.up, Mathf.Max(damage, 1), damageFont);
             StartCoroutine(PlayHurtAnimation(playerPos)); 
             BattleUI.Instance.UpdatePlayerHP((float)stats.currentHealth / stats.maxHealth, stats.currentHealth, stats.maxHealth);
+
+            // APPLY SKILL EFFECTS
+            if (skill != null)
+            {
+                // Cooldown
+                if (skill.cooldownTurns > 0) enemySkillCooldowns[skill.skillId] = skill.cooldownTurns;
+
+                // Mana deduction
+                if (skill.isSpell)
+                {
+                    enemyCurrentMana -= skill.GetManaCost(1);
+                    float manaRatio = currentEnemy.maxMana > 0 ? (float)enemyCurrentMana / currentEnemy.maxMana : 0f;
+                    BattleUI.Instance.UpdateEnemyMana(manaRatio, enemyCurrentMana, currentEnemy.maxMana);
+                }
+
+                // Visual
+Vector3 effectCenter = GetEffectCenter(playerPos, skill.isSpell) + skill.visualOffset;
+                if (slashEffect != null) 
+                    slashEffect.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, Vector3.zero, skill.visualScale, skill.randomRotation);
+
+                // Heal
+                if (skill.healMultiplier > 0)
+                {
+                    enemyCurrentHP = Mathf.Min(currentEnemy.maxHP, enemyCurrentHP + (int)(damage * skill.healMultiplier));
+                    BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+                }
+
+                // Special IDs
+                if (skill.skillId == "boss_void_cleave")
+                {
+                    if (Random.value < 0.15f)
+                    {
+                        playerArmorBreakTurns = 2;
+                        ShowBattleMessage("Ryo's Rüstung wurde zerschmettert!");
+                    }
+                    // Knockback visual
+                    StartCoroutine(Knockback(playerPos, 0.2f, 0.1f));
+                }
+                if (skill.skillId == "boss_soul_eruption")
+                {
+                    playerSoulBurnTurns = 3;
+                    playerSoulBurnDamage = 10;
+                    ShowBattleMessage("Ryo leidet unter Seelenbrand!");
+                }
+
+                if (audioSource != null && skill.skillSound != null) audioSource.PlayOneShot(skill.skillSound);
+            }
+            else if (audioSource != null && currentEnemy.attackSound != null)
+            {
+                audioSource.PlayOneShot(currentEnemy.attackSound);
+            }
         }
 
         yield return new WaitForSeconds(0.5f); 
@@ -911,6 +1053,27 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
 
         if (stats != null && stats.currentHealth <= 0) { state = BattleState.LOST; StartCoroutine(EndBattle()); }
         else PlayerTurn();
+    }
+
+    private IEnumerator Knockback(Transform t, float dist, float time)
+    {
+        Vector3 start = t.position;
+        Vector3 end = start + new Vector3(dist, 0, 0);
+        float elapsed = 0;
+        while (elapsed < time)
+        {
+            t.position = Vector3.Lerp(start, end, elapsed / time);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        elapsed = 0;
+        while (elapsed < time)
+        {
+            t.position = Vector3.Lerp(end, start, elapsed / time);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        t.position = start;
     }
 
     private IEnumerator PlayHurtAnimation(Transform target)
@@ -947,9 +1110,27 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             }
 
             ShowBattleMessage("Sieg! " + currentEnemy.xpReward + " XP und 50 Gold erhalten.");
-            if (currentEnemy.isBoss && QuestManager.Instance != null) QuestManager.Instance.defeatedTempleBoss = true;
-            if (PlayerStats.Instance != null)
+            
+            if (currentEnemy.isBoss && QuestManager.Instance != null)
             {
+                if (currentEnemy.enemyName == "Skelettkrieger") QuestManager.Instance.defeatedTempleBoss = true;
+                if (currentEnemy.enemyName == "Skelett Magier")
+                {
+                    QuestManager.Instance.defeatedKryptaBossReturn = true;
+                }
+            }
+
+            // Krypta Zombie Logic
+            if (currentEnemy.enemyName == "Starker Zombie" && QuestManager.Instance != null)
+            {
+                int fightIndex = PlayerPrefs.GetInt("LastZombieFight", 0);
+                if (fightIndex == 1) QuestManager.Instance.zombie1Defeated = true;
+                if (fightIndex == 2) QuestManager.Instance.zombie2Defeated = true;
+                PlayerPrefs.DeleteKey("LastZombieFight");
+            }
+
+            if (PlayerStats.Instance != null)
+{
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);
                 PlayerGold goldMgr = PlayerGold.GetInstance();
                 if (goldMgr != null) goldMgr.AddGold(50);
@@ -958,14 +1139,18 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             
             if (GameManager.Instance != null)
             {
-                // Specifically return to Temple for the boss sequence
+                // Specifically return to Temple/Krypta for the boss sequence
                 if (currentEnemy.isBoss && currentEnemy.enemyName == "Skelettkrieger")
                 {
                     GameManager.Instance.LoadScene("Temple", "BossDefeatedSpawn");
                 }
+                else if (currentEnemy.isBoss && currentEnemy.enemyName == "Skelett Magier")
+                {
+                    GameManager.Instance.LoadScene("Krypta", "BossDefeatedSpawn");
+                }
                 else
                 {
-                    // Generic return for other enemies like Sensenmann
+// Generic return for other enemies like Sensenmann
                     string lastScene = !string.IsNullOrEmpty(GameManager.Instance.lastGameplayScene) 
                         ? GameManager.Instance.lastGameplayScene 
                         : "Legend of Ryo";
@@ -994,6 +1179,9 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             var renderers = GameManager.Instance.player.GetComponentsInChildren<Renderer>(true);
             foreach (var r in renderers) r.enabled = true;
             
+            var pm = GameManager.Instance.player.GetComponent<PlayerMovement>();
+            if (pm != null) pm.enabled = true;
+
             Debug.Log("BattleManager: Persistent player visibility restored.");
         }
     }

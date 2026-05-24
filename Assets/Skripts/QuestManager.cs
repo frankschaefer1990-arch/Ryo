@@ -12,7 +12,14 @@ public class QuestManager : MonoBehaviour
     public bool labyrinthDialogueSeen = false;
     public bool masterHouseMessageSeen = false;
 
-    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg)
+    [Header("Krypta Quest")]
+    public bool kryptaIntroSeen = false;
+    public bool zombie1Defeated = false;
+    public bool zombie2Defeated = false;
+    public bool kryptaBossDefeated = false;
+    public bool defeatedKryptaBossReturn = false;
+
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false)
     {
         introSeen = intro;
         visitedTemple = visited;
@@ -20,6 +27,10 @@ public class QuestManager : MonoBehaviour
         finishedTempleSequence = finished;
         labyrinthDialogueSeen = labyrinth;
         masterHouseMessageSeen = houseMsg;
+        kryptaIntroSeen = kIntro;
+        zombie1Defeated = z1;
+        zombie2Defeated = z2;
+        kryptaBossDefeated = kBoss;
     }
 
     [Header("Battle Setup")]
