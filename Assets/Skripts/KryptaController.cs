@@ -209,7 +209,21 @@ public class KryptaController : MonoBehaviour
             {
                 yield return StartCoroutine(WalkToTarget(player, targetPos));
             }
-        }
+
+            // Final look at boss (Up)
+            if (pm != null)
+            {
+                var field = typeof(PlayerMovement).GetField("lastMovement", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (field != null) field.SetValue(pm, Vector2.up);
+                
+                Animator anim = player.GetComponentInChildren<Animator>();
+                if (anim != null) {
+                    anim.SetFloat("MoveX", 0);
+                    anim.SetFloat("MoveY", 1);
+                    anim.SetBool("isMoving", false);
+                }
+            }
+            }
 
         yield return new WaitForSeconds(0.5f);
         
@@ -265,15 +279,22 @@ public class KryptaController : MonoBehaviour
             AudioSource audio = gameObject.AddComponent<AudioSource>();
             audio.clip = heartbeatSFX;
             audio.spatialBlend = 0f;
-            audio.Play(); audio.PlayOneShot(heartbeatSFX); yield return new WaitForSeconds(1.2f);
-            audio.Play(); audio.PlayOneShot(heartbeatSFX); yield return new WaitForSeconds(1.2f);
-            audio.Play(); audio.PlayOneShot(heartbeatSFX); yield return new WaitForSeconds(1.8f);
+            audio.volume = 1.0f;
+            
+            // Play heartbeat 3 times, each beat very loud (layered)
+            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.2f);
+            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.2f);
+            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.8f);
+            
             Destroy(audio, 1.0f);
         }
 
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.ShowMessage("Stimme / ???", "Mehr Seelen!");
+            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+
+            DialogueUI.Instance.ShowMessage("Ryo", "Je mehr Seelen ich absorbiere, desto mehr merke ich, wie etwas Dunkles in mir wächst...", 4.5f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
@@ -350,6 +371,12 @@ public class KryptaController : MonoBehaviour
     private void OnInteractSargGross()
     {
         if (isCutsceneRunning) return;
+
+        if (QuestManager.Instance != null && QuestManager.Instance.kryptaBossDefeated)
+        {
+            DialogueUI.Instance?.ShowMessage("Ryo", "Dieser Sarg ist nun still.");
+            return;
+        }
 
         if (QuestManager.Instance != null && QuestManager.Instance.zombie1Defeated && QuestManager.Instance.zombie2Defeated)
         {

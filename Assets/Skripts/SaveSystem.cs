@@ -31,6 +31,13 @@ public class SaveData
     public bool finishedTempleSequence;
     public bool labyrinthDialogueSeen;
     public bool masterHouseMessageSeen;
+
+    // Krypta Quests
+    public bool kryptaIntroSeen;
+    public bool zombie1Defeated;
+    public bool zombie2Defeated;
+    public bool kryptaBossDefeated;
+    public bool defeatedKryptaBossReturn;
     
     // Skills
     public int skillPoints;
@@ -119,7 +126,15 @@ public class SaveSystem : MonoBehaviour
             data.visitedTemple = QuestManager.Instance.visitedTemple;
             data.defeatedTempleBoss = QuestManager.Instance.defeatedTempleBoss;
             data.finishedTempleSequence = QuestManager.Instance.finishedTempleSequence;
-        }
+            data.labyrinthDialogueSeen = QuestManager.Instance.labyrinthDialogueSeen;
+            data.masterHouseMessageSeen = QuestManager.Instance.masterHouseMessageSeen;
+
+            data.kryptaIntroSeen = QuestManager.Instance.kryptaIntroSeen;
+            data.zombie1Defeated = QuestManager.Instance.zombie1Defeated;
+            data.zombie2Defeated = QuestManager.Instance.zombie2Defeated;
+            data.kryptaBossDefeated = QuestManager.Instance.kryptaBossDefeated;
+            data.defeatedKryptaBossReturn = QuestManager.Instance.defeatedKryptaBossReturn;
+            }
         
         // Skills
         if (SkillManager.Instance != null)
@@ -169,7 +184,20 @@ public class SaveSystem : MonoBehaviour
         // Apply quest data immediately
         if (QuestManager.Instance != null)
         {
-            QuestManager.Instance.SetQuestData(data.introSeen, data.visitedTemple, data.defeatedTempleBoss, data.finishedTempleSequence, data.labyrinthDialogueSeen, data.masterHouseMessageSeen);
+            QuestManager.Instance.SetQuestData(
+                data.introSeen, 
+                data.visitedTemple, 
+                data.defeatedTempleBoss, 
+                data.finishedTempleSequence, 
+                data.labyrinthDialogueSeen, 
+                data.masterHouseMessageSeen,
+                data.kryptaIntroSeen,
+                data.zombie1Defeated,
+                data.zombie2Defeated,
+                data.kryptaBossDefeated
+            );
+            // Manually set flags that aren't in SetQuestData if needed
+            QuestManager.Instance.defeatedKryptaBossReturn = data.defeatedKryptaBossReturn;
         }
 
         // Prepare GameManager for save load to skip default spawn points

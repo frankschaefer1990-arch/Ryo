@@ -75,10 +75,21 @@ public class InteractionPrompt : MonoBehaviour
         }
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
-foreach (var hit in hits)
+        int wallLayerMask = LayerMask.GetMask("Wall");
+
+        foreach (var hit in hits)
         {
             // Skip the player itself and its children
             if (hit.gameObject == gameObject || hit.transform.IsChildOf(transform)) continue;
+
+            // Obstacle check: If there's a wall between player and interactable, skip it
+            // Linecast from player to the center of the hit object
+            RaycastHit2D wallHit = Physics2D.Linecast(transform.position, hit.bounds.center, wallLayerMask);
+            if (wallHit.collider != null && wallHit.collider.gameObject != hit.gameObject)
+            {
+                // If we hit something that is NOT the target and it's on the wall layer, skip
+                continue;
+            }
 
             // 1. FILTER: Ignore objects that are just automatic area triggers
             string lowName = hit.name.ToLower();

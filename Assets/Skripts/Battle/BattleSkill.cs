@@ -97,8 +97,9 @@ public bool isCurseUnlocker = false; // "Dunkler Keim"
         if (skillId == "leerenstoss") return 50 + (level - 1) * 10;
         if (skillId == "nachtkralle") return 40 + (level - 1) * 5;
         if (skillId == "hollow_judgment") return 80 + (level - 1) * 15;
+        if (skillId == "boss_soul_eruption") return 60;
         return manaCost;
-    }
+}
 
     public float GetDamageMultiplier(int level)
     {

@@ -20,12 +20,27 @@ public class Chest : MonoBehaviour
     public bool isOpened = false;
     public bool isPermanentlyEmpty = false;
 
+    [Header("Trap")]
+    public EnemyData trapEnemy;
+
     private SpriteRenderer spriteRenderer;
     private bool playerInside = false;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Check if trap was already triggered and defeated
+        if (trapEnemy != null && GameManager.Instance != null)
+        {
+            string trapId = gameObject.scene.name + "_" + gameObject.name + "_Trap";
+            if (GameManager.Instance.defeatedEnemiesInCurrentScene.Contains(trapId))
+            {
+                isOpened = true;
+                isPermanentlyEmpty = true;
+            }
+        }
+
         if (isPermanentlyEmpty)
         {
             spriteRenderer.sprite = emptyGreyedSprite;
@@ -76,12 +91,23 @@ public class Chest : MonoBehaviour
             {
                 // Distance-based fallback in case Trigger fails
                 var player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null && Vector2.Distance(transform.position, player.transform.position) < 2.5f)
+                if (player != null && Vector2.Distance(transform.position, player.transform.position) < 1.2f)
                 {
-                    Debug.Log("Chest: Trigger failed but distance check succeeded. Opening...");
-                    playerInside = true; 
-                    if (!isOpened) StartCoroutine(OpenChestRoutine());
-                    else OpenChestUI();
+                    // Wall check
+                    int wallLayerMask = LayerMask.GetMask("Wall");
+                    RaycastHit2D wallHit = Physics2D.Linecast(transform.position, player.transform.position, wallLayerMask);
+                    
+                    if (wallHit.collider == null)
+                    {
+                        Debug.Log("Chest: Trigger failed but distance check succeeded and no walls between. Opening...");
+                        playerInside = true; 
+                        if (!isOpened) StartCoroutine(OpenChestRoutine());
+                        else OpenChestUI();
+                    }
+                    else
+                    {
+                        Debug.Log("Chest: Distance check succeeded but wall is in the way.");
+                    }
                 }
             }
         }
@@ -94,7 +120,25 @@ public class Chest : MonoBehaviour
         if (spriteRenderer != null) spriteRenderer.sprite = halfOpenSprite;
         yield return new WaitForSeconds(animationDelay);
         if (spriteRenderer != null) spriteRenderer.sprite = openSprite;
-        OpenChestUI();
+        
+        if (trapEnemy != null)
+        {
+            TriggerTrap();
+        }
+        else
+        {
+            OpenChestUI();
+        }
+    }
+
+    private void TriggerTrap()
+    {
+        if (QuestManager.Instance != null && GameManager.Instance != null && trapEnemy != null)
+        {
+            GameManager.Instance.lastEnemyTriggerID = gameObject.scene.name + "_" + gameObject.name + "_Trap";
+            QuestManager.Instance.nextBattleEnemy = trapEnemy;
+            GameManager.Instance.LoadScene("BattleScene");
+        }
     }
 
     private void OpenChestUI()

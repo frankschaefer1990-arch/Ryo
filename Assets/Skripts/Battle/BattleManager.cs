@@ -450,7 +450,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             
             if (PlayerStats.Instance != null)
             {
-                PlayerStats.Instance.Heal(30);
+                PlayerStats.Instance.Heal(50);
                 InventoryManager.Instance.RemoveOnePotion();
                 BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
             }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PotionItem : MonoBehaviour
 {
     [Header("Potion Settings")]
-    public int healAmount = 30;
+    public int healAmount = 50;
 
     private Button button;
     private Image itemImage;
