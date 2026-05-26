@@ -1,0 +1,28 @@
+{
+    "asset": "ed9ce4b8afdd0b340913498390d1c650",
+    "fileName": "019e6607-adb7-7a23-b5ab-dfaae5784879.png",
+    "prompt": "Isolated water splash impact, circular ripples and white foam on a blue water surface, viewed from a slight angle, splashing outwards, strictly no cliffs, no ground, no background, stylized cartoon art style, flat colors.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

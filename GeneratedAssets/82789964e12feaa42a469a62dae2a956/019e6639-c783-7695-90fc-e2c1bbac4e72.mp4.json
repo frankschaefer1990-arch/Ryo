@@ -1,0 +1,38 @@
+{
+    "asset": "82789964e12feaa42a469a62dae2a956",
+    "fileName": "019e6639-c783-7695-90fc-e2c1bbac4e72.mp4",
+    "prompt": "Seamlessly looping animated ultra-subtle thin waterfall. Very straight vertical blue and white water streaks falling slowly. Zero splash, zero ripples, zero foam at the bottom. Minimal to no particles or drops around the stream. Extremely clean and minimalist stylized cartoon style. No background. Entire effect in one animation. Very slow motion flow.",
+    "negativePrompt": "",
+    "model": "video-kling-v3-i2v-pro",
+    "modelName": "Kling V3 I2V Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "32c2a21b978810d40a49afeb2fb91725",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

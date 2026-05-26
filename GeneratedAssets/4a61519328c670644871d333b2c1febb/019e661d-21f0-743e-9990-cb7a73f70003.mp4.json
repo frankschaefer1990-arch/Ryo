@@ -1,0 +1,38 @@
+{
+    "asset": "4a61519328c670644871d333b2c1febb",
+    "fileName": "019e661d-21f0-743e-9990-cb7a73f70003.mp4",
+    "prompt": "Seamlessly looping animated waterfall. A complete vertical stream of slow-falling blue water with a very gentle, soft splashing impact at the bottom. Minimal foam and ripples. Stylized cartoon style. No background. Entire effect in one animation. Slow motion water flow.",
+    "negativePrompt": "",
+    "model": "video-kling-v3-i2v-pro",
+    "modelName": "Kling V3 I2V Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "e72a8909d1f138848ab9cb2fef6057c0",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

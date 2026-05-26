@@ -1,0 +1,28 @@
+{
+    "asset": "6ff7f13f2a8bc3b4a807a362d9538ecb",
+    "fileName": "019e65fe-9dac-72e9-a1df-7db5b5eb3f96.png",
+    "prompt": "Stylized cartoon waterfall falling water, blue and white, single column, clean edges, vertical flow, concept art, flat color.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

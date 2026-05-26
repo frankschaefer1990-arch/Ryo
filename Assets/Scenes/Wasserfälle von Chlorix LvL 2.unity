@@ -184,10 +184,10 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -17.089033, y: -1.2721214}
-      - {x: -17.136847, y: -19.90127}
-      - {x: 17.136848, y: -19.80254}
-      - {x: 17.136848, y: 19.703812}
-      - {x: -17.038118, y: 19.901274}
+      - {x: -17.136847, y: -19.584373}
+      - {x: 17.086462, y: -19.626184}
+      - {x: 17.164795, y: 19.4523}
+      - {x: -17.401415, y: 19.482088}
   m_UseDelaunayMesh: 1
 --- !u!4 &172878010
 Transform:
@@ -238,7 +238,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.05479622}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -248,7 +248,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 34.829998, y: 40.65}
+  m_Size: {x: 34.829998, y: 39.012997}
   m_EdgeRadius: 0
 --- !u!1 &386767214
 GameObject:
@@ -337,7 +337,7 @@ Transform:
   m_GameObject: {fileID: 386767214}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -15, z: 0}
+  m_LocalPosition: {x: 0, y: -18.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -368,7 +368,7 @@ Transform:
   m_GameObject: {fileID: 873133964}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalPosition: {x: 0, y: -15.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -437,7 +437,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
