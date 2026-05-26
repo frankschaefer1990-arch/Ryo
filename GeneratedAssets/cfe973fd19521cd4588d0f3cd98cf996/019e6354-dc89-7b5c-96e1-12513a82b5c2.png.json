@@ -1,0 +1,28 @@
+{
+    "asset": "cfe973fd19521cd4588d0f3cd98cf996",
+    "fileName": "019e6354-dc89-7b5c-96e1-12513a82b5c2.png",
+    "prompt": "A classic mechanical pull-lever with a vertical handle on a square stone base. Perfectly front-facing orthographic view. No diagonal perspective. The handle is tilted to the RIGHT. The blue gem is dark and unlit. Stylized fantasy RPG art, matching the exact style and base of the previous sprite. Transparent background. No shadows. High detail. dark stone base. 2D game asset.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

@@ -1,0 +1,38 @@
+{
+    "asset": "45a407b275ebc08449438a943007fff0",
+    "fileName": "019e63c6-e3bd-70f0-9a24-23d09c2b78d0.jpg",
+    "prompt": "A single, wide vertical column of magical glowing blue water. 2D game asset, stylized fantasy hand-painted art. Soft blue water flow with elegant glowing highlights and white mist at the base. NO background, perfectly transparent. Perfectly vertical orientation. Isolated asset. 1024x1024. Just ONE solid waterfall stream in the center. Matches the dark magical cave aesthetic of the provided image.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "259fd72280357514a852f5be6cd0e684",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

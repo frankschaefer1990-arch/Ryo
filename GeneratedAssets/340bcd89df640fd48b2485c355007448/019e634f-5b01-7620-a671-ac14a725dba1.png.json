@@ -1,0 +1,28 @@
+{
+    "asset": "340bcd89df640fd48b2485c355007448",
+    "fileName": "019e634f-5b01-7620-a671-ac14a725dba1.png",
+    "prompt": "A 2D game sprite of a classic mechanical lever with a vertical handle on a stone base. Perfectly front-facing orthographic view. No diagonal perspective. The handle is tilted 45 degrees to the right. The blue gem is dark and unlit. Stylized fantasy art, same style and base as the previous lever. Transparent background. No shadows behind. Straight alignment.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

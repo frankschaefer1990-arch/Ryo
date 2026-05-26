@@ -1,0 +1,15 @@
+{
+    "asset": "1a23e37c94283e748815905b681c2cc3",
+    "fileName": "019e6446-cf8c-77ce-9fd8-7d0fc8a8287f.wav",
+    "prompt": "Deep rushing water sound effect, slowly draining and fading out. Low rumble and gurgling water. Stylized fantasy ambient sound. No loop.",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 5.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

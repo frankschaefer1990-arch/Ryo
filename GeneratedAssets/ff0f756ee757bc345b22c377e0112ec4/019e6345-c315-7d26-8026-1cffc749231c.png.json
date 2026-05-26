@@ -1,0 +1,28 @@
+{
+    "asset": "ff0f756ee757bc345b22c377e0112ec4",
+    "fileName": "019e6345-c315-7d26-8026-1cffc749231c.png",
+    "prompt": "A stylized fantasy lever on a rectangular stone base. Handle is in the UP position. A glowing blue magical gem is on the handle. Front view, orthographic, perfectly vertical and horizontal alignment. 2D game sprite. Transparent background. Dark magical cave aesthetic.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

@@ -1,0 +1,38 @@
+{
+    "asset": "5c052253229068d43bbe6c32c7d64921",
+    "fileName": "019e6484-b8b9-7dcf-8fff-1d4cd6403302.mp4",
+    "prompt": "Stylized 2D water splash animation, magical blue water ripples and foam, top-down or front view suitable for waterfall impact. High quality, hand-painted art style matching the waterfall. Transparent background. Loopable animation frames. Just the splashes and foam, no falling columns. 1024x1024 spritesheet.",
+    "negativePrompt": "",
+    "model": "video-seedance-1-pro",
+    "modelName": "Seedance 1 Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "2cdb62b2a61d2cf468f24307cf3c4fa4",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

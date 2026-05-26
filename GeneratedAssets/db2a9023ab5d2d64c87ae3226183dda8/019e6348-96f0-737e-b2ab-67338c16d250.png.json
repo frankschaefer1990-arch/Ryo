@@ -1,0 +1,28 @@
+{
+    "asset": "db2a9023ab5d2d64c87ae3226183dda8",
+    "fileName": "019e6348-96f0-737e-b2ab-67338c16d250.png",
+    "prompt": "A 2D game sprite of a horizontal rectangular stone plate with a metal slider lever. The lever is positioned on the LEFT. The left side has a glowing blue indicator. Stylized magical fantasy art, front view, transparent background, no shadows, no background.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

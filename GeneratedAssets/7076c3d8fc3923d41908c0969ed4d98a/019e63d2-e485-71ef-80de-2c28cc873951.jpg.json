@@ -1,0 +1,38 @@
+{
+    "asset": "7076c3d8fc3923d41908c0969ed4d98a",
+    "fileName": "019e63d2-e485-71ef-80de-2c28cc873951.jpg",
+    "prompt": "A single vertical column of a magical blue waterfall. Stylized 2D hand-painted art. The water flows downwards. The splash at the bottom is very COMPACT and NARROW, exactly the same width as the falling stream. Glowing blue water with soft highlights. No wide misty area. Transparent background. Isolated asset. 1024x1024. Just one solid vertical stream.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "2cdb62b2a61d2cf468f24307cf3c4fa4",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

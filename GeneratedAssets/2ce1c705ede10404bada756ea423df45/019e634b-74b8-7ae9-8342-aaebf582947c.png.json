@@ -1,0 +1,28 @@
+{
+    "asset": "2ce1c705ede10404bada756ea423df45",
+    "fileName": "019e634b-74b8-7ae9-8342-aaebf582947c.png",
+    "prompt": "A 2D game sprite of a vertical lever on a square stone base, viewed from the front (orthographic). The lever handle is tilted to the RIGHT. The blue gem is dark and unlit. Stylized fantasy art, same style and base as the previous lever. Transparent background. No shadows behind the object.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

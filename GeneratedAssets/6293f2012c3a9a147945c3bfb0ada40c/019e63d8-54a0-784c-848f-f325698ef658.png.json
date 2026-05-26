@@ -1,0 +1,38 @@
+{
+    "asset": "6293f2012c3a9a147945c3bfb0ada40c",
+    "fileName": "019e63d8-54a0-784c-848f-f325698ef658.png",
+    "prompt": "A single vertical column of magical blue water falling. Stylized 2D fantasy art. The falling part is a consistent width. At the very bottom, there is a small, compact splash effect with glowing white foam. The splash does not spread out horizontally; it stays within the width of the falling water stream. Perfectly transparent background. No background environment. 1024x1024. Just the waterfall asset.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "259fd72280357514a852f5be6cd0e684",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

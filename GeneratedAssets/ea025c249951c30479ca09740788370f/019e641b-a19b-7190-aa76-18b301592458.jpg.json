@@ -1,0 +1,28 @@
+{
+    "asset": "ea025c249951c30479ca09740788370f",
+    "fileName": "019e641b-a19b-7190-aa76-18b301592458.jpg",
+    "prompt": "A perfectly seamless and tileable 2D texture of a magical blue water surface. Stylized hand-painted art. Soft light blue and dark blue ripples. No foam, no white caps, very simple and clean. Matches a magical cave aesthetic. 1024x1024 resolution. Top-down view. One single continuous surface.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

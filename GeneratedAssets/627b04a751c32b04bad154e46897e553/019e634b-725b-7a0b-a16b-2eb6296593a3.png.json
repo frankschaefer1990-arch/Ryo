@@ -1,0 +1,28 @@
+{
+    "asset": "627b04a751c32b04bad154e46897e553",
+    "fileName": "019e634b-725b-7a0b-a16b-2eb6296593a3.png",
+    "prompt": "A 2D game sprite of a vertical lever on a square stone base, viewed from the front (orthographic). The lever handle is tilted to the LEFT. There is a glowing blue magical gem on the handle. Stylized fantasy art, matches a dark magical cave theme. Transparent background. No shadows behind the object.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

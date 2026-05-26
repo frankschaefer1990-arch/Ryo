@@ -1,0 +1,28 @@
+{
+    "asset": "4d3b24478d9c9a544a7d499fef63cc51",
+    "fileName": "019e6346-9607-7df0-b4e1-4586adb42c79.png",
+    "prompt": "Horizontal rectangular stone plate with a metal slider lever. The slider is on the RIGHT position, the light is OFF and dark. 2D game asset, stylized fantasy art, dark stone, high detail, transparent background. Match the style and base of the Lever_Switch_On sprite. Orthographic front view.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

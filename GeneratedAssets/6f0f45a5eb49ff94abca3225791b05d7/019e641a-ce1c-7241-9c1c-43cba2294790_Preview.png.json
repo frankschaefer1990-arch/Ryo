@@ -1,0 +1,12 @@
+{
+    "asset": "6f0f45a5eb49ff94abca3225791b05d7",
+    "fileName": "019e641a-ce1c-7241-9c1c-43cba2294790_Preview.png",
+    "prompt": "A perfectly seamless and tileable 2D texture of a magical blue water surface. Stylized hand-painted art. Soft light blue and dark blue ripples. No foam, no white caps, very simple and clean. Matches a magical cave aesthetic. 1024x1024 resolution.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash-texture",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": 829756468,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation"
+}

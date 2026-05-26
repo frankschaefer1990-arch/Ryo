@@ -1,0 +1,38 @@
+{
+    "asset": "02e98a8289c78a048a2a8c969977f165",
+    "fileName": "019e63c3-5960-7c2b-bd10-df37a07b75ef.png",
+    "prompt": "A single vertical column of flowing magical blue water, stylized 2D fantasy art. High detail, glowing highlights, white foam at the top and bottom. No background, transparent background. Perfectly vertical, centered. 1024x1024. Just one single stream of water.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "5af7a7171ddf57342992eaf52429dcb2",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

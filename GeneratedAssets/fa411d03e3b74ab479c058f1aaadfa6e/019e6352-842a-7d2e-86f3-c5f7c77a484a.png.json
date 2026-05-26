@@ -1,0 +1,28 @@
+{
+    "asset": "fa411d03e3b74ab479c058f1aaadfa6e",
+    "fileName": "019e6352-842a-7d2e-86f3-c5f7c77a484a.png",
+    "prompt": "A 2D game sprite of a classic mechanical pull-lever with a vertical handle on a square stone base. Perfectly front-facing orthographic view. No diagonal perspective. The handle is pointing straight UP. A glowing blue magical gem is on the handle. Stylized fantasy art, matches a dark magical cave. Transparent background. No shadows behind. Straight vertical alignment.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

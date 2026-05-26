@@ -1,0 +1,38 @@
+{
+    "asset": "bc38c44b2a5cebb4f98fd5fe9d4c17e6",
+    "fileName": "019e63ae-decc-71a6-9328-d7f748ae0db7.mp4",
+    "prompt": "A single tall vertical magical blue waterfall, flowing downwards. Clean silhouette, glowing magical water. Frontal orthographic view. Transparent background. No collage, no secondary flows, just one single main stream. High detail stylized art. Loopable animation. center the waterfall in every frame.",
+    "negativePrompt": "",
+    "model": "video-seedance-1-pro",
+    "modelName": "Seedance 1 Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "5af7a7171ddf57342992eaf52429dcb2",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

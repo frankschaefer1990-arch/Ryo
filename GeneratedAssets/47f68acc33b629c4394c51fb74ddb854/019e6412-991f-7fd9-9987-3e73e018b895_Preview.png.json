@@ -1,0 +1,12 @@
+{
+    "asset": "47f68acc33b629c4394c51fb74ddb854",
+    "fileName": "019e6412-991f-7fd9-9987-3e73e018b895_Preview.png",
+    "prompt": "Magical glowing blue water surface, top-down view. Stylized 2D hand-painted fantasy art. Seamlessly tileable pattern. Soft ripples, glowing blue energy, white foam highlights. No land, no borders. Pure water surface. High detail. 1024x1024.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash-texture",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": 235343826,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation"
+}

@@ -1,0 +1,38 @@
+{
+    "asset": "8d68abf4c2fe6bd40a32644bef64c06a",
+    "fileName": "019e63d5-5461-7bdb-a6e2-f7f1c1209a6d.jpg",
+    "prompt": "A vertical magical blue waterfall sprite. Stylized 2D hand-painted art. The water flows downwards. The splash at the bottom is small, compact, and not wider than the stream itself. Glowing blue magical water. Perfectly transparent background. Isolated asset. 1024x1024. Just one solid vertical waterfall in the center. Matches the style of a magical cave. No wide horizontal misty area.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "259fd72280357514a852f5be6cd0e684",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

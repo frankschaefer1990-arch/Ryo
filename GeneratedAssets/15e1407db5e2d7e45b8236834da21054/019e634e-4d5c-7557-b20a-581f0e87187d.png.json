@@ -1,0 +1,28 @@
+{
+    "asset": "15e1407db5e2d7e45b8236834da21054",
+    "fileName": "019e634e-4d5c-7557-b20a-581f0e87187d.png",
+    "prompt": "A 2D game sprite of a classic mechanical lever with a long handle on a stone base. Perfectly front-facing orthographic view. The handle is pointing straight UP. A glowing blue magical gem is on top of the handle. Stylized fantasy art, matches a dark magical cave theme. Transparent background. No shadows behind. Straight vertical alignment. No diagonal perspective.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

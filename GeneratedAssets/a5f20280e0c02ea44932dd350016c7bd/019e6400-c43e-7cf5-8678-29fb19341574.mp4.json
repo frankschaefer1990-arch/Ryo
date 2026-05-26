@@ -1,0 +1,38 @@
+{
+    "asset": "a5f20280e0c02ea44932dd350016c7bd",
+    "fileName": "019e6400-c43e-7cf5-8678-29fb19341574.mp4",
+    "prompt": "Top-down view of magical glowing blue water surface ripples. Stylized hand-painted 2D fantasy art. Seamlessly tileable water surface. Loopable animation. Matches the magical blue style and color of the reference image. Transparent background. 1024x1024 spritesheet. No vertical waterfalls. Just the horizontal water surface.",
+    "negativePrompt": "",
+    "model": "video-seedance-1-pro",
+    "modelName": "Seedance 1 Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "2cdb62b2a61d2cf468f24307cf3c4fa4",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

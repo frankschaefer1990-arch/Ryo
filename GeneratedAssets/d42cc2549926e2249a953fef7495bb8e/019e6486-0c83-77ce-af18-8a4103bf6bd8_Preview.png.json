@@ -1,0 +1,12 @@
+{
+    "asset": "d42cc2549926e2249a953fef7495bb8e",
+    "fileName": "019e6486-0c83-77ce-af18-8a4103bf6bd8_Preview.png",
+    "prompt": "Seamlessly tileable vertical magical blue water flow. Hand-painted 2D fantasy style. Constant downward motion appearance. No beginning or end. Smooth magical ripples, glowing blue. 1024x1024 texture. Perfectly tileable vertically and horizontally. Just the flowing water column.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash-texture",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": 969151834,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation"
+}

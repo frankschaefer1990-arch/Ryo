@@ -1,0 +1,28 @@
+{
+    "asset": "08855df17bda6b1418673f1721dea028",
+    "fileName": "019e6353-5f25-7890-8228-3c4caa18c86d.png",
+    "prompt": "A 2D game sprite of a classic mechanical pull-lever. Perfectly front-facing orthographic view. No perspective. It has a rectangular stone base and a long metal handle with a knob on top. The handle is tilted to the RIGHT. The light on the knob is OFF and dark. Stylized fantasy art style, matching the exact base and handle of the previous sprite. Transparent background. No shadows. Straight alignment.",
+    "negativePrompt": "",
+    "model": "gpt-image-1-5",
+    "modelName": "GPT Image 1.5",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

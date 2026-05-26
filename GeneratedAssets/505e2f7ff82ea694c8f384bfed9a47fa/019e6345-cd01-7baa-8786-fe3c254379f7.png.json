@@ -1,0 +1,28 @@
+{
+    "asset": "505e2f7ff82ea694c8f384bfed9a47fa",
+    "fileName": "019e6345-cd01-7baa-8786-fe3c254379f7.png",
+    "prompt": "A stylized fantasy lever on a rectangular stone base. Handle is in the DOWN position. The blue gem is dark and unlit. Front view, orthographic, perfectly vertical and horizontal alignment. 2D game sprite. Transparent background. Dark magical cave aesthetic. Match the style and base of the Lever_Rect_On sprite.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

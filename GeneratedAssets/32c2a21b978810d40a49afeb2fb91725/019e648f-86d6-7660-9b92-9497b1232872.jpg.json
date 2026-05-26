@@ -1,0 +1,28 @@
+{
+    "asset": "32c2a21b978810d40a49afeb2fb91725",
+    "fileName": "019e648f-86d6-7660-9b92-9497b1232872.jpg",
+    "prompt": "A perfectly seamless vertical water flow texture. Stylized 2D hand-painted fantasy art. Soft light blue and dark blue ripples flowing downwards. NO borders, no foam at top or bottom, looks like one continuous flow when tiled vertically. High detail, 1024x1024 resolution. Pure water column texture. Semi-transparent. Matches the magical cave aesthetic. No horizontal lines or cuts.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

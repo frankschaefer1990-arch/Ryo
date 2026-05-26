@@ -341,7 +341,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.6539483, y: 0}
+  m_Offset: {x: 0, y: 0.6528926}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -351,7 +351,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 19.964508, y: 1}
+  m_Size: {x: 20, y: 2.6942148}
   m_EdgeRadius: 0
 --- !u!4 &303659180
 Transform:
@@ -30426,6 +30426,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1526369834}
   - component: {fileID: 1526369835}
+  - component: {fileID: 1526369837}
+  - component: {fileID: 1526369836}
   m_Layer: 6
   m_Name: Wall Wasserfall
   m_TagString: Untagged
@@ -30494,6 +30496,68 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 20, y: 2.5329914}
   m_EdgeRadius: 0
+--- !u!61 &1526369836
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526369833}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.016685486, y: 1.162055}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 19.98767, y: 3.7901554}
+  m_EdgeRadius: 0
+--- !u!114 &1526369837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526369833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74be471463e6af94db4b12e282c0f03b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterfallWallBlocker
+  wallObject: {fileID: 1526369833}
+  messageIfBlocked: "Der Weg zu den Wasserf\xE4llen ist versperrt... Ich sp\xFCre
+    eine dunkle Magie aus der Krypta."
+  speakerName: Ryo
 --- !u!1 &1617089312
 GameObject:
   m_ObjectHideFlags: 0

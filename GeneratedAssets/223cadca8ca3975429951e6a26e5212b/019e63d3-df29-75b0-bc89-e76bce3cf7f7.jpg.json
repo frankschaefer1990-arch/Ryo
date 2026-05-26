@@ -1,0 +1,38 @@
+{
+    "asset": "223cadca8ca3975429951e6a26e5212b",
+    "fileName": "019e63d3-df29-75b0-bc89-e76bce3cf7f7.jpg",
+    "prompt": "A single vertical magical blue waterfall sprite. Stylized fantasy hand-painted art. The water flows downwards in a steady stream. The impact area at the bottom is MINIMAL and EXTREMELY NARROW, not wider than the stream itself. No large misty clouds, no wide splashes. Elegant glowing blue water. Perfectly transparent background. Isolated game asset. 1024x1024. Just one solid vertical column of water.",
+    "negativePrompt": "",
+    "model": "flux-2-pro",
+    "modelName": "Flux 2 (Pro)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "7076c3d8fc3923d41908c0969ed4d98a",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

@@ -1,0 +1,28 @@
+{
+    "asset": "9cf2d22293700f84a9094085f3b65563",
+    "fileName": "019e635e-b913-7e57-955a-5625c32aa0d3.png",
+    "prompt": "A 2D game sprite of a mechanical lever on a dark stone base. The lever handle is tilted to the LEFT. Stylized fantasy RPG art. Transparent background. No shadows. High detail. 1024x1024. Clear silhouette. No background.",
+    "negativePrompt": "",
+    "model": "flux-2-dev",
+    "modelName": "Flux 2 (Dev)",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

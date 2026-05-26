@@ -36670,6 +36670,8 @@ MonoBehaviour:
     musicClip: {fileID: 8300000, guid: 9542ff1f01e0d144ba5d226b2bdca5cc, type: 3}
   - sceneName: Friedhof
     musicClip: {fileID: 8300000, guid: 824f9b5678e249d459cc517c10484982, type: 3}
+  - sceneName: "Wasserf\xE4lle von Chlorius"
+    musicClip: {fileID: 8300000, guid: 3be61414875e03e47ae9fc7211808d85, type: 3}
 --- !u!1 &1540589960
 GameObject:
   m_ObjectHideFlags: 0

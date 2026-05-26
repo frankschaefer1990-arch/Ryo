@@ -38,6 +38,8 @@ public class SaveData
     public bool zombie2Defeated;
     public bool kryptaBossDefeated;
     public bool defeatedKryptaBossReturn;
+    public bool waterfallPuzzleSolved;
+    public bool[] waterfallLevers;
     
     // Skills
     public int skillPoints;
@@ -134,6 +136,8 @@ public class SaveSystem : MonoBehaviour
             data.zombie2Defeated = QuestManager.Instance.zombie2Defeated;
             data.kryptaBossDefeated = QuestManager.Instance.kryptaBossDefeated;
             data.defeatedKryptaBossReturn = QuestManager.Instance.defeatedKryptaBossReturn;
+            data.waterfallPuzzleSolved = QuestManager.Instance.waterfallPuzzleSolved;
+            data.waterfallLevers = (bool[])QuestManager.Instance.waterfallLevers.Clone();
             }
         
         // Skills
@@ -194,11 +198,14 @@ public class SaveSystem : MonoBehaviour
                 data.kryptaIntroSeen,
                 data.zombie1Defeated,
                 data.zombie2Defeated,
-                data.kryptaBossDefeated
-            );
-            // Manually set flags that aren't in SetQuestData if needed
-            QuestManager.Instance.defeatedKryptaBossReturn = data.defeatedKryptaBossReturn;
-        }
+                data.kryptaBossDefeated,
+                data.waterfallPuzzleSolved
+                );
+                // Manually set flags that aren't in SetQuestData if needed
+                QuestManager.Instance.defeatedKryptaBossReturn = data.defeatedKryptaBossReturn;
+                if (data.waterfallLevers != null)
+                QuestManager.Instance.waterfallLevers = (bool[])data.waterfallLevers.Clone();
+                }
 
         // Prepare GameManager for save load to skip default spawn points
         if (GameManager.Instance != null)
