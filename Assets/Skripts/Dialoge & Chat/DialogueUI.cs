@@ -29,23 +29,13 @@ public class DialogueUI : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this && Instance.gameObject != null)
+        if (Instance != null && Instance != this)
         {
-            if (!Instance.gameObject.activeInHierarchy || (gameObject.name == "DialogueManager" && Instance.name != "DialogueManager"))
-            {
-                Destroy(Instance.gameObject);
-                Instance = this;
-            }
-            else
-            {
-                Debug.Log($"DialogueUI: Local duplicate found on {gameObject.name}, destroying.");
-                Destroy(gameObject);
-                return;
-            }
+            Destroy(gameObject);
+            return;
         }
         
         Instance = this;
-
         if (transform.parent != null) transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
@@ -56,7 +46,7 @@ public class DialogueUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (Instance == this) SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

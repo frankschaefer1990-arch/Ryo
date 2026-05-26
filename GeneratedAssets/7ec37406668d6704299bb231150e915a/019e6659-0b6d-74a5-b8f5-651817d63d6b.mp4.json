@@ -1,0 +1,38 @@
+{
+    "asset": "7ec37406668d6704299bb231150e915a",
+    "fileName": "019e6659-0b6d-74a5-b8f5-651817d63d6b.mp4",
+    "prompt": "Pixel art stone idol gargoyle spouting water, front-right view, 2D game animation, matching reference style.",
+    "negativePrompt": "",
+    "model": "video-seedance-1-pro",
+    "modelName": "Seedance 1 Pro",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Spritesheet",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 9,
+                "doodle": [],
+                "label": "First",
+                "strength": 1.0,
+                "invertStrength": false,
+                "assetReferenceGuid": "34004aea042040149b0a7c02275d175b",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 0,
+        "height": 0
+    },
+    "spriteSheet": true,
+    "duration": 5.0
+}

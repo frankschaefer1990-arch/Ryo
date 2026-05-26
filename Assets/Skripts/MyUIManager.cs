@@ -34,21 +34,10 @@ public class MyUIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this && Instance.gameObject != null)
+        if (Instance != null && Instance != this)
         {
-            // If the other instance is on a "Canvas" (spawned prefab) and we are "MasterCanvas" (scene persistent), take over
-            if (Instance.gameObject.name == "Canvas" && gameObject.name == "MasterCanvas")
-            {
-                Debug.Log("MyUIManager: MasterCanvas found, replacing spawned Canvas instance.");
-                DestroyImmediate(Instance.gameObject);
-                Instance = this;
-            }
-            else if (Instance.gameObject.scene.name == "DontDestroyOnLoad")
-            {
-                Debug.Log("MyUIManager: Destroying duplicate, persistent instance exists.");
-                Destroy(gameObject);
-                return;
-            }
+            Destroy(gameObject);
+            return;
         }
         
         Instance = this;
@@ -60,6 +49,7 @@ public class MyUIManager : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureCanvasExists()
     {
+    #if UNITY_EDITOR
         if (Instance == null)
         {
             var found = Object.FindAnyObjectByType<MyUIManager>(FindObjectsInactive.Include);
@@ -69,11 +59,8 @@ public class MyUIManager : MonoBehaviour
                 return;
             }
 
-            Debug.Log("MyUIManager: Auto-spawning MasterCanvas...");
-            GameObject prefab = Resources.Load<GameObject>("Canvas");
-            #if UNITY_EDITOR
-            if (prefab == null) prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefix/Canvas.prefab");
-            #endif
+            Debug.Log("MyUIManager: Auto-spawning MasterCanvas from prefab...");
+            GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefix/Canvas.prefab");
 
             if (prefab != null)
             {
@@ -82,6 +69,7 @@ public class MyUIManager : MonoBehaviour
                 Instance = inst.GetComponent<MyUIManager>();
             }
         }
+    #endif
     }
 
     private void OnEnable()

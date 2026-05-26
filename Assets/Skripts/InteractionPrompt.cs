@@ -127,7 +127,13 @@ public class InteractionPrompt : MonoBehaviour
             {
                 return true;
             }
+
+            // Stone Idols
+            if (hit.GetComponentInParent<StoneIdol>() != null)
+            {
+                return true;
             }
+}
 return false;
     }
 }

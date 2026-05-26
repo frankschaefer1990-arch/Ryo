@@ -293,4 +293,4 @@ MonoBehaviour:
   yOffset: 12
   indicatorScale: 8
   transparency: 0.55
-  detectionRadius: 0.6
+  detectionRadius: 5
