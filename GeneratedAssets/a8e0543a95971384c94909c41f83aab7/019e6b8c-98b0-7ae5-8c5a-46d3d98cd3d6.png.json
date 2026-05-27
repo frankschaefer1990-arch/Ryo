@@ -1,0 +1,38 @@
+{
+    "asset": "a8e0543a95971384c94909c41f83aab7",
+    "fileName": "019e6b8c-98b0-7ae5-8c5a-46d3d98cd3d6.png",
+    "prompt": "A 2D pixel art gargoyle statue facing North-East (diagonally away and right). Ancient grey stone, wings folded, no glowing eyes visible from this back angle. Style must match the reference image exactly. Transparent background.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "d83f2f147a178c44489e7105998493b0",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

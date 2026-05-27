@@ -1,0 +1,28 @@
+{
+    "asset": "d83f2f147a178c44489e7105998493b0",
+    "fileName": "019e6b6f-a170-7929-8aa2-fa24acfe392a.png",
+    "prompt": "A 2D pixel art sprite sheet of a single stone gargoyle statue in 8 different directions, arranged in a 3x3 grid. The style is detailed ancient weathered grey stone with glowing blue eyes. The directions are: Top-left: North-West, Top-middle: North (back view), Top-right: North-East, Middle-left: West (side view), Middle-center: empty, Middle-right: East (side view), Bottom-left: South-West, Bottom-middle: South (front view), Bottom-right: South-East. All statues are in a consistent sitting pose. Transparent background. Clear separation between images.",
+    "negativePrompt": "",
+    "model": "gemini-3.1-flash",
+    "modelName": "Gemini 3.1 Nano Banana 2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

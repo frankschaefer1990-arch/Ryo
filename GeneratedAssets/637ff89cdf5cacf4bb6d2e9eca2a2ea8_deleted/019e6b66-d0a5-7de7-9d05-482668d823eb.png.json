@@ -1,0 +1,38 @@
+{
+    "asset": "637ff89cdf5cacf4bb6d2e9eca2a2ea8",
+    "fileName": "019e6b66-d0a5-7de7-9d05-482668d823eb.png",
+    "prompt": "A single detailed pixel art stone gargoyle statue, seen from a back-right diagonal angle (facing North-East). Same ancient weathered grey stone texture. Water spouting from mouth visible. 2D game asset, transparent background.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "dc0d30f0d0f27584aad98267d5927ce0",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

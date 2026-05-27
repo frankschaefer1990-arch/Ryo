@@ -1,0 +1,38 @@
+{
+    "asset": "87908bf93fc102d439426bd5e4b02700",
+    "fileName": "019e6b4e-b8b3-776e-97f4-d261d61ddbf3.png",
+    "prompt": "Same gargoyle statue as the reference, but rotated to face North (back view). Ancient grey stone, blue eyes not visible, water spouting from mouth is visible from the side/back. 2D game asset, transparent background.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "dc0d30f0d0f27584aad98267d5927ce0",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

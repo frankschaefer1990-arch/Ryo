@@ -103,8 +103,13 @@ public class WaterfallMaster : MonoBehaviour
         }
     }
 
-    private void SetPuzzleSolved(bool solved)
+    public void SetSolved(bool solved)
     {
+        SetPuzzleSolved(solved);
+    }
+
+    private void SetPuzzleSolved(bool solved)
+{
         targetAlpha = solved ? 0f : 1f;
         
         if (solved)

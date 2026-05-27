@@ -1,0 +1,38 @@
+{
+    "asset": "8ff538630c82519409ae8f291c5918fd",
+    "fileName": "019e6b89-10ad-7a8c-980d-fb631eb44ae2.png",
+    "prompt": "A single detailed pixel art stone gargoyle statue, seen from the BACK-RIGHT diagonal angle (facing North-East). Ancient weathered grey stone texture, matching the reference image. Wings visible, no blue eyes from this angle. 2D game asset, transparent background.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "d83f2f147a178c44489e7105998493b0",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

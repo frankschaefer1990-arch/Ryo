@@ -3,7 +3,19 @@ using UnityEngine.UI;
 
 public class RadialMenu : MonoBehaviour
 {
-    public static RadialMenu Instance;
+    private static RadialMenu _instance;
+    public static RadialMenu Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = Object.FindAnyObjectByType<RadialMenu>(FindObjectsInactive.Include);
+            }
+            return _instance;
+        }
+        private set { _instance = value; }
+    }
 
     public GameObject panel;
     public Button[] directionButtons; // 0: South, 1: SW, 2: W, 3: NW, 4: N, 5: NE, 6: E, 7: SE
@@ -13,9 +25,14 @@ public class RadialMenu : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else
+        if (Instance == null) 
         {
+            Instance = this;
+            Debug.Log($"RadialMenu: Instance set on {gameObject.name}");
+        }
+        else if (Instance != this)
+        {
+            Debug.Log($"RadialMenu: Duplicate on {gameObject.name} destroyed.");
             Destroy(gameObject);
             return;
         }
@@ -28,6 +45,14 @@ public class RadialMenu : MonoBehaviour
             if (directionButtons[i] != null)
             {
                 directionButtons[i].onClick.AddListener(() => OnDirectionSelected(index));
+                
+                // Ensure the button's image is a raycast target
+                var img = directionButtons[i].GetComponent<UnityEngine.UI.Image>();
+                if (img != null)
+                {
+                    img.raycastTarget = true;
+                    // Ensure alpha is enough to detect clicks (handled by opaque color now)
+                }
             }
         }
     }
@@ -37,19 +62,33 @@ public class RadialMenu : MonoBehaviour
         activeIdol = idol;
         if (panel != null) panel.SetActive(true);
         SetPlayerMovement(false);
+        
+        // Show cursor
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Close()
     {
         if (panel != null) panel.SetActive(false);
         SetPlayerMovement(true);
+        
+        // Cursor will be reset by MyUIManager or manually if needed
+        // Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void OnDirectionSelected(int directionIndex)
     {
+        Debug.Log($"RadialMenu: Direction {directionIndex} selected.");
         if (activeIdol != null)
         {
+            Debug.Log($"RadialMenu: Commanding {activeIdol.name} to turn to {(StoneIdol.Direction)directionIndex}");
             activeIdol.SetDirection((StoneIdol.Direction)directionIndex);
+        }
+        else
+        {
+            Debug.LogError("RadialMenu: No activeIdol assigned!");
         }
         Close();
     }

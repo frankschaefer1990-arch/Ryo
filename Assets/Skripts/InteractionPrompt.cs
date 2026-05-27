@@ -9,7 +9,7 @@ public class InteractionPrompt : MonoBehaviour
     public float transparency = 0.55f;
 
     [Header("Detection")]
-    public float detectionRadius = 0.1f; 
+    public float detectionRadius = 0.2f; 
 
     private GameObject indicatorObj;
     private SpriteRenderer indicatorSR;

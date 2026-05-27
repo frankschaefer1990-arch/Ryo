@@ -5,6 +5,7 @@ public class IdolPuzzleManager : MonoBehaviour
 {
     public DirectionTarget[] targets;
     public GameObject wallToDeactivate;
+    public WaterfallMaster waterfallMaster; // Reference to master for fading
     public UnityEvent OnPuzzleSolved;
     
     [System.Serializable]
@@ -15,6 +16,16 @@ public class IdolPuzzleManager : MonoBehaviour
     }
 
     private bool isSolved = false;
+
+    private void Start()
+    {
+        // Check persistent state if QuestManager exists
+        if (QuestManager.Instance != null && QuestManager.Instance.waterfallPuzzleSolved)
+        {
+            isSolved = true;
+            ApplySolvedState(true);
+        }
+    }
 
     public void CheckPuzzle()
     {
@@ -33,9 +44,23 @@ public class IdolPuzzleManager : MonoBehaviour
         if (allCorrect)
         {
             isSolved = true;
-            Debug.Log("Puzzle Solved!");
-            if (wallToDeactivate != null) wallToDeactivate.SetActive(false);
+            Debug.Log("Idol Puzzle Solved!");
+            
+            if (QuestManager.Instance != null)
+                QuestManager.Instance.waterfallPuzzleSolved = true;
+
+            ApplySolvedState(false);
             OnPuzzleSolved.Invoke();
+        }
+    }
+
+    private void ApplySolvedState(bool immediate)
+    {
+        if (wallToDeactivate != null) wallToDeactivate.SetActive(false);
+        
+        if (waterfallMaster != null)
+        {
+            waterfallMaster.SetSolved(true);
         }
     }
 }

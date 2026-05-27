@@ -1,0 +1,38 @@
+{
+    "asset": "33de5aedf00ad024d9028017bec56e93",
+    "fileName": "019e6b6e-5a1a-7095-9cdf-e64a07af6186.png",
+    "prompt": "A pixel art sprite sheet of the gargoyle from the reference image in 8 directions. The images are arranged in a 3x3 grid. Top row: North-West, North, North-East. Middle row: West, empty center, East. Bottom row: South-West, South, South-East. All 8 statues must be identical in style, texture, and glowing blue eyes, just rotated to face the specified directions. 2D game asset, transparent background.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": [
+            {
+                "doodleReferenceType": 7,
+                "doodle": [],
+                "label": "Image",
+                "strength": 0.25,
+                "invertStrength": false,
+                "assetReferenceGuid": "58d5e1150ac57384ea794f45d60c814c",
+                "unlabeledIndex": -1
+            }
+        ]
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}

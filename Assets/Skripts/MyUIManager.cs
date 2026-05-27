@@ -201,9 +201,10 @@ public class MyUIManager : MonoBehaviour
         bool chestOpen = chestUI != null && chestUI.chestPanel != null && chestUI.chestPanel.activeInHierarchy;
         bool furnitureOpen = furniturePanel != null && furniturePanel.activeInHierarchy;
         bool gameOverOpen = BattleUI.Instance != null && BattleUI.Instance.gameOverPanel != null && BattleUI.Instance.gameOverPanel.activeInHierarchy;
+        bool radialOpen = RadialMenu.Instance != null && RadialMenu.Instance.IsActive;
 
-        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen || furnitureOpen || gameOverOpen;
-        }
+        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen || furnitureOpen || gameOverOpen || radialOpen;
+    }
 
     private bool IsInBattleScene()
     {

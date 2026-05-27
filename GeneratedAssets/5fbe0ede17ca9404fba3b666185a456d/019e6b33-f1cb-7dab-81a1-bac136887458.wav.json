@@ -1,0 +1,15 @@
+{
+    "asset": "5fbe0ede17ca9404fba3b666185a456d",
+    "fileName": "019e6b33-f1cb-7dab-81a1-bac136887458.wav",
+    "prompt": "Heavy ancient stone statue sliding or rotating on a stone base, grinding, scraping, heavy friction, low frequency rumble.",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 3.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

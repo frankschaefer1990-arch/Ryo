@@ -1,0 +1,28 @@
+{
+    "asset": "58d5e1150ac57384ea794f45d60c814c",
+    "fileName": "019e6b6d-4846-7278-a46d-47d0209a4ec6.png",
+    "prompt": "A single detailed pixel art stone gargoyle statue, sitting pose, front-facing (South), mouth closed, ancient weathered grey stone texture, glowing blue eyes, 2D game asset, transparent background. High quality, crisp lines.",
+    "negativePrompt": "",
+    "model": "gpt-image-1",
+    "modelName": "GPT Image 1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelatePixelGridSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0,
+    "dimensions": {
+        "width": 1024,
+        "height": 1024
+    },
+    "spriteSheet": false,
+    "duration": 0.0
+}
