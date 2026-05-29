@@ -1,0 +1,364 @@
+fileFormatVersion: 2
+guid: 7c786f3805005884496655815da5ad05
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4305957441275833476
+    second: "Geb\xE4ude Stadt_0"
+  - first:
+      213: 855534128074293057
+    second: "Geb\xE4ude Stadt_1"
+  - first:
+      213: -1036771403069241148
+    second: "Geb\xE4ude Stadt_2"
+  - first:
+      213: 2884795367596476614
+    second: "Geb\xE4ude Stadt_3"
+  - first:
+      213: -7813727588676136947
+    second: "Geb\xE4ude Stadt_4"
+  - first:
+      213: -3973113554282340073
+    second: "Geb\xE4ude Stadt_5"
+  - first:
+      213: -324730046448498368
+    second: "Geb\xE4ude Stadt_6"
+  - first:
+      213: 3888632328859565176
+    second: "Geb\xE4ude Stadt_7"
+  - first:
+      213: 2274989899228275174
+    second: "Geb\xE4ude Stadt_8"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_0"
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 579
+        width: 433
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c73ddc6658a2e34c0800000000000000
+      internalID: -4305957441275833476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_1"
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 579
+        width: 414
+        height: 415
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14f7715b1c77fdb00800000000000000
+      internalID: 855534128074293057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_2"
+      rect:
+        serializedVersion: 2
+        x: 1006
+        y: 579
+        width: 453
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c846c6e6e5ac91f0800000000000000
+      internalID: -1036771403069241148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_3"
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 273
+        width: 380
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c8c74f3a1ad80820800000000000000
+      internalID: 2884795367596476614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_4"
+      rect:
+        serializedVersion: 2
+        x: 575
+        y: 273
+        width: 390
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d001a413820109390800000000000000
+      internalID: -7813727588676136947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_5"
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 17
+        width: 445
+        height: 260
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71126b8d54aacd8c0800000000000000
+      internalID: -3973113554282340073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_6"
+      rect:
+        serializedVersion: 2
+        x: 1042
+        y: 273
+        width: 410
+        height: 280
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0498a854eb35e7bf0800000000000000
+      internalID: -324730046448498368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_7"
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 30
+        width: 435
+        height: 235
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87c36cf008237f530800000000000000
+      internalID: 3888632328859565176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Geb\xE4ude Stadt_8"
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 31
+        width: 408
+        height: 234
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e16a1b8243629f10800000000000000
+      internalID: 2274989899228275174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "Geb\xE4ude Stadt_0": -4305957441275833476
+      "Geb\xE4ude Stadt_1": 855534128074293057
+      "Geb\xE4ude Stadt_2": -1036771403069241148
+      "Geb\xE4ude Stadt_3": 2884795367596476614
+      "Geb\xE4ude Stadt_4": -7813727588676136947
+      "Geb\xE4ude Stadt_5": -3973113554282340073
+      "Geb\xE4ude Stadt_6": -324730046448498368
+      "Geb\xE4ude Stadt_7": 3888632328859565176
+      "Geb\xE4ude Stadt_8": 2274989899228275174
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

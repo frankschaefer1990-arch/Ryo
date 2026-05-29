@@ -38,5 +38,11 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/Scenes/Wasserf\xE4lle von Chlorix LvL 2.unity"
     guid: 5a6db9b7b900b5d4aaae9917c74f69b1
+  - enabled: 1
+    path: Assets/Scenes/Bossraum.unity
+    guid: 86391a026f39ab643a216a59ed5ed161
+  - enabled: 1
+    path: Assets/Scenes/Dorf.unity
+    guid: 0764507f04308cb46a8bd2363369f034
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

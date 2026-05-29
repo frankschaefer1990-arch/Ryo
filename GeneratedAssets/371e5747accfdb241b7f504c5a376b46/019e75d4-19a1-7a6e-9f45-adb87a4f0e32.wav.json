@@ -1,0 +1,15 @@
+{
+    "asset": "371e5747accfdb241b7f504c5a376b46",
+    "fileName": "019e75d4-19a1-7a6e-9f45-adb87a4f0e32.wav",
+    "prompt": "3 deep slow heavy heartbeats, loud bass, close up sound, cinematic impact",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 5.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}

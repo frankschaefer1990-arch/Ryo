@@ -86,6 +86,7 @@ public class StoneIdol : MonoBehaviour
 
     public void SetDirection(Direction newDir)
     {
+        Debug.Log("[Statue] " + gameObject.name + " SetDirection to " + newDir);
         if (currentDirection != newDir)
         {
             currentDirection = newDir;
@@ -122,7 +123,7 @@ public class StoneIdol : MonoBehaviour
     {
         if (audioSource != null && slideSound != null)
         {
-            audioSource.PlayOneShot(slideSound);
+            audioSource.PlayOneShot(slideSound, 0.4f);
         }
     }
 

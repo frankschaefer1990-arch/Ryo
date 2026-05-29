@@ -21,9 +21,12 @@ public class QuestManager : MonoBehaviour
     
     [Header("Waterfall Puzzle")]
     public bool waterfallPuzzleSolved = false;
+    public bool waterfallPuzzle2Solved = false;
     public bool[] waterfallLevers = new bool[4];
+    public bool defeatedWassergeist = false;
+    public bool returningFromWassergeist = false;
 
-    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false)
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false, bool wDefeated = false, bool wf2Solved = false, bool wReturn = false)
     {
         introSeen = intro;
         visitedTemple = visited;
@@ -36,6 +39,9 @@ public class QuestManager : MonoBehaviour
         zombie2Defeated = z2;
         kryptaBossDefeated = kBoss;
         waterfallPuzzleSolved = wfSolved;
+        defeatedWassergeist = wDefeated;
+        waterfallPuzzle2Solved = wf2Solved;
+        returningFromWassergeist = wReturn;
     }
 
     [Header("Battle Setup")]

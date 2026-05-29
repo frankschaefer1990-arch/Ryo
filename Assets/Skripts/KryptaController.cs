@@ -281,10 +281,13 @@ public class KryptaController : MonoBehaviour
             audio.spatialBlend = 0f;
             audio.volume = 1.0f;
             
-            // Play heartbeat 3 times, each beat very loud (layered)
-            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.2f);
-            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.2f);
-            audio.PlayOneShot(heartbeatSFX, 1f); audio.PlayOneShot(heartbeatSFX, 1f); yield return new WaitForSeconds(1.8f);
+            for (int i = 0; i < 3; i++)
+            {
+                audio.PlayOneShot(heartbeatSFX, 1.5f);
+                audio.PlayOneShot(heartbeatSFX, 1.5f);
+                audio.PlayOneShot(heartbeatSFX, 1.5f); // Triple layering
+                yield return new WaitForSeconds(1.2f);
+            }
             
             Destroy(audio, 1.0f);
         }
@@ -332,7 +335,7 @@ public class KryptaController : MonoBehaviour
         if (ball == null) yield break;
         ball.SetActive(true);
         Vector3 startPos = ball.transform.position;
-        Vector3 startScale = ball.transform.localScale;
+        Vector3 startScale = new Vector3(0.2f, 0.2f, 1f);
         Vector3 targetScale = startScale * 0.5f; 
         float duration = 2.0f; float elapsed = 0;
         while (elapsed < duration) {

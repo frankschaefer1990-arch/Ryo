@@ -2613,7 +2613,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 4.1898856, y: 1.3022077}
+  m_Offset: {x: 3.636259, y: 1.3022077}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2623,7 +2623,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 11.641429, y: 5.311454}
+  m_Size: {x: 10.534176, y: 5.311454}
   m_EdgeRadius: 0
 --- !u!1 &639895341
 GameObject:
@@ -4289,7 +4289,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 4.9926586, y: 1.0603456}
+  m_Offset: {x: 5.091993, y: 1.0603456}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4299,7 +4299,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.3288231, y: 2.1751976}
+  m_Size: {x: 1.1301546, y: 2.1751976}
   m_EdgeRadius: 0
 --- !u!1 &1199221201
 GameObject:
@@ -5295,7 +5295,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.8663268, y: -8.66524}
+  m_Offset: {x: 1.3107243, y: -8.66524}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5305,7 +5305,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5290041, y: 24.443743}
+  m_Size: {x: 2.917839, y: 24.443743}
   m_EdgeRadius: 0
 --- !u!1 &1774375604
 GameObject:
@@ -5640,7 +5640,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 4.5409417, y: 0.99377656}
+  m_Offset: {x: 4.6559386, y: 0.99377656}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5650,7 +5650,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.3818617, y: 2.172645}
+  m_Size: {x: 2.1518679, y: 2.172645}
   m_EdgeRadius: 0
 --- !u!114 &1896305534
 MonoBehaviour:

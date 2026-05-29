@@ -3,11 +3,6 @@ using UnityEngine.Events;
 
 public class IdolPuzzleManager : MonoBehaviour
 {
-    public DirectionTarget[] targets;
-    public GameObject wallToDeactivate;
-    public WaterfallMaster waterfallMaster; // Reference to master for fading
-    public UnityEvent OnPuzzleSolved;
-    
     [System.Serializable]
     public struct DirectionTarget
     {
@@ -15,12 +10,22 @@ public class IdolPuzzleManager : MonoBehaviour
         public StoneIdol.Direction requiredDirection;
     }
 
+    public DirectionTarget[] targets;
+    public GameObject wallToDeactivate;
+    public WaterfallMaster waterfallMaster; 
+    public AudioClip solveSound;
+    public UnityEvent OnPuzzleSolved;
+    
+    private AudioSource audioSource;
     private bool isSolved = false;
 
     private void Start()
     {
-        // Check persistent state if QuestManager exists
-        if (QuestManager.Instance != null && QuestManager.Instance.waterfallPuzzleSolved)
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Check persistent state if QuestManager exists (using flag 2 for Level 2)
+        if (QuestManager.Instance != null && QuestManager.Instance.waterfallPuzzle2Solved)
         {
             isSolved = true;
             ApplySolvedState(true);
@@ -32,22 +37,35 @@ public class IdolPuzzleManager : MonoBehaviour
         if (isSolved) return;
 
         bool allCorrect = true;
-        foreach (var target in targets)
+        for (int i = 0; i < targets.Length; i++)
         {
-            if (target.idol != null && target.idol.currentDirection != target.requiredDirection)
+            var target = targets[i];
+            if (target.idol != null)
             {
-                allCorrect = false;
-                break;
+                bool match = target.idol.currentDirection == target.requiredDirection;
+                if (!match)
+                {
+                    allCorrect = false;
+                    Debug.Log("[Puzzle] Statue " + target.idol.name + " is still facing " + target.idol.currentDirection + " but needs " + target.requiredDirection);
+                }
             }
         }
 
         if (allCorrect)
         {
             isSolved = true;
-            Debug.Log("Idol Puzzle Solved!");
+            Debug.Log("[Puzzle] ALL CORRECT! Idol Puzzle Solved!");
             
             if (QuestManager.Instance != null)
-                QuestManager.Instance.waterfallPuzzleSolved = true;
+                QuestManager.Instance.waterfallPuzzle2Solved = true;
+
+            if (audioSource != null && solveSound != null)
+                audioSource.PlayOneShot(solveSound, 1.5f);
+
+            if (DialogueUI.Instance != null)
+            {
+                DialogueUI.Instance.ShowMessage("Ryo", "Der Wasserfall ist verschwunden... Das muss der Weg sein.", 3.5f);
+            }
 
             ApplySolvedState(false);
             OnPuzzleSolved.Invoke();
@@ -57,6 +75,13 @@ public class IdolPuzzleManager : MonoBehaviour
     private void ApplySolvedState(bool immediate)
     {
         if (wallToDeactivate != null) wallToDeactivate.SetActive(false);
+        
+        // Find all objects named IdolPuzzleWall and deactivate them
+        GameObject[] extraWalls = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var wall in extraWalls)
+        {
+            if (wall.name == "IdolPuzzleWall") wall.SetActive(false);
+        }
         
         if (waterfallMaster != null)
         {

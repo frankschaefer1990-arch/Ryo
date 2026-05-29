@@ -191,12 +191,22 @@ public class DialogueUI : MonoBehaviour
         }
 
         yield return new WaitForSeconds(visibleDuration);
-        HideAll();
-    }
+        
+        // --- PREVENTION OF FLICKERING ---
+        // Mark as not showing so the while-loop in cutscenes can proceed,
+        // but wait one frame before actually hiding to see if a new message starts.
+        isShowing = false;
+        yield return null; 
+        
+        if (!isShowing) {
+            HideAll();
+        }
+        }
 
-    public void HideAll()
-    {
-        if (currentRoutine != null) { StopCoroutine(currentRoutine); currentRoutine = null; }
+        public void HideAll()
+        {
+        // Don't stop routine here if we want to allow it to finish normally
+        // but we DO want to hide the UI.
         if (DialogueFrameNew != null) {
             DialogueFrameNew.SetActive(false);
             if (frameCanvasGroup != null) {
@@ -208,7 +218,7 @@ public class DialogueUI : MonoBehaviour
         if (popupTextObject != null) popupTextObject.SetActive(false);
         if (speakerNameObject != null && speakerNameObject.name != "EnemyNameDisplay") speakerNameObject.SetActive(false);
         isShowing = false;
-    }
+        }
 
     public bool IsDialogueActive() => isShowing;
 }

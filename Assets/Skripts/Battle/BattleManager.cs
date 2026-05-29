@@ -991,19 +991,24 @@ if (activeDotTurns > 0)
             int baseDmg = currentEnemy.attack;
             int damage = (int)(baseDmg * multiplier);
             
-            // Armor Break logic
-            if (playerArmorBreakTurns > 0) damage = (int)(damage * 1.3f);
+            bool isPureHeal = skill != null && multiplier <= 0f && skill.healMultiplier > 0f;
 
-            if (isBlocking)
+            if (!isPureHeal)
             {
-                damage = Mathf.Max(damage / 2, 1);
-                Debug.Log("BattleManager: Player BLOCKED. Damage reduced.");
-            }
+                // Armor Break logic
+                if (playerArmorBreakTurns > 0) damage = (int)(damage * 1.3f);
 
-            stats.TakeDamage(damage);
-            DamagePopup.Create(playerPos.position + Vector3.up, Mathf.Max(damage, 1), damageFont);
-            StartCoroutine(PlayHurtAnimation(playerPos)); 
-            BattleUI.Instance.UpdatePlayerHP((float)stats.currentHealth / stats.maxHealth, stats.currentHealth, stats.maxHealth);
+                if (isBlocking)
+                {
+                    damage = Mathf.Max(damage / 2, 1);
+                    Debug.Log("BattleManager: Player BLOCKED. Damage reduced.");
+                }
+
+                stats.TakeDamage(damage);
+                DamagePopup.Create(playerPos.position + Vector3.up, Mathf.Max(damage, 1), damageFont);
+                StartCoroutine(PlayHurtAnimation(playerPos)); 
+                BattleUI.Instance.UpdatePlayerHP((float)stats.currentHealth / stats.maxHealth, stats.currentHealth, stats.maxHealth);
+            }
 
             // APPLY SKILL EFFECTS
             if (skill != null)
@@ -1020,15 +1025,24 @@ if (activeDotTurns > 0)
                 }
 
                 // Visual
-Vector3 effectCenter = GetEffectCenter(playerPos, skill.isSpell) + skill.visualOffset;
+                Transform visualTarget = isPureHeal ? enemyPos : playerPos;
+                Vector3 effectCenter = GetEffectCenter(visualTarget, skill.isSpell) + skill.visualOffset;
                 if (slashEffect != null) 
                     slashEffect.PlaySlash(effectCenter, skill.effectColor, skill.customSlashSprite, skill.slashDuration, Vector3.zero, skill.visualScale, skill.randomRotation);
+
+                if (isPureHeal) StartCoroutine(PlayHurtAnimation(enemyPos));
 
                 // Heal
                 if (skill.healMultiplier > 0)
                 {
-                    enemyCurrentHP = Mathf.Min(currentEnemy.maxHP, enemyCurrentHP + (int)(damage * skill.healMultiplier));
+                    int calculationBase = isPureHeal ? baseDmg : damage;
+                    int healAmount = (int)(calculationBase * skill.healMultiplier);
+                    
+                    enemyCurrentHP = Mathf.Min(currentEnemy.maxHP, enemyCurrentHP + healAmount);
                     BattleUI.Instance.UpdateEnemyHP((float)enemyCurrentHP / currentEnemy.maxHP, enemyCurrentHP, currentEnemy.maxHP);
+                    
+                    // Show healing popup on enemy
+                    DamagePopup.Create(enemyPos.position + Vector3.up * 1.5f, healAmount, damageFont, Color.green);
                 }
 
                 // Special IDs
@@ -1128,27 +1142,31 @@ Vector3 effectCenter = GetEffectCenter(playerPos, skill.isSpell) + skill.visualO
                 {
                     QuestManager.Instance.defeatedKryptaBossReturn = true;
                 }
-            }
+                if (currentEnemy.enemyName == "Wassergeist")
+                {
+                    QuestManager.Instance.returningFromWassergeist = true;
+                }
+                }
 
-            // Krypta Zombie Logic
-            if (currentEnemy.enemyName == "Starker Zombie" && QuestManager.Instance != null)
-            {
+                // Krypta Zombie Logic
+                if (currentEnemy.enemyName == "Starker Zombie" && QuestManager.Instance != null)
+                {
                 int fightIndex = PlayerPrefs.GetInt("LastZombieFight", 0);
                 if (fightIndex == 1) QuestManager.Instance.zombie1Defeated = true;
                 if (fightIndex == 2) QuestManager.Instance.zombie2Defeated = true;
                 PlayerPrefs.DeleteKey("LastZombieFight");
-            }
+                }
 
-            if (PlayerStats.Instance != null)
-{
+                if (PlayerStats.Instance != null)
+                {
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);
                 PlayerGold goldMgr = PlayerGold.GetInstance();
                 if (goldMgr != null) goldMgr.AddGold(50);
-            }
-            yield return new WaitForSeconds(3f);
+                }
+                yield return new WaitForSeconds(3f);
             
-            if (GameManager.Instance != null)
-            {
+                if (GameManager.Instance != null)
+                {
                 // Specifically return to Temple/Krypta for the boss sequence
                 if (currentEnemy.isBoss && currentEnemy.enemyName == "Skelettkrieger")
                 {
@@ -1157,6 +1175,10 @@ Vector3 effectCenter = GetEffectCenter(playerPos, skill.isSpell) + skill.visualO
                 else if (currentEnemy.isBoss && currentEnemy.enemyName == "Skelett Magier")
                 {
                     GameManager.Instance.LoadScene("Krypta", "BossDefeatedSpawn");
+                }
+                else if (currentEnemy.isBoss && currentEnemy.enemyName == "Wassergeist")
+                {
+                    GameManager.Instance.LoadScene("Bossraum", "ReturnFromBattle");
                 }
                 else
                 {

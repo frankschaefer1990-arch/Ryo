@@ -104,7 +104,7 @@ public GameObject gameOverPanel;
 
     public void OnMainMenuButton()
     {
-        Application.Quit();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
     private void Awake() { Instance = this; }
@@ -174,6 +174,7 @@ public GameObject gameOverPanel;
     public void ResetAllUI()
     {
         if (qteRoot != null) qteRoot.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
         HideAllSubPanels();
         HideActionMessage();
         HideSkillName();

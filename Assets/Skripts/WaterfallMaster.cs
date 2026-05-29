@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class WaterfallMaster : MonoBehaviour
 {
+    public bool isLevel2Waterfall = false; // Toggle to use independent flag
     public GameObject waterfallVisual; // The waterfall to disable
     public Collider2D pathBlocker;     // The collider to disable
     public UnityEngine.Tilemaps.TilemapRenderer mainWaterTilemap;
@@ -35,7 +36,13 @@ public class WaterfallMaster : MonoBehaviour
         CheckLevers();
 
         // Immediate alpha set
-        if (QuestManager.Instance != null && QuestManager.Instance.waterfallPuzzleSolved)
+        bool alreadySolved = false;
+        if (QuestManager.Instance != null)
+        {
+            alreadySolved = isLevel2Waterfall ? QuestManager.Instance.waterfallPuzzle2Solved : QuestManager.Instance.waterfallPuzzleSolved;
+        }
+
+        if (alreadySolved)
         {
             targetAlpha = 0f;
             SetAlpha(0f);
@@ -69,10 +76,14 @@ public class WaterfallMaster : MonoBehaviour
     public void CheckLevers()
     {
         // If already solved permanently, don't check
-        if (QuestManager.Instance != null && QuestManager.Instance.waterfallPuzzleSolved)
+        if (QuestManager.Instance != null)
         {
-            SetPuzzleSolved(true);
-            return;
+            bool alreadySolved = isLevel2Waterfall ? QuestManager.Instance.waterfallPuzzle2Solved : QuestManager.Instance.waterfallPuzzleSolved;
+            if (alreadySolved)
+            {
+                SetPuzzleSolved(true);
+                return;
+            }
         }
 
         int activeCount = 0;
@@ -86,12 +97,18 @@ public class WaterfallMaster : MonoBehaviour
 
         if (allActive)
         {
-            if (QuestManager.Instance != null && !QuestManager.Instance.waterfallPuzzleSolved)
+            if (QuestManager.Instance != null)
             {
-                QuestManager.Instance.waterfallPuzzleSolved = true;
-                if (finalDrainSound != null && audioSource != null)
+                bool alreadySolved = isLevel2Waterfall ? QuestManager.Instance.waterfallPuzzle2Solved : QuestManager.Instance.waterfallPuzzleSolved;
+                if (!alreadySolved)
                 {
-                    audioSource.PlayOneShot(finalDrainSound);
+                    if (isLevel2Waterfall) QuestManager.Instance.waterfallPuzzle2Solved = true;
+                    else QuestManager.Instance.waterfallPuzzleSolved = true;
+
+                    if (finalDrainSound != null && audioSource != null)
+                    {
+                        audioSource.PlayOneShot(finalDrainSound);
+                    }
                 }
             }
             SetPuzzleSolved(true);

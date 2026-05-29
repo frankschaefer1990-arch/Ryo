@@ -242,12 +242,13 @@ public class TempleIntroController : MonoBehaviour
                 audio.spatialBlend = 0f;
                 audio.volume = 1.0f;
                 
-                audio.Play(); audio.PlayOneShot(heartbeatSFX, 1.0f);
-                yield return new WaitForSeconds(1.2f);
-                audio.Play(); audio.PlayOneShot(heartbeatSFX, 1.0f);
-                yield return new WaitForSeconds(1.2f);
-                audio.Play(); audio.PlayOneShot(heartbeatSFX, 1.0f);
-                yield return new WaitForSeconds(1.8f);
+                for (int i = 0; i < 3; i++)
+                {
+                    audio.PlayOneShot(heartbeatSFX, 1.5f);
+                    audio.PlayOneShot(heartbeatSFX, 1.5f);
+                    audio.PlayOneShot(heartbeatSFX, 1.5f); // Triple layering for impact
+                    yield return new WaitForSeconds(1.2f);
+                }
                 
                 Destroy(audio, 1.0f);
             }

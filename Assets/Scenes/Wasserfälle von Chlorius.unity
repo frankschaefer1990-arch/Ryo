@@ -44725,7 +44725,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.16, y: -1.5}
+  m_Offset: {x: 0.15999997, y: -3.0697145}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -44735,7 +44735,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 4}
+  m_Size: {x: 3, y: 2.0133305}
   m_EdgeRadius: 0
 --- !u!114 &424185962
 MonoBehaviour:
@@ -45114,6 +45114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993edd2d27af01e45af3b63b76d25847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaterfallMaster
+  isLevel2Waterfall: 0
   waterfallVisual: {fileID: 759705868}
   pathBlocker: {fileID: 759705872}
   mainWaterTilemap: {fileID: 0}
@@ -45324,6 +45325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993edd2d27af01e45af3b63b76d25847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaterfallMaster
+  isLevel2Waterfall: 0
   waterfallVisual: {fileID: 759705868}
   pathBlocker: {fileID: 575150}
   mainWaterTilemap: {fileID: 1479283198}

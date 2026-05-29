@@ -255,8 +255,13 @@ public class GameManager : MonoBehaviour
                     }
 
                     Debug.Log($"GameManager: Player '{PersistentPlayer.name}' processed for scene {scene.name}. Visible: {!isBattle}");
-                }
-                else
+
+                    // Safety: Unlock movement and UI on every scene load to prevent stuck states from cutscenes
+                    var pm = PersistentPlayer.GetComponent<PlayerMovement>();
+                    if (pm != null) pm.canMove = true;
+                    if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
+                    }
+                    else
                 {
                     Debug.LogError("GameManager: FAILED to find or spawn Player!");
                 }

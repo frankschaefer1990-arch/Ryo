@@ -1,0 +1,15 @@
+{
+    "asset": "ce33f9e43ec18c24795996f689db0343",
+    "fileName": "019e7599-1937-7b0f-bc0b-1b8de84ec1c9.wav",
+    "prompt": "heavy stone drawbridge lowering with chains and grinding stone sound",
+    "negativePrompt": "",
+    "model": "elevenlabs-sound-effects-v2",
+    "modelName": "ElevenLabs Sound Effects V2",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "duration": 4.0,
+    "autoTrim": false,
+    "hasReference": false,
+    "voice": ""
+}
