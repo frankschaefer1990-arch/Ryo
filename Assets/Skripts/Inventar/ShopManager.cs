@@ -5,9 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class ShopManager : MonoBehaviour
 {
+    public static ShopManager Instance;
+
     [Header("UI")]
     public GameObject shopPanel;
     public TextMeshProUGUI goldText;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        if (transform.parent != null) transform.SetParent(null);
+        DontDestroyOnLoad(gameObject);
+    }
 
     [Header("Buttons")]
     public Button buyButton;
@@ -15,16 +29,48 @@ public class ShopManager : MonoBehaviour
     public Button leaveButton;
     public Button healthSlotButton;
     public Button manaSlotButton;
+    public Button swordSlotButton;
+    public Button helmSlotButton;
+    public Button armorSlotButton;
+    public Button ringSlotButton;
+    public Button bootsSlotButton;
+    public Button wandSlotButton;
 
     [Header("Highlights")]
     public GameObject healthHighlight;
     public GameObject manaHighlight;
+    public GameObject swordHighlight;
+    public GameObject helmHighlight;
+    public GameObject armorHighlight;
+    public GameObject ringHighlight;
+    public GameObject bootsHighlight;
+    public GameObject wandHighlight;
 
     [Header("Prices")]
     public int healthPrice = 10;
     public int manaPrice = 10;
+    public int swordPrice = 100;
+    public int helmPrice = 70;
+    public int armorPrice = 150;
+    public int ringPrice = 80;
+    public int bootsPrice = 60;
+    public int wandPrice = 120;
     public TextMeshProUGUI healthPriceText;
     public TextMeshProUGUI manaPriceText;
+    public TextMeshProUGUI swordPriceText;
+    public TextMeshProUGUI helmPriceText;
+    public TextMeshProUGUI armorPriceText;
+    public TextMeshProUGUI ringPriceText;
+    public TextMeshProUGUI bootsPriceText;
+    public TextMeshProUGUI wandPriceText;
+
+    [Header("Item Visibility")]
+    public GameObject swordSlotUI;
+    public GameObject helmSlotUI;
+    public GameObject armorSlotUI;
+    public GameObject ringSlotUI;
+    public GameObject bootsSlotUI;
+    public GameObject wandSlotUI;
 
     [Header("Settings")]
     public float interactionRange = 2f;
@@ -33,7 +79,7 @@ public class ShopManager : MonoBehaviour
 
     private Transform player;
     private bool playerInRange = false;
-    private int selectedShopItem = 0; // 0=none, 1=health, 2=mana
+    private int selectedShopItem = 0; // 0=none, 1=HP, 2=MP, 3=Sword, 4=Helm, 5=Armor, 6=Ring, 7=Boots, 8=Wand
     private bool isShopOpen = false;
     private bool isOpeningShop = false;
 
@@ -60,47 +106,58 @@ public class ShopManager : MonoBehaviour
 
     private void Update()
     {
-        FindPlayer();
-        if (player == null) return;
-        CheckRange();
-
-        if (playerInRange && Input.GetKeyDown(interactKey) && !isShopOpen && !isOpeningShop)
+        if (isShopOpen && Input.GetKeyDown(KeyCode.Escape))
         {
-            OpenShop();
+            CloseShop();
         }
     }
 
-    private void FindPlayer()
+    public void OpenShop()
     {
-        if (player == null)
-        {
-            if (GameManager.Instance != null && GameManager.Instance.player != null) player = GameManager.Instance.player.transform;
-            else
-            {
-                GameObject foundPlayer = GameObject.FindGameObjectWithTag("Player");
-                if (foundPlayer != null) player = foundPlayer.transform;
-            }
-        }
+        if (isShopOpen) return;
+        StartCoroutine(OpenShopSequence());
     }
 
-    private void CheckRange()
+    private System.Collections.IEnumerator OpenShopSequence()
     {
-        float distance = Vector2.Distance(transform.position, player.position);
-        playerInRange = distance <= interactionRange;
+        isOpeningShop = true;
+        
+        MerchantInteraction merchant = GetComponent<MerchantInteraction>();
+        if (merchant != null)
+        {
+            merchant.StartTalking();
+            yield return new WaitForSeconds(dialogueDuration);
+        }
+
+        OpenShopFromMerchant();
     }
 
     public void ReconnectShop()
     {
+        if (shopPanel != null && shopPanel.activeInHierarchy) return;
+
         Canvas targetCanvas = null;
         Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var c in canvases)
         {
-            if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor") { targetCanvas = c; break; }
+            if (c.name.Contains("Master") || c.name.Contains("Canvas"))
+            {
+                if (c.name != "SoftwareCursorCanvas" && c.name != "SoftwareCursor")
+                {
+                    targetCanvas = c;
+                    break;
+                }
+            }
         }
 
+        if (targetCanvas == null && canvases.Length > 0) targetCanvas = canvases[0];
         if (targetCanvas == null) return;
 
-        if (shopPanel == null) shopPanel = FindChildRecursive(targetCanvas.transform, "ShopPanel")?.gameObject;
+        if (shopPanel == null)
+        {
+            Transform found = FindChildRecursive(targetCanvas.transform, "ShopPanel");
+            if (found != null) shopPanel = found.gameObject;
+        }
 
         if (shopPanel != null)
         {
@@ -120,10 +177,116 @@ public class ShopManager : MonoBehaviour
                 manaPriceText = FindChildRecursive(manaSlotButton.transform, "ManaPriceText")?.GetComponent<TextMeshProUGUI>();
             }
 
+            swordSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_2")?.gameObject;
+            if (swordSlotUI != null) {
+                swordSlotButton = swordSlotUI.GetComponent<Button>();
+                swordHighlight = FindChildRecursive(swordSlotUI.transform, "SelectionHighlight")?.gameObject;
+                swordPriceText = FindChildRecursive(swordSlotUI.transform, "ItemPriceText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            helmSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_3")?.gameObject;
+            if (helmSlotUI != null) {
+                helmSlotButton = helmSlotUI.GetComponent<Button>();
+                helmHighlight = FindChildRecursive(helmSlotUI.transform, "SelectionHighlight")?.gameObject;
+                helmPriceText = FindChildRecursive(helmSlotUI.transform, "ItemPriceText")?.GetComponent<TextMeshProUGUI>();
+            }
+
+            armorSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_4")?.gameObject;
+            if (armorSlotUI != null) {
+                armorSlotButton = armorSlotUI.GetComponent<Button>();
+                armorHighlight = FindChildRecursive(armorSlotUI.transform, "SelectionHighlight")?.gameObject;
+            }
+
+            ringSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_5")?.gameObject;
+            if (ringSlotUI != null) {
+                ringSlotButton = ringSlotUI.GetComponent<Button>();
+                ringHighlight = FindChildRecursive(ringSlotUI.transform, "SelectionHighlight")?.gameObject;
+            }
+
+            bootsSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_6")?.gameObject;
+            if (bootsSlotUI != null) {
+                bootsSlotButton = bootsSlotUI.GetComponent<Button>();
+                bootsHighlight = FindChildRecursive(bootsSlotUI.transform, "SelectionHighlight")?.gameObject;
+            }
+
+            wandSlotUI = FindChildRecursive(shopPanel.transform, "ShopSlot_7")?.gameObject;
+            if (wandSlotUI != null) {
+                wandSlotButton = wandSlotUI.GetComponent<Button>();
+                wandHighlight = FindChildRecursive(wandSlotUI.transform, "SelectionHighlight")?.gameObject;
+            }
+
             goldText = FindChildRecursive(shopPanel.transform, "GoldText")?.GetComponent<TextMeshProUGUI>();
-        }
-        SetupButtonsPublic();
-    }
+
+            // Ensure shop slots show the correct sprites from InventoryManager
+            UpdateShopSprites();
+            }
+            SetupButtonsPublic();
+            }
+
+            private void UpdateShopSprites()
+            {
+            if (InventoryManager.Instance == null) return;
+            SetShopSlotIcon(swordSlotUI, 3);
+            SetShopSlotIcon(helmSlotUI, 4);
+            SetShopSlotIcon(armorSlotUI, 5);
+            SetShopSlotIcon(ringSlotUI, 6);
+            SetShopSlotIcon(bootsSlotUI, 7); // Basic Boots
+            SetShopSlotIcon(wandSlotUI, 8);
+            }
+
+            private void SetShopSlotIcon(GameObject slotUI, int itemId)
+            {
+                if (slotUI == null) return;
+                
+                // Find or create the icon image (child named Icon or Item)
+                Transform icnT = slotUI.transform.Find("Icon") ?? slotUI.transform.Find("Item");
+                UnityEngine.UI.Image iconImg = icnT != null ? icnT.GetComponent<UnityEngine.UI.Image>() : null;
+                
+                Sprite s = (InventoryManager.Instance != null) ? InventoryManager.Instance.GetSpriteForId(itemId) : null;
+                
+                // AGGRESSIVELY DISABLE/CLEAR ALL GRAPHICS IN THE SLOT hierarchy
+                UnityEngine.UI.Graphic[] allGraphics = slotUI.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
+                foreach (var g in allGraphics)
+                {
+                    // Skip the icon image and any highlight objects
+                    if (g != iconImg && !g.name.Contains("Highlight"))
+                    {
+                        if (g is UnityEngine.UI.Image img) {
+                            img.sprite = null;
+                            if (g.gameObject == slotUI) { g.color = Color.black; g.enabled = true; }
+                            else { g.color = new Color(0,0,0,0); g.enabled = false; }
+                        } else if (g is UnityEngine.UI.RawImage ri) {
+                            ri.texture = null;
+                            ri.color = new Color(0,0,0,0);
+                            ri.enabled = false;
+                        }
+                    }
+                }
+                
+                // Also check for SpriteRenderers just in case
+                SpriteRenderer[] srs = slotUI.GetComponentsInChildren<SpriteRenderer>(true);
+                foreach (var sr in srs) { sr.sprite = null; sr.enabled = false; }
+
+                if (iconImg != null)
+                {
+                    iconImg.sprite = s;
+                    iconImg.color = s != null ? Color.white : new Color(0,0,0,0);
+                    iconImg.enabled = s != null;
+                    iconImg.gameObject.SetActive(s != null);
+                    iconImg.preserveAspect = true;
+                }
+                else if (s != null)
+                {
+                    // Fallback: if no icon child, use base image
+                    UnityEngine.UI.Image baseImg = slotUI.GetComponent<UnityEngine.UI.Image>();
+                    if (baseImg != null) {
+                        baseImg.sprite = s;
+                        baseImg.color = Color.white;
+                        baseImg.enabled = true;
+                        baseImg.preserveAspect = true;
+                    }
+                }
+            }
 
     private Transform FindChildRecursive(Transform parent, string name)
     {
@@ -138,6 +301,12 @@ public class ShopManager : MonoBehaviour
         if (leaveButton != null) { leaveButton.onClick.RemoveAllListeners(); leaveButton.onClick.AddListener(CloseShop); }
         if (healthSlotButton != null) { healthSlotButton.onClick.RemoveAllListeners(); healthSlotButton.onClick.AddListener(() => SelectShopItem(1)); }
         if (manaSlotButton != null) { manaSlotButton.onClick.RemoveAllListeners(); manaSlotButton.onClick.AddListener(() => SelectShopItem(2)); }
+        if (swordSlotButton != null) { swordSlotButton.onClick.RemoveAllListeners(); swordSlotButton.onClick.AddListener(() => SelectShopItem(3)); }
+        if (helmSlotButton != null) { helmSlotButton.onClick.RemoveAllListeners(); helmSlotButton.onClick.AddListener(() => SelectShopItem(4)); }
+        if (armorSlotButton != null) { armorSlotButton.onClick.RemoveAllListeners(); armorSlotButton.onClick.AddListener(() => SelectShopItem(5)); }
+        if (ringSlotButton != null) { ringSlotButton.onClick.RemoveAllListeners(); ringSlotButton.onClick.AddListener(() => SelectShopItem(6)); }
+        if (bootsSlotButton != null) { bootsSlotButton.onClick.RemoveAllListeners(); bootsSlotButton.onClick.AddListener(() => SelectShopItem(7)); }
+        if (wandSlotButton != null) { wandSlotButton.onClick.RemoveAllListeners(); wandSlotButton.onClick.AddListener(() => SelectShopItem(8)); }
     }
 
     public void OpenShopFromMerchant()
@@ -149,38 +318,30 @@ public class ShopManager : MonoBehaviour
         if (shopPanel != null) shopPanel.SetActive(true);
         isShopOpen = true;
         isOpeningShop = false;
+
+        // Item visibility based on scene
+        bool isDorf = SceneManager.GetActiveScene().name == "Dorf";
+        if (swordSlotUI != null) swordSlotUI.SetActive(isDorf);
+        if (helmSlotUI != null) helmSlotUI.SetActive(isDorf);
+        if (armorSlotUI != null) armorSlotUI.SetActive(isDorf);
+        if (ringSlotUI != null) ringSlotUI.SetActive(isDorf);
+        if (bootsSlotUI != null) bootsSlotUI.SetActive(isDorf);
+        if (wandSlotUI != null) wandSlotUI.SetActive(isDorf);
+
         if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(true);
         LockPlayerMovement(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    private void OpenShop()
-    {
-        isOpeningShop = true;
-        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Händler", "Schau dir meine Waren an!", dialogueDuration);
-        Invoke(nameof(OpenShopAfterDialogue), dialogueDuration);
-    }
-
-    private void OpenShopAfterDialogue() => OpenShopFromMerchant();
-
     public void CloseShop()
     {
         if (shopPanel != null) shopPanel.SetActive(false);
-        if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(false);
-        DeselectShopItem();
         isShopOpen = false;
-        isOpeningShop = false;
+        if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(false);
         LockPlayerMovement(false);
-    }
-
-    private void LockPlayerMovement(bool locked)
-    {
-        if (player == null) FindPlayer();
-        if (player != null) {
-            PlayerMovement movement = player.GetComponent<PlayerMovement>();
-            if (movement != null) movement.canMove = !locked;
-        }
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void SelectShopItem(int type)
@@ -188,6 +349,12 @@ public class ShopManager : MonoBehaviour
         selectedShopItem = type;
         if (healthHighlight != null) healthHighlight.SetActive(type == 1);
         if (manaHighlight != null) manaHighlight.SetActive(type == 2);
+        if (swordHighlight != null) swordHighlight.SetActive(type == 3);
+        if (helmHighlight != null) helmHighlight.SetActive(type == 4);
+        if (armorHighlight != null) armorHighlight.SetActive(type == 5);
+        if (ringHighlight != null) ringHighlight.SetActive(type == 6);
+        if (bootsHighlight != null) bootsHighlight.SetActive(type == 7);
+        if (wandHighlight != null) wandHighlight.SetActive(type == 8);
         if (InventoryManager.Instance != null) InventoryManager.Instance.DeselectSlot();
     }
 
@@ -196,22 +363,30 @@ public class ShopManager : MonoBehaviour
         selectedShopItem = 0;
         if (healthHighlight != null) healthHighlight.SetActive(false);
         if (manaHighlight != null) manaHighlight.SetActive(false);
+        if (swordHighlight != null) swordHighlight.SetActive(false);
+        if (helmHighlight != null) helmHighlight.SetActive(false);
+        if (armorHighlight != null) armorHighlight.SetActive(false);
+        if (ringHighlight != null) ringHighlight.SetActive(false);
+        if (bootsHighlight != null) bootsHighlight.SetActive(false);
+        if (wandHighlight != null) wandHighlight.SetActive(false);
     }
 
     public void BuyItem()
     {
         if (selectedShopItem == 0) return;
-        int price = (selectedShopItem == 1) ? healthPrice : manaPrice;
-        PlayerGold gold = PlayerGold.GetInstance();
+        int price = GetPrice(selectedShopItem);
+
+        PlayerGold gold = PlayerGold.Instance;
         if (gold == null) return;
 
-        if (gold.SpendGold(price))
+        if (gold.HasEnoughGold(price))
         {
             bool success = false;
             if (selectedShopItem == 1) success = InventoryManager.Instance.AddPotion();
             else if (selectedShopItem == 2) success = InventoryManager.Instance.AddManaPotion();
+            else success = InventoryManager.Instance.AddItem(selectedShopItem);
 
-            if (!success) gold.AddGold(price);
+            if (success) gold.SpendGold(price);
         }
         UpdateGoldUI();
     }
@@ -227,21 +402,41 @@ public class ShopManager : MonoBehaviour
         int type = (types != null && idx < types.Length) ? types[idx] : 0;
         if (type == 0) return;
 
-        int price = (type == 1) ? healthPrice : manaPrice;
+        int price = GetPrice(type);
 
         if (inv.RemoveSelected())
         {
-            PlayerGold gold = PlayerGold.GetInstance();
+            PlayerGold gold = PlayerGold.Instance;
             if (gold != null) gold.AddGold(price / 2);
         }
         UpdateGoldUI();
     }
 
-    private void UpdateGoldUI()
+    private int GetPrice(int type)
     {
-        PlayerGold gold = PlayerGold.GetInstance();
+        switch(type) {
+            case 1: return healthPrice;
+            case 2: return manaPrice;
+            case 3: return swordPrice;
+            case 4: return helmPrice;
+            case 5: return armorPrice;
+            case 6: return ringPrice;
+            case 7: return bootsPrice;
+            case 8: return wandPrice;
+            default: return 0;
+        }
+    }
+
+    public void UpdateGoldUI()
+    {
+        PlayerGold gold = PlayerGold.Instance;
         if (goldText != null && gold != null) goldText.text = gold.currentGold.ToString();
-        if (healthPriceText != null) healthPriceText.text = healthPrice.ToString();
-        if (manaPriceText != null) manaPriceText.text = manaPrice.ToString();
+    }
+
+    private void LockPlayerMovement(bool locked)
+    {
+        PlayerMovement playerMovement = FindAnyObjectByType<PlayerMovement>();
+        if (playerMovement != null) playerMovement.canMove = !locked;
+        if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = locked;
     }
 }

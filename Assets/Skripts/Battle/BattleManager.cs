@@ -50,6 +50,9 @@ public class BattleManager : MonoBehaviour
     private int enemyCurrentMana;
     private bool enemyIsStunned = false;
 
+    // Persist enemy for retries
+    private static EnemyData lastBattleEnemy;
+
     // New: Debuff and DoT tracking
     private int enemyDefenseMod = 0;
     private int enemyDefenseTimer = 0;
@@ -104,6 +107,11 @@ public class BattleManager : MonoBehaviour
         if (QuestManager.Instance != null && QuestManager.Instance.nextBattleEnemy != null)
         {
             currentEnemy = QuestManager.Instance.nextBattleEnemy;
+            lastBattleEnemy = currentEnemy; // Store for retry
+        }
+        else if (lastBattleEnemy != null)
+        {
+            currentEnemy = lastBattleEnemy; // Use retry fallback
         }
 
         if (currentEnemy != null && enemyPos != null)
@@ -450,7 +458,7 @@ if (enemyDefenseTimer > 0) { enemyDefenseTimer--; if (enemyDefenseTimer == 0) en
             
             if (PlayerStats.Instance != null)
             {
-                PlayerStats.Instance.Heal(50);
+                PlayerStats.Instance.Heal(60);
                 InventoryManager.Instance.RemoveOnePotion();
                 BattleUI.Instance.UpdatePlayerHP((float)PlayerStats.Instance.currentHealth / PlayerStats.Instance.maxHealth, PlayerStats.Instance.currentHealth, PlayerStats.Instance.maxHealth);
             }
@@ -725,6 +733,11 @@ int currentForm = stats != null ? stats.GetCurseForm() : 0;
 if (isCrit) totalMultiplier *= 2f;
 
                 int bonusDmg = customBase > 0 ? 0 : (skill.category == SkillCategory.Basic ? playerStrength : playerIntelligence * 2);
+                if (stats != null)
+                {
+                    if (skill.category == SkillCategory.Basic) bonusDmg += stats.bonusPhysicalDamage;
+                    else if (skill.isSpell) bonusDmg += stats.bonusSpellDamage;
+                }
 
                 int finalEnemyDef = Mathf.Max(0, (int)(currentEnemy.defense * (1.0f - defIgnore)) + enemyDefenseMod);
                 int totalDamage = (int)((baseDamage + bonusDmg) * totalMultiplier * enemyDmgTakenMult);
@@ -966,9 +979,24 @@ if (activeDotTurns > 0)
 
             if (available.Count > 0)
             {
-                // Prefer Spell if available (Soul Eruption)
-                skill = available.Find(s => s.isSpell);
-                if (skill == null) skill = available[Random.Range(0, available.Count)];
+                // Better AI: Pick a random spell from available spells if any, else pick a random skill
+                List<BattleSkill> spells = available.FindAll(s => s.isSpell);
+                
+                // Special check for healing spells: only use if HP < 75%
+                float hpPercent = (float)enemyCurrentHP / currentEnemy.maxHP;
+                if (hpPercent > 0.75f)
+                {
+                    spells.RemoveAll(s => s.healMultiplier > 0 && s.damageMultiplier <= 0);
+                }
+
+                if (spells.Count > 0)
+                {
+                    skill = spells[Random.Range(0, spells.Count)];
+                }
+                else
+                {
+                    skill = available[Random.Range(0, available.Count)];
+                }
             }
         }
 

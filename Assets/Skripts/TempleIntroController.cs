@@ -19,10 +19,12 @@ public class TempleIntroController : MonoBehaviour
     public AudioClip heartbeatSFX;
 
     private bool hasStartedBattle = false;
+    private bool sequenceActive = false;
 
     private void Awake()
     {
         Debug.Log("TempleIntroController: Awake.");
+        sequenceActive = true; 
         
         // Lock UI early to prevent triggers firing before cutscene starts
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
@@ -69,7 +71,24 @@ public class TempleIntroController : MonoBehaviour
         }
         }
 
-    private void FindSkeleton()
+        private void Update()
+        {
+        if (sequenceActive)
+        {
+            GameObject player = GetPlayer();
+            if (player != null)
+            {
+                PlayerMovement pm = player.GetComponent<PlayerMovement>();
+                if (pm != null && pm.canMove)
+                {
+                    pm.canMove = false;
+                    pm.ResetMovementState();
+                }
+            }
+        }
+        }
+
+        private void FindSkeleton()
     {
         if (skeleton != null && skeleton.gameObject != null) return;
         string[] possibleNames = { "Skelett Krieger", "Skeleton", "Enemy", "Boss" };
@@ -196,6 +215,10 @@ public class TempleIntroController : MonoBehaviour
         playerCam.Priority.Value = 40; playerCam.Follow = player.transform; playerCam.LookAt = player.transform;
         yield return new WaitForSeconds(1.0f);
 
+        // Safety re-lock after initial scene load processing
+        if (pm != null) pm.canMove = false;
+        if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
+
         FindSkeleton();
         
         DialogueUI di = DialogueUI.Instance;
@@ -274,16 +297,31 @@ public class TempleIntroController : MonoBehaviour
             Debug.Log("TempleIntroController: Meister final dialogue.");
             di.ShowMessage("Meister", "Sie suchen... den Seelenverschlinger...", 1.8f); yield return WaitForDialogue(di, "Meister: Final 1");
             di.ShowMessage("Meister", "Ryo... du... bi...", 1.8f); yield return WaitForDialogue(di, "Meister: Final 2");
-            SpriteRenderer msr = meister.GetComponentInChildren<SpriteRenderer>();
-            if (msr != null) msr.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+            
+            // Fade out master before allowing movement
+            yield return StartCoroutine(FadeOutMeister(3.0f));
+            meister.gameObject.SetActive(false);
         }
 
         Debug.Log("TempleIntroController: Sequence finished.");
         if (QuestManager.Instance != null) QuestManager.Instance.finishedTempleSequence = true;
         EnableFreePlay();
-    }
+        }
 
-    private IEnumerator FadeOutSkeleton(float duration)
+        private IEnumerator FadeOutMeister(float duration)
+        {
+        if (meister == null) yield break;
+        SpriteRenderer[] renderers = meister.GetComponentsInChildren<SpriteRenderer>(true);
+        float elapsed = 0;
+        while (elapsed < duration) {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            foreach (var sr in renderers) if (sr != null) { Color c = sr.color; c.a = alpha; sr.color = c; }
+            yield return null;
+        }
+        }
+
+        private IEnumerator FadeOutSkeleton(float duration)
     {
         if (skeleton == null) yield break;
         SpriteRenderer[] renderers = skeleton.GetComponentsInChildren<SpriteRenderer>(true);
@@ -300,6 +338,7 @@ public class TempleIntroController : MonoBehaviour
     private void EnableFreePlay()
     {
         Debug.Log("TempleIntroController: Enabling Free Play.");
+        sequenceActive = false;
         GameObject player = GetPlayer();
         if (player != null) { PlayerMovement pm = player.GetComponent<PlayerMovement>(); if (pm != null) pm.canMove = true; }
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
@@ -344,27 +383,38 @@ public class TempleIntroController : MonoBehaviour
 
     private IEnumerator WalkToTarget(GameObject p, Vector3 targetPos)
     {
-        float speed = 3.5f; Vector3 startPos = p.transform.position;
+        float walkSpeed = 2.8f; 
+        Vector3 startPos = p.transform.position;
         float distance = Vector3.Distance(startPos, targetPos);
         if (distance < 0.05f) yield break;
-        float walkTime = distance / speed; float elapsed = 0;
         
         PlayerMovement pm = p.GetComponent<PlayerMovement>();
         if (pm != null) pm.isCutsceneMoving = true;
 
         Animator anim = p.GetComponentInChildren<Animator>();
-        if (anim != null) {
-            anim.SetBool("isMoving", true);
-            Vector3 dir = (targetPos - startPos).normalized;
-            anim.SetFloat("MoveX", dir.x); anim.SetFloat("MoveY", dir.y);
-        }
-        while (elapsed < walkTime) {
-            elapsed += Time.deltaTime;
-            p.transform.position = Vector3.Lerp(startPos, targetPos, elapsed / walkTime);
+        
+        while (Vector3.Distance(p.transform.position, targetPos) > 0.05f) {
+            Vector3 currentPos = p.transform.position;
+            p.transform.position = Vector3.MoveTowards(currentPos, targetPos, walkSpeed * Time.deltaTime);
+            
+            if (anim != null) {
+                anim.SetBool("isMoving", true);
+                Vector3 dir = (targetPos - currentPos).normalized;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y)) {
+                    anim.SetFloat("MoveX", dir.x > 0 ? 1 : -1);
+                    anim.SetFloat("MoveY", 0);
+                } else {
+                    anim.SetFloat("MoveX", 0);
+                    anim.SetFloat("MoveY", dir.y > 0 ? 1 : -1);
+                }
+            }
             yield return null;
         }
+        
         p.transform.position = targetPos;
-        if (anim != null) anim.SetBool("isMoving", false);
+        if (anim != null) {
+            anim.SetBool("isMoving", false);
+        }
         if (pm != null) pm.isCutsceneMoving = false;
     }
 

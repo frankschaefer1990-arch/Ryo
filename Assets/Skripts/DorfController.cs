@@ -11,6 +11,27 @@ public class DorfController : MonoBehaviour
     
     private void Start()
     {
+        // Auto-assign references if missing
+        if (bgFlooded == null || bgFree == null)
+        {
+            GameObject bgs = GameObject.Find("[Backgrounds]") ?? GameObject.Find("Backgrounds");
+            if (bgs != null)
+            {
+                // Recursive search for children
+                Transform tf = bgs.transform.Find("Background_Flooded");
+                if (tf == null) tf = RecursiveFind(bgs.transform, "Background_Flooded");
+                if (bgFlooded == null && tf != null) bgFlooded = tf.gameObject;
+
+                tf = bgs.transform.Find("Background_Free");
+                if (tf == null) tf = RecursiveFind(bgs.transform, "Background_Free");
+                if (bgFree == null && tf != null) bgFree = tf.gameObject;
+            }
+        }
+        
+        // Final fallback: try finding by name in whole scene if still null
+        if (bgFlooded == null) bgFlooded = GameObject.Find("Background_Flooded");
+        if (bgFree == null) bgFree = GameObject.Find("Background_Free");
+
         bool isSolved = false;
         if (QuestManager.Instance != null)
         {
@@ -20,6 +41,15 @@ public class DorfController : MonoBehaviour
         if (bgFlooded != null) bgFlooded.SetActive(!isSolved);
         if (bgFree != null) bgFree.SetActive(isSolved);
         
+        Debug.Log($"DorfController: isSolved={isSolved}, bgFlooded={(bgFlooded != null ? bgFlooded.activeSelf.ToString() : "null")}, bgFree={(bgFree != null ? bgFree.activeSelf.ToString() : "null")}");
+        
+        // One-time message when village is free
+        if (isSolved && QuestManager.Instance != null && !QuestManager.Instance.villageFreeMessageSeen)
+        {
+            QuestManager.Instance.villageFreeMessageSeen = true;
+            StartCoroutine(ShowVillageFreeMessage());
+        }
+
         // Portals only active when free
         if (exitToCity != null) exitToCity.SetActive(isSolved);
         if (exitToKreuzung != null) exitToKreuzung.SetActive(isSolved);
@@ -31,6 +61,26 @@ public class DorfController : MonoBehaviour
         {
             StartCoroutine(FloodedCutscene());
         }
+    }
+
+    private IEnumerator ShowVillageFreeMessage()
+    {
+        yield return new WaitForSeconds(1.0f);
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage("Ryo", "Das Wasser hat sich zurückgezogen. Ich kann die Brücke passieren.", 2.5f);
+        }
+    }
+
+    private Transform RecursiveFind(Transform parent, string name)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == name) return child;
+            Transform result = RecursiveFind(child, name);
+            if (result != null) return result;
+        }
+        return null;
     }
 
     private IEnumerator SetupCameraFollow()
@@ -85,21 +135,33 @@ public class DorfController : MonoBehaviour
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
-        // 4. Walk left and exit
+        // 4. Turn and Walk left
         if (pm != null && anim != null)
         {
+            // Set this early so PlayerMovement doesn't overwrite our manual Animator settings
             pm.isCutsceneMoving = true;
-            anim.SetBool("isMoving", true);
+
+            // First turn to Idle Left
+            anim.SetBool("isMoving", false);
             anim.SetFloat("MoveX", -1f);
             anim.SetFloat("MoveY", 0f);
+            pm.SetFacingDirection(Vector2.left);
+            
+            yield return new WaitForSeconds(0.8f); // Pause to show the turn
 
-            float walkDuration = 0.8f;
+            // Then start walking
+            anim.SetBool("isMoving", true);
+
+            Vector3 startPos = player.transform.position;
+            Vector3 targetPos = startPos + Vector3.left * 6.0f; // Walk a bit further left
+
+            float walkDuration = 2.0f;
             float elapsed = 0;
             while (elapsed < walkDuration)
             {
-                player.transform.Translate(Vector3.left * pm.baseMoveSpeed * Time.deltaTime);
+                player.transform.position = Vector3.MoveTowards(player.transform.position, targetPos, pm.baseMoveSpeed * Time.deltaTime);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
@@ -114,9 +176,10 @@ public class DorfController : MonoBehaviour
         // 5. Load Kreuzung
         if (GameManager.Instance != null)
         {
+            GameManager.NextSpawnFacing = Vector2.left; // Face left when entering Kreuzung
             GameManager.Instance.LoadScene("Kreuzung", "SpawnFromDorf");
         }
-        else
+else
         {
             SceneManager.LoadScene("Kreuzung");
         }

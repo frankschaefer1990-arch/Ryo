@@ -43,6 +43,15 @@ public class MyUIManager : MonoBehaviour
         Instance = this;
         if (transform.parent != null) transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
+        
+        // Ensure this persistent canvas is on top of scene canvases
+        Canvas c = GetComponent<Canvas>();
+        if (c != null)
+        {
+            c.sortingOrder = 10000;
+            c.renderMode = RenderMode.ScreenSpaceOverlay;
+        }
+
         Debug.Log("MyUIManager: Persistent singleton initialized on " + gameObject.name);
     }
 
@@ -96,7 +105,11 @@ public class MyUIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        isLocked = false;
+        // Only reset lock if no dialogue is active, allowing cutscenes to maintain their lock
+        if (DialogueUI.Instance == null || !DialogueUI.Instance.IsDialogueActive())
+        {
+            isLocked = false;
+        }
         
         if (inventoryPanel == null || (!inventoryPanel.activeInHierarchy && !inventoryPanel.transform.root.gameObject.activeInHierarchy))
         {
@@ -246,7 +259,7 @@ public class MyUIManager : MonoBehaviour
             DontDestroyOnLoad(canvasObj);
             Canvas c = canvasObj.AddComponent<Canvas>();
             c.renderMode = RenderMode.ScreenSpaceOverlay;
-            c.sortingOrder = 9999;
+            c.sortingOrder = 10001; // Ensure it's on top of persistent UI (10000)
 
             var scaler = canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
             scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ConstantPixelSize;

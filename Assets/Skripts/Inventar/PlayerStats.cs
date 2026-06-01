@@ -30,10 +30,8 @@ public class PlayerStats : MonoBehaviour
                                     "Curse: Increases the effectiveness and scaling of all passive curse skills.";
 
     [Header("Health / Mana")]
-    public int baseHealth = 100;
     public int maxHealth;
     public int currentHealth;
-
     public int maxMana = 50;
     public int currentMana = 50;
 
@@ -157,15 +155,112 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    [Header("Base Stats")]
+    public int baseHealth = 100;
+    public int baseMana = 50;
+    public int bonusArmor = 0;
+    public int bonusSpellDamage = 0;
+    public int bonusPhysicalDamage = 0;
+
+    [Header("Equipment")]
+    public int equippedWeapon = 0; // Sword (3) or Wand (8)
+    public int equippedHelm = 0;   // Helm (4)
+    public int equippedArmor = 0;  // Armor (5)
+    public int equippedRing1 = 0;  // Ring (6)
+    public int equippedRing2 = 0;  // Ring (6)
+    public int equippedBoots = 0;  // Boots (7)
+
     public void RecalculateStats()
     {
-        maxHealth = baseHealth + ((vitality - 1) * 10);
-        maxMana = 50 + (defense * 10);
-        // During normal play we don't want to snap to max, but during load we might
+        int bonusVitality = 0;
+        int bonusDefense = 0; // Intelligence
+        int bonusStrength = 0;
+        int bonusAgility = 0; // Curse
+        int bonusMana = 0;
+        bonusArmor = 0;
+        bonusSpellDamage = 0;
+        bonusPhysicalDamage = 0;
+
+        // Apply equipment bonuses
+        ApplyItemBonuses(equippedWeapon, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+        ApplyItemBonuses(equippedHelm, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+        ApplyItemBonuses(equippedArmor, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+        ApplyItemBonuses(equippedRing1, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+        ApplyItemBonuses(equippedRing2, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+        ApplyItemBonuses(equippedBoots, ref bonusStrength, ref bonusVitality, ref bonusDefense, ref bonusAgility, ref bonusMana);
+
+        maxHealth = baseHealth + ((vitality + bonusVitality - 1) * 10);
+        maxMana = baseMana + ((defense + bonusDefense) * 10) + bonusMana;
     }
 
-    public void SetStats(int lvl, int xp, int pts, int str, int vit, int def, int agi, bool curseUnlocked, int curseVal)
+    private void ApplyItemBonuses(int itemId, ref int str, ref int vit, ref int def, ref int agi, ref int mana)
     {
+        switch (itemId)
+        {
+            case 3: // Basic Sword
+                str += 5; bonusPhysicalDamage += 10; break;
+            case 4: // Basic Helm
+                vit += 20; bonusArmor += 5; break;
+            case 5: // Basic Armor
+                vit += 40; bonusArmor += 10; break;
+            case 6: // Basic Ring
+                def += 5; mana += 20; break;
+            case 7: // Basic Boots
+                agi += 5; break;
+            case 8: // Basic Wand
+                def += 10; bonusSpellDamage += 10; break;
+            
+            case 9: // Rare Sword
+                str += 12; bonusPhysicalDamage += 30; break;
+            case 10: // Rare Helm
+                vit += 45; bonusArmor += 12; break;
+            case 11: // Rare Armor
+                vit += 80; bonusArmor += 25; break;
+            case 12: // Rare Ring
+                def += 12; mana += 50; break;
+            case 13: // Rare Boots
+                agi += 12; break;
+            case 14: // Rare Wand
+                def += 25; bonusSpellDamage += 25; break;
+
+            case 15: // Undead Sword (Special)
+                str += 20; bonusSpellDamage += 15; bonusPhysicalDamage += 25; break;
+
+            case 16: // Epic Helm
+                vit += 100; bonusArmor += 25; break;
+            case 17: // Epic Armor
+                vit += 150; bonusArmor += 40; break;
+            case 18: // Epic Ring
+                def += 25; mana += 100; break;
+            case 19: // Epic Boots
+                agi += 25; break;
+            case 21: // Epic Sword
+                str += 30; bonusPhysicalDamage += 60; break;
+            case 26: // Epic Wand
+                def += 50; bonusSpellDamage += 60; break;
+
+            case 22: // Legendary Helm
+                vit += 250; bonusArmor += 60; break;
+            case 23: // Legendary Armor
+                vit += 400; bonusArmor += 100; break;
+            case 24: // Legendary Ring
+                def += 60; mana += 250; break;
+            case 25: // Legendary Boots
+                agi += 60; break;
+            case 27: // Legendary Sword
+                str += 75; bonusPhysicalDamage += 150; break;
+            case 28: // Legendary Wand
+                def += 120; bonusSpellDamage += 150; break;
+        }
+    }
+
+    public int GetTotalStrength() { int s=0, v=0, d=0, a=0, m=0; ApplyItemBonuses(equippedWeapon, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedHelm, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedArmor, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing1, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing2, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedBoots, ref s, ref v, ref d, ref a, ref m); return strength + s; }
+    public int GetTotalVitality() { int s=0, v=0, d=0, a=0, m=0; ApplyItemBonuses(equippedWeapon, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedHelm, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedArmor, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing1, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing2, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedBoots, ref s, ref v, ref d, ref a, ref m); return vitality + v; }
+    public int GetTotalIntelligence() { int s=0, v=0, d=0, a=0, m=0; ApplyItemBonuses(equippedWeapon, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedHelm, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedArmor, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing1, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing2, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedBoots, ref s, ref v, ref d, ref a, ref m); return defense + d; }
+    public int GetTotalCurse() { int s=0, v=0, d=0, a=0, m=0; ApplyItemBonuses(equippedWeapon, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedHelm, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedArmor, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing1, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedRing2, ref s, ref v, ref d, ref a, ref m); ApplyItemBonuses(equippedBoots, ref s, ref v, ref d, ref a, ref m); return agility + a; }
+
+    public void SetStats(int lvl, int xp, int pts, int str, int vit, int def, int agi, bool curseUnlocked, int curseVal)
+{
         level = lvl;
         currentXP = xp;
         attributePoints = pts;
@@ -194,11 +289,12 @@ public class PlayerStats : MonoBehaviour
         if (manaText != null) manaText.text = currentMana + " / " + maxMana;
         if (expText != null) expText.text = currentXP + " / " + xpToNextLevel;
         if (attributePointsText != null) attributePointsText.text = attributePoints.ToString();
-        if (strengthText != null) strengthText.text = strength.ToString();
-        if (vitalityText != null) vitalityText.text = vitality.ToString();
-        if (intelligenceText != null) intelligenceText.text = defense.ToString();
-        if (curseText != null) curseText.text = agility.ToString();
-        }
+        
+        if (strengthText != null) strengthText.text = GetTotalStrength().ToString();
+        if (vitalityText != null) vitalityText.text = GetTotalVitality().ToString();
+        if (intelligenceText != null) intelligenceText.text = GetTotalIntelligence().ToString();
+        if (curseText != null) curseText.text = GetTotalCurse().ToString();
+    }
 
     public bool HasCursePassive(int skillIndex)
     {
@@ -250,6 +346,9 @@ UpdateUI();
         }
 
         int finalDamage = amount;
+        
+        // Armor Reduction
+        finalDamage -= (bonusArmor / 2);
         
         // Schattengunst (Skill 2): 15% Damage reduction + Fixed Bonus if curse active
         if (IsCursePassiveActive() && HasCursePassive(2))

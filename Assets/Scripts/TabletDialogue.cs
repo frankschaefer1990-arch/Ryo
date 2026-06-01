@@ -5,6 +5,7 @@ public class TabletDialogue : MonoBehaviour
     [TextArea(3, 5)]
     public string message;
     public float interactionDistance = 1.2f;
+    public Sprite portrait;
     
     private Transform player;
 
@@ -29,7 +30,7 @@ public class TabletDialogue : MonoBehaviour
             {
                 if (DialogueUI.Instance != null && !DialogueUI.Instance.IsDialogueActive())
                 {
-                    DialogueUI.Instance.ShowMessage("Steintafel", message, 4.0f);
+                    DialogueUI.Instance.ShowMessage("Steintafel", message, portrait, 4.0f);
                 }
             }
         }

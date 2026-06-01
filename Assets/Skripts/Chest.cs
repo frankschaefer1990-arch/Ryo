@@ -25,10 +25,12 @@ public class Chest : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private bool playerInside = false;
+    private string chestId;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        chestId = gameObject.scene.name + "_" + gameObject.name + "_" + transform.position.x + "_" + transform.position.y;
 
         // Check if trap was already triggered and defeated
         if (trapEnemy != null && GameManager.Instance != null)
@@ -39,6 +41,14 @@ public class Chest : MonoBehaviour
                 isOpened = true;
                 isPermanentlyEmpty = true;
             }
+        }
+
+        // Check global persistence
+        if (QuestManager.Instance != null && QuestManager.Instance.openedChests.Contains(chestId))
+        {
+            isOpened = true;
+            isPermanentlyEmpty = true; // For now, assume if opened it's empty next load if not items left? 
+            // Actually, the user says "ensure every chest can only be opened once".
         }
 
         if (isPermanentlyEmpty)
@@ -117,6 +127,12 @@ public class Chest : MonoBehaviour
     {
         Debug.Log($"Chest: Starting opening animation for {gameObject.name}");
         isOpened = true;
+        
+        if (QuestManager.Instance != null && !QuestManager.Instance.openedChests.Contains(chestId))
+        {
+            QuestManager.Instance.openedChests.Add(chestId);
+        }
+
         if (spriteRenderer != null) spriteRenderer.sprite = halfOpenSprite;
         yield return new WaitForSeconds(animationDelay);
         if (spriteRenderer != null) spriteRenderer.sprite = openSprite;

@@ -71,9 +71,22 @@ public class StoneIdol : MonoBehaviour
 
         if (playerInRange && Input.GetKeyDown(KeyCode.R))
         {
-            if (RadialMenu.Instance != null && !RadialMenu.Instance.IsActive)
+            Debug.Log($"[Statue] {gameObject.name} interaction triggered. playerInRange={playerInRange}");
+            if (RadialMenu.Instance != null)
             {
-                RadialMenu.Instance.Open(this);
+                if (!RadialMenu.Instance.IsActive)
+                {
+                    Debug.Log($"[Statue] Opening RadialMenu for {gameObject.name}");
+                    RadialMenu.Instance.Open(this);
+                }
+                else
+                {
+                    Debug.Log("[Statue] RadialMenu already active.");
+                }
+            }
+            else
+            {
+                Debug.LogError("[Statue] RadialMenu.Instance is NULL! Please ensure RadialMenu is in your Canvas prefab and the Canvas is present in the scene.");
             }
         }
     }

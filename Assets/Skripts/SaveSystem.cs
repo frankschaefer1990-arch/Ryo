@@ -17,6 +17,14 @@ public class SaveData
     public bool isCurseSystemUnlocked;
     public int curseValue;
     
+    // Equipment
+    public int equippedWeapon;
+    public int equippedHelm;
+    public int equippedArmor;
+    public int equippedRing1;
+    public int equippedRing2;
+    public int equippedBoots;
+    
     // Gold
     public int gold;
     
@@ -39,7 +47,12 @@ public class SaveData
     public bool kryptaBossDefeated;
     public bool defeatedKryptaBossReturn;
     public bool waterfallPuzzleSolved;
+    public bool waterfallPuzzle2Solved;
     public bool[] waterfallLevers;
+    public bool defeatedWassergeist;
+    public bool returningFromWassergeist;
+    public bool level2IntroSeen;
+    public bool villageFreeMessageSeen;
     
     // Skills
     public int skillPoints;
@@ -53,7 +66,10 @@ public class SaveData
     // Metadata
     public string saveTime;
     public float playTimeSeconds;
-}
+    
+    // Persistence
+    public List<string> openedChests = new List<string>();
+    }
 
 public class SaveSystem : MonoBehaviour
 {
@@ -112,6 +128,14 @@ public class SaveSystem : MonoBehaviour
         data.isCurseSystemUnlocked = PlayerStats.Instance.isCurseSystemUnlocked;
         data.curseValue = PlayerStats.Instance.curseValue;
         
+        // Equipment
+        data.equippedWeapon = PlayerStats.Instance.equippedWeapon;
+        data.equippedHelm = PlayerStats.Instance.equippedHelm;
+        data.equippedArmor = PlayerStats.Instance.equippedArmor;
+        data.equippedRing1 = PlayerStats.Instance.equippedRing1;
+        data.equippedRing2 = PlayerStats.Instance.equippedRing2;
+        data.equippedBoots = PlayerStats.Instance.equippedBoots;
+        
         // Gold
         if (PlayerGold.Instance != null) data.gold = PlayerGold.Instance.currentGold;
         
@@ -137,7 +161,14 @@ public class SaveSystem : MonoBehaviour
             data.kryptaBossDefeated = QuestManager.Instance.kryptaBossDefeated;
             data.defeatedKryptaBossReturn = QuestManager.Instance.defeatedKryptaBossReturn;
             data.waterfallPuzzleSolved = QuestManager.Instance.waterfallPuzzleSolved;
+            data.waterfallPuzzle2Solved = QuestManager.Instance.waterfallPuzzle2Solved;
             data.waterfallLevers = (bool[])QuestManager.Instance.waterfallLevers.Clone();
+            data.defeatedWassergeist = QuestManager.Instance.defeatedWassergeist;
+            data.returningFromWassergeist = QuestManager.Instance.returningFromWassergeist;
+            data.level2IntroSeen = QuestManager.Instance.level2IntroSeen;
+            data.villageFreeMessageSeen = QuestManager.Instance.villageFreeMessageSeen;
+            
+            data.openedChests = new List<string>(QuestManager.Instance.openedChests);
             }
         
         // Skills
@@ -199,8 +230,17 @@ public class SaveSystem : MonoBehaviour
                 data.zombie1Defeated,
                 data.zombie2Defeated,
                 data.kryptaBossDefeated,
-                data.waterfallPuzzleSolved
+                data.waterfallPuzzleSolved,
+                data.defeatedWassergeist,
+                data.waterfallPuzzle2Solved,
+                data.returningFromWassergeist,
+                data.level2IntroSeen,
+                data.villageFreeMessageSeen
                 );
+
+                if (data.openedChests != null)
+                    QuestManager.Instance.openedChests = new List<string>(data.openedChests);
+
                 // Manually set flags that aren't in SetQuestData if needed
                 QuestManager.Instance.defeatedKryptaBossReturn = data.defeatedKryptaBossReturn;
                 if (data.waterfallLevers != null)
@@ -247,8 +287,18 @@ public class SaveSystem : MonoBehaviour
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.SetStats(data.level, data.currentXP, data.attributePoints, data.strength, data.vitality, data.defense, data.agility, data.isCurseSystemUnlocked, data.curseValue);
+            
+            // Restore Equipment
+            PlayerStats.Instance.equippedWeapon = data.equippedWeapon;
+            PlayerStats.Instance.equippedHelm = data.equippedHelm;
+            PlayerStats.Instance.equippedArmor = data.equippedArmor;
+            PlayerStats.Instance.equippedRing1 = data.equippedRing1;
+            PlayerStats.Instance.equippedRing2 = data.equippedRing2;
+            PlayerStats.Instance.equippedBoots = data.equippedBoots;
+            
+            PlayerStats.Instance.RecalculateStats();
             PlayerStats.Instance.RestoreHPAndMana(data.currentHealth, data.currentMana);
-        }
+            }
         
         // 3. Gold & Inventory
         if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(data.gold);
@@ -261,6 +311,10 @@ public class SaveSystem : MonoBehaviour
                 for(int i=0; i<data.inventorySlots.Length; i++) legacyTypes[i] = data.inventorySlots[i] ? 1 : 0;
                 InventoryManager.Instance.SetSlotData(legacyTypes);
             }
+            
+            // Refresh visuals for equipment
+            InventoryManager.Instance.UpdateEquipmentVisuals();
+            InventoryManager.Instance.RefreshInventory();
         }
 
         // 4. Skills
@@ -297,10 +351,21 @@ public class SaveSystem : MonoBehaviour
         loadedPlayTime = 0;
         currentSessionTime = 0;
         
-        if (PlayerStats.Instance != null) PlayerStats.Instance.SetStats(1, 0, 0, 1, 1, 1, 1, false, 0);
+        if (PlayerStats.Instance != null) {
+            PlayerStats.Instance.SetStats(1, 0, 0, 1, 1, 1, 1, false, 0);
+            PlayerStats.Instance.equippedWeapon = 0;
+            PlayerStats.Instance.equippedHelm = 0;
+            PlayerStats.Instance.equippedArmor = 0;
+            PlayerStats.Instance.equippedRing1 = 0;
+            PlayerStats.Instance.equippedRing2 = 0;
+            PlayerStats.Instance.equippedBoots = 0;
+        }
         if (PlayerGold.Instance != null) PlayerGold.Instance.SetGold(10); 
-        if (InventoryManager.Instance != null) InventoryManager.Instance.SetSlotData(new int[10]);
-        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false, false);
+        if (InventoryManager.Instance != null) {
+            InventoryManager.Instance.SetSlotData(new int[40]);
+            InventoryManager.Instance.RefreshInventory();
+        }
+        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);
     }
 

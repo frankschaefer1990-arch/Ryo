@@ -25,8 +25,13 @@ public class QuestManager : MonoBehaviour
     public bool[] waterfallLevers = new bool[4];
     public bool defeatedWassergeist = false;
     public bool returningFromWassergeist = false;
+    public bool level2IntroSeen = false;
+    public bool villageFreeMessageSeen = false;
 
-    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false, bool wDefeated = false, bool wf2Solved = false, bool wReturn = false)
+    [Header("Persistence")]
+    public System.Collections.Generic.List<string> openedChests = new System.Collections.Generic.List<string>();
+
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false, bool wDefeated = false, bool wf2Solved = false, bool wReturn = false, bool l2Intro = false, bool vFreeMsg = false)
     {
         introSeen = intro;
         visitedTemple = visited;
@@ -42,6 +47,8 @@ public class QuestManager : MonoBehaviour
         defeatedWassergeist = wDefeated;
         waterfallPuzzle2Solved = wf2Solved;
         returningFromWassergeist = wReturn;
+        level2IntroSeen = l2Intro;
+        villageFreeMessageSeen = vFreeMsg;
     }
 
     [Header("Battle Setup")]

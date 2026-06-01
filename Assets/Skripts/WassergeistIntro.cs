@@ -15,24 +15,31 @@ public class WassergeistIntro : MonoBehaviour
 
     private IEnumerator Start()
     {
+        // Give a small delay to ensure flags are settled and other scripts have started
+        yield return null;
+
         if (QuestManager.Instance != null && (QuestManager.Instance.defeatedWassergeist || QuestManager.Instance.returningFromWassergeist))
         {
+            Debug.Log("WassergeistIntro: Already defeated or returning from battle. Disabling intro.");
             this.enabled = false;
             yield break;
         }
-
+        
         // Wait for player to spawn from GameManager
-        float timeout = 5f;
+        float timeout = 2.0f;
         while (player == null && timeout > 0)
         {
-            player = GameObject.FindWithTag("Player");
-            if (player == null) player = GameObject.Find("Ryo") ?? GameObject.Find("Player");
-            timeout -= Time.deltaTime;
-            yield return null;
+            player = (GameManager.Instance != null) ? GameManager.Instance.player : null;
+            if (player == null) player = GameObject.FindWithTag("Player");
+            if (player == null)
+            {
+                timeout -= Time.deltaTime;
+                yield return null;
+            }
         }
         
         if (player == null) {
-            Debug.LogError("WassergeistIntro: Player not found!");
+            Debug.LogError("WassergeistIntro: Player not found after timeout!");
             yield break;
         }
         
@@ -134,10 +141,10 @@ public class WassergeistIntro : MonoBehaviour
         {
             if (QuestManager.Instance != null && GameManager.Instance != null)
             {
-                GameManager.Instance.lastEnemyTriggerID = "Bossraum_Wassergeist";
+                GameManager.Instance.lastEnemyTriggerID = trigger.GetID();
                 QuestManager.Instance.nextBattleEnemy = trigger.enemyData;
                 GameManager.Instance.LoadScene(trigger.battleScene);
             }
         }
-    }
+}
 }

@@ -111,24 +111,21 @@ public class KryptaController : MonoBehaviour
         if (pm != null) { 
             pm.canMove = false; 
             pm.ResetMovementState(); 
-            // Force lastMovement to Down so Idle state persists
-            var field = typeof(PlayerMovement).GetField("lastMovement", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (field != null) field.SetValue(pm, Vector2.down);
-        }
-
-        // Force Idle Down animation state
-        Animator anim = player.GetComponentInChildren<Animator>();
-        if (anim != null) {
-            anim.SetFloat("MoveX", 0);
-            anim.SetFloat("MoveY", -1);
-            anim.SetBool("isMoving", false);
-            // Re-sync animator to ensure it takes effect immediately
-            anim.Update(0f);
+            // Force face down
+            pm.SetFacingDirection(Vector2.down);
+            
+            Animator anim = player.GetComponentInChildren<Animator>();
+            if (anim != null) {
+                anim.SetFloat("MoveX", 0);
+                anim.SetFloat("MoveY", -1);
+                anim.SetBool("isMoving", false);
+            }
         }
 
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
         
         // 1. Setup Camera Targets
+        // Sarcophagus position
         if (sargGross != null) { 
             introCam.Follow = sargGross; 
             introCam.LookAt = sargGross; 
@@ -143,21 +140,21 @@ public class KryptaController : MonoBehaviour
         var brain = Camera.main?.GetComponent<CinemachineBrain>();
         if (brain != null) brain.enabled = true;
 
-        // Brief yield to ensure Cinemachine has updated state before switching
-        yield return new WaitForSeconds(0.1f);
+        // Wait a moment for camera to settle
+        yield return new WaitForSeconds(1.5f);
 
         // 2. Dialogue while looking at Sarg
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", "Von diesem Sarg geht eine unheimliche Energie aus...");
+            DialogueUI.Instance.ShowMessage("Ryo", "Von diesem Sarg geht eine unheimliche Macht aus...");
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
-        // 3. Pan to Ryo (Switch priorities)
+        // 3. Pan back to Ryo
         introCam.Priority.Value = 10;
-        playerCam.Priority.Value = 50;
+        playerCam.Priority.Value = 100;
 
-        // Wait for pan to finish (default blend is 2s)
+        // Wait for pan (Cinemachine default blend is usually 2s)
         yield return new WaitForSeconds(2.5f);
 
         if (QuestManager.Instance != null) QuestManager.Instance.kryptaIntroSeen = true;
@@ -240,6 +237,17 @@ public class KryptaController : MonoBehaviour
         if (pm != null) { pm.canMove = false; pm.ResetMovementState(); }
 
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
+
+        // 1. Setup Camera: Focus on coffin/boss first
+        if (sargGross != null) { 
+            introCam.Follow = sargGross; 
+            introCam.LookAt = sargGross; 
+        }
+        introCam.Priority.Value = 100;
+        playerCam.Priority.Value = 10;
+        
+        var brain = Camera.main?.GetComponent<CinemachineBrain>();
+        if (brain != null) brain.enabled = true;
         
         if (bossObject != null) 
         {
@@ -258,7 +266,7 @@ public class KryptaController : MonoBehaviour
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
-        // Fade out boss
+        // 2. Fade out boss
         if (bossObject != null)
         {
             yield return StartCoroutine(FadeOutBoss(3.0f));
@@ -268,12 +276,17 @@ public class KryptaController : MonoBehaviour
                 soulBallObject.SetActive(true);
                 soulBallObject.transform.position = bossObject.transform.position + Vector3.up;
                 yield return new WaitForSeconds(1.0f);
+                
+                // Start camera slide to player before absorption
+                introCam.Priority.Value = 10;
+                playerCam.Priority.Value = 50;
+                
                 yield return StartCoroutine(SoulAbsorptionEffect(player.transform));
             }
             bossObject.SetActive(false);
         }
 
-        // Heartbeats
+        // 3. Heartbeats
         if (heartbeatSFX != null)
         {
             AudioSource audio = gameObject.AddComponent<AudioSource>();

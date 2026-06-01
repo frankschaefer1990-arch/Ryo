@@ -33,8 +33,10 @@ public class GameManager : MonoBehaviour
 
     public static System.Action OnSystemsReady;
 
+    public static Vector2 NextSpawnFacing = Vector2.zero;
+
     private void Awake()
-    {
+{
         if (Instance != null && Instance != this)
         {
             Debug.Log($"GameManager: Duplicate instance {this.GetInstanceID()} removed. Instance {Instance.GetInstanceID()} remains.");
@@ -256,10 +258,10 @@ public class GameManager : MonoBehaviour
 
                     Debug.Log($"GameManager: Player '{PersistentPlayer.name}' processed for scene {scene.name}. Visible: {!isBattle}");
 
-                    // Safety: Unlock movement and UI on every scene load to prevent stuck states from cutscenes
-                    var pm = PersistentPlayer.GetComponent<PlayerMovement>();
-                    if (pm != null) pm.canMove = true;
-                    if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
+                    // REMOVED: Safety unlock - This was causing movement issues in Temple cutscenes
+                    // var pm = PersistentPlayer.GetComponent<PlayerMovement>();
+                    // if (pm != null) pm.canMove = true;
+                    // if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = false;
                     }
                     else
                 {

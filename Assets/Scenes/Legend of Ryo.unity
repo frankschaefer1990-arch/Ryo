@@ -3546,6 +3546,7 @@ MonoBehaviour:
   speakerName: "H\xE4ndler"
   merchantMessage: Schau dir meine Waren an...
   shopPanel: {fileID: 0}
+  speakerPortrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
 --- !u!1 &800180646
 GameObject:
   m_ObjectHideFlags: 0
@@ -5985,7 +5986,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1994339191}
   - component: {fileID: 1994339192}
-  - component: {fileID: 1994339193}
   - component: {fileID: 1994339195}
   - component: {fileID: 1994339194}
   m_Layer: 0
@@ -6058,7 +6058,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4095249983650453324, guid: 0bed84161cf1fb849a5685fdaa802604, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6070,34 +6070,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1994339193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1994339190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e1cc2470ac61fc40bf82ac90fad1c0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopManager
-  shopPanel: {fileID: 0}
-  goldText: {fileID: 0}
-  buyButton: {fileID: 0}
-  sellButton: {fileID: 0}
-  leaveButton: {fileID: 0}
-  healthSlotButton: {fileID: 0}
-  manaSlotButton: {fileID: 0}
-  healthHighlight: {fileID: 0}
-  manaHighlight: {fileID: 0}
-  healthPrice: 10
-  manaPrice: 10
-  healthPriceText: {fileID: 0}
-  manaPriceText: {fileID: 0}
-  interactionRange: 2
-  interactKey: 114
-  dialogueDuration: 2
 --- !u!114 &1994339194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6113,6 +6085,7 @@ MonoBehaviour:
   speakerName: "H\xE4ndler"
   merchantMessage: Schau dir meine Waren an...
   shopPanel: {fileID: 0}
+  speakerPortrait: {fileID: 0}
 --- !u!61 &1994339195
 BoxCollider2D:
   m_ObjectHideFlags: 0

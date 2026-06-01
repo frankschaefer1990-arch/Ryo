@@ -44,5 +44,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Dorf.unity
     guid: 0764507f04308cb46a8bd2363369f034
+  - enabled: 1
+    path: Assets/Scenes/Schleierpfad.unity
+    guid: a017b7154730f9247909cc9021b0c5c1
+  - enabled: 1
+    path: Assets/Scenes/Die Halle der Echos.unity
+    guid: 01312b2d243b0b9448b180dbd62cbcac
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

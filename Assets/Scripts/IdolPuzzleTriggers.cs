@@ -14,11 +14,12 @@ public class IdolPuzzleEntryTrigger : MonoBehaviour
 
     private void ShowDialogue()
     {
-        if (hasTriggered) return;
+        if (QuestManager.Instance != null && QuestManager.Instance.level2IntroSeen) return;
+        
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.ShowMessage(speaker, message);
-            hasTriggered = true;
+            if (QuestManager.Instance != null) QuestManager.Instance.level2IntroSeen = true;
         }
     }
 }

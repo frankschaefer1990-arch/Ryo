@@ -17,18 +17,30 @@ public class EnemyTrigger : MonoBehaviour
         }
     }
 
-    private string GetID()
-    {
+    public string GetID()
+{
         // Use spawnPos instead of current position for the ID
         return gameObject.scene.name + "_" + gameObject.name + "_" + Mathf.RoundToInt(spawnPos.x) + "_" + Mathf.RoundToInt(spawnPos.y);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!enabled) return;
+
         if (other.CompareTag("Player"))
         {
-            if (QuestManager.Instance != null && GameManager.Instance != null)
+            // Safety check: Don't trigger if we are currently returning from a boss fight or if this enemy is already marked as defeated
+            if (QuestManager.Instance != null)
             {
+                if (QuestManager.Instance.returningFromWassergeist || 
+                    (enemyData != null && enemyData.enemyName == "Wassergeist" && QuestManager.Instance.defeatedWassergeist))
+                {
+                    return;
+                }
+            }
+
+            if (QuestManager.Instance != null && GameManager.Instance != null)
+{
                 GameManager.Instance.lastEnemyTriggerID = GetID();
                 QuestManager.Instance.nextBattleEnemy = enemyData;
                 GameManager.Instance.LoadScene(battleScene);

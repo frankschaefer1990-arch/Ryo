@@ -28,6 +28,19 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStats playerStats;
     private bool wasLockedLastFrame = false;
 
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            lastMovement = direction.normalized;
+            if (animator != null)
+            {
+                animator.SetFloat("MoveX", lastMovement.x);
+                animator.SetFloat("MoveY", lastMovement.y);
+            }
+        }
+    }
+
     void Start()
     {
         // Hide ALL Labyrinth Colliders if present
@@ -67,13 +80,21 @@ public class PlayerMovement : MonoBehaviour
 
         lastMovement = Vector2.down;
 
+        // Apply global spawn facing if set
+        if (GameManager.Instance != null && GameManager.NextSpawnFacing != Vector2.zero)
+        {
+            lastMovement = GameManager.NextSpawnFacing;
+            GameManager.NextSpawnFacing = Vector2.zero; // Reset
+            Debug.Log($"PlayerMovement: Applied spawn facing {lastMovement}");
+        }
+
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
 
-        canMove = true; // FORCE UNLOCK
+        // REMOVED: canMove = true; // FORCE UNLOCK - This was overwriting cutscene locks
         ResetMovementState();
-    }
+        }
 
         public void ResetMovementState()
         {
@@ -119,10 +140,11 @@ public class PlayerMovement : MonoBehaviour
         // =========================
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
         bool uiPanelOpen = MyUIManager.Instance != null && MyUIManager.Instance.IsAnyPanelOpen();
+        bool radialMenuActive = RadialMenu.Instance != null && RadialMenu.Instance.IsActive;
         bool isCutscene = !canMove; 
 
         // PRIORITÄT: Wenn UI offen ist, muss die Maus immer frei sein!
-        if (uiPanelOpen)
+        if (uiPanelOpen || radialMenuActive)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -146,14 +168,28 @@ public class PlayerMovement : MonoBehaviour
         if (!canMove || dialogueActive || uiPanelOpen)
         {
             movement = Vector2.zero;
-            if (animator != null && !isCutsceneMoving)
+            if (animator != null)
             {
-                animator.SetBool("isMoving", false);
-                animator.SetFloat("MoveX", lastMovement.x);
-                animator.SetFloat("MoveY", lastMovement.y);
+                if (isCutsceneMoving)
+                {
+                    // Update lastMovement from Animator during cutscenes to fix flipping/direction
+                    float ax = animator.GetFloat("MoveX");
+                    float ay = animator.GetFloat("MoveY");
+                    if (Mathf.Abs(ax) > 0.01f || Mathf.Abs(ay) > 0.01f)
+                    {
+                        lastMovement = new Vector2(ax, ay).normalized;
+                    }
+                    animator.SetBool("isMoving", true); // Ensure animation plays!
+                }
+                else
+                {
+                    animator.SetBool("isMoving", false);
+                    animator.SetFloat("MoveX", lastMovement.x);
+                    animator.SetFloat("MoveY", lastMovement.y);
+                }
             }
         }
-        else
+else
         {
             bool isMoving = movement.sqrMagnitude > 0.01f;
             if (isMoving)
@@ -172,13 +208,32 @@ public class PlayerMovement : MonoBehaviour
         // =========================
         // SCALE FIX (Always apply based on lastMovement)
         // =========================
-        float scaleMultiplier = lastMovement == Vector2.up ? upScaleMultiplier : 1f;
-        float xDirection = lastMovement.x < 0 ? -1f : 1f;
+        // Determine xDirection: If moving left, flip. If moving right, normal.
+        // If moving vertically, keep last horizontal direction.
+        float xDirection = 1f;
+        if (lastMovement.x < -0.01f) xDirection = -1f;
+        else if (lastMovement.x > 0.01f) xDirection = 1f;
+        else
+        {
+            // If strictly vertical, we usually want to face the last horizontal direction
+            // But lastMovement already stores the last direction.
+            // However, lastMovement.x is 0 if strictly vertical.
+            // Let's use the actual current scale to determine "stickiness" or just default.
+            // Actually, the current logic is: if x is 0, xDirection = 1 (Right).
+            // We'll keep it simple: only flip on actual horizontal movement.
+            // To prevent flipping back to right when looking up/down, we only update xDirection when x != 0.
+        }
+
+        float scaleMultiplier = lastMovement.y > 0.8f ? upScaleMultiplier : 1f;
 
         if (spriteRenderer != null)
         {
+            // Only update xDirection when there's horizontal movement to avoid flipping back to right on Up/Down
+            float currentX = spriteRenderer.transform.localScale.x;
+            float finalXDir = (lastMovement.x < -0.01f) ? -1f : (lastMovement.x > 0.01f ? 1f : Mathf.Sign(currentX));
+
             spriteRenderer.transform.localScale = new Vector3(
-                Mathf.Abs(originalScale.x) * scaleMultiplier * xDirection,
+                Mathf.Abs(originalScale.x) * scaleMultiplier * finalXDir,
                 Mathf.Abs(originalScale.y) * scaleMultiplier,
                 originalScale.z
             );

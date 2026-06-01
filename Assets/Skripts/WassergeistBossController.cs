@@ -9,33 +9,47 @@ public class WassergeistBossController : MonoBehaviour
     public AudioClip heartbeatSFX;
     public AudioClip waterDrainSFX;
     
+    private bool sequenceStarted = false;
+
     private void Start()
     {
         if (QuestManager.Instance != null && QuestManager.Instance.returningFromWassergeist)
         {
-            StartCoroutine(PostBattleSequence());
+            if (!sequenceStarted)
+            {
+                sequenceStarted = true;
+                StartCoroutine(PostBattleSequence());
+            }
         }
     }
 
     private IEnumerator PostBattleSequence()
     {
         Debug.Log("[WassergeistBoss] Starting PostBattleSequence");
-        QuestManager.Instance.returningFromWassergeist = false;
         
         GameObject player = null;
         while (player == null) {
             player = GameObject.FindWithTag("Player") ?? GameObject.Find("Ryo") ?? GameObject.Find("Player");
-            if (player == null) Debug.Log("[WassergeistBoss] Waiting for player...");
-            yield return null;
+            if (player == null) yield return null;
         }
 
-        Debug.Log("[WassergeistBoss] Player found: " + player.name);
-        
-        // Move player to the exact spot where the fight was triggered
+        // Deactivate trigger immediately to prevent re-triggering
+        if (bossObject != null)
+        {
+            EnemyTrigger trigger = bossObject.GetComponent<EnemyTrigger>();
+            if (trigger != null) trigger.enabled = false;
+            
+            // Also disable collider as extra safety
+            Collider2D col = bossObject.GetComponent<Collider2D>();
+            if (col != null) col.enabled = false;
+        }
+
+        // Move player to the spot where the fight was triggered, but with a safety offset
         if (GameManager.Instance != null && GameManager.Instance.lastGameplayPosition != Vector3.zero)
         {
-            player.transform.position = GameManager.Instance.lastGameplayPosition;
-            Debug.Log("[WassergeistBoss] Player moved to trigger position: " + player.transform.position);
+            // Move player 1.5 units down to be safely outside the trigger area
+            player.transform.position = GameManager.Instance.lastGameplayPosition + Vector3.down * 1.5f;
+            Debug.Log("[WassergeistBoss] Player moved to safety position: " + player.transform.position);
         }
 
         PlayerMovement pm = player.GetComponent<PlayerMovement>();
@@ -146,13 +160,18 @@ public class WassergeistBossController : MonoBehaviour
         }
 
         Debug.Log("[WassergeistBoss] Finishing sequence and loading level 2");
-        QuestManager.Instance.defeatedWassergeist = true;
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.defeatedWassergeist = true;
+            QuestManager.Instance.returningFromWassergeist = false;
+        }
 
         if (GameManager.Instance != null)
         {
+            GameManager.NextSpawnFacing = Vector2.down; // Face down in Level 2
             GameManager.Instance.LoadScene("Wasserfälle von Chlorix LvL 2", "ExitToBossraum");
         }
-    }
+}
 
     private IEnumerator SoulAbsorptionEffect(GameObject ball, Transform target)
     {

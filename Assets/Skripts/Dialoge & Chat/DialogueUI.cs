@@ -16,9 +16,11 @@ public class DialogueUI : MonoBehaviour
     [Header("Speaker UI")]
     public GameObject speakerNameObject;
     public TextMeshProUGUI speakerNameText;
+    public UnityEngine.UI.Image speakerPortrait;
 
     [Header("Default Speaker")]
     public string defaultSpeakerName = "Ryo";
+    public Sprite defaultPortrait; 
 
     [Header("Typewriter Settings")]
     public float letterDelay = 0.02f; 
@@ -91,6 +93,9 @@ public class DialogueUI : MonoBehaviour
                     speakerNameObject = t.gameObject;
                     speakerNameText = t.GetComponent<TextMeshProUGUI>();
                 }
+                if (t.name == "Portrait" || t.name == "SpeakerIcon" || t.name == "Icon") {
+                    speakerPortrait = t.GetComponent<UnityEngine.UI.Image>();
+                }
             }
         }
     }
@@ -121,6 +126,11 @@ public class DialogueUI : MonoBehaviour
 
     public void ShowMessage(string speakerName, string message, float visibleDuration = 1.0f)
     {
+        ShowMessage(speakerName, message, null, visibleDuration);
+    }
+
+    public void ShowMessage(string speakerName, string message, Sprite portrait, float visibleDuration = 1.0f)
+    {
         Debug.Log($"DialogueUI: ShowMessage called. Speaker: {speakerName}, Msg: {message}");
 
         // Check if we are in a battle scene
@@ -139,12 +149,12 @@ public class DialogueUI : MonoBehaviour
 
         if (currentRoutine != null) StopCoroutine(currentRoutine);
         isShowing = true;
-        currentRoutine = StartCoroutine(ShowPopup(speakerName, message, visibleDuration));
+        currentRoutine = StartCoroutine(ShowPopup(speakerName, message, portrait, visibleDuration));
     }
 
-    public void ShowMessage(string message) { ShowMessage(defaultSpeakerName, message); }
+    public void ShowMessage(string message) { ShowMessage(defaultSpeakerName, message, defaultPortrait); }
 
-    private IEnumerator ShowPopup(string speakerName, string message, float visibleDuration)
+    private IEnumerator ShowPopup(string speakerName, string message, Sprite portrait, float visibleDuration)
     {
         isShowing = true;
         if (DialogueFrameNew != null) {
@@ -180,6 +190,25 @@ public class DialogueUI : MonoBehaviour
                         tmp.text = speakerName;
                     }
                 }
+            }
+        }
+
+        // Update Portrait
+        if (speakerPortrait != null)
+        {
+            if (portrait != null)
+            {
+                speakerPortrait.sprite = portrait;
+                speakerPortrait.gameObject.SetActive(true);
+            }
+            else if (defaultPortrait != null)
+            {
+                speakerPortrait.sprite = defaultPortrait;
+                speakerPortrait.gameObject.SetActive(true);
+            }
+            else
+            {
+                speakerPortrait.gameObject.SetActive(false);
             }
         }
 

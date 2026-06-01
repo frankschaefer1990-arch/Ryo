@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: Enemy_Skelettkrieger
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Skelettkrieger
-  maxHP: 2000
+  maxHP: 800
   attack: 17
   defense: 5
   xpReward: 30
   startHP: 600
+  maxMana: 100
+  startMana: 100
   isBoss: 1
   enemySprite: {fileID: -666076803, guid: a58953ae453314e4aa3094a2f0c45b74, type: 3}
   attackSound: {fileID: 8300000, guid: 34b61de0ae63d0c47918c09abd18ec44, type: 3}
+  skills: []

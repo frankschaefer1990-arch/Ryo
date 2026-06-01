@@ -4,12 +4,14 @@ public class MerchantInteraction : MonoBehaviour
 {
     [Header("Merchant Settings")]
     public string speakerName = "Händler";
+    public float interactionRadius = 2.5f;
 
     [TextArea]
     public string merchantMessage = "Schau dir meine Waren an...";
 
     [Header("Shop UI")]
     public GameObject shopPanel;
+    public Sprite speakerPortrait;
 
     private bool playerInside = false;
     private bool isTalking = false;
@@ -49,35 +51,32 @@ public class MerchantInteraction : MonoBehaviour
         // Spieler steht beim Händler + drückt R
         if (playerInside && Input.GetKeyDown(KeyCode.R))
         {
-            // Verhindert mehrfaches Triggern
-            if (!isTalking)
-            {
-                isTalking = true;
+            StartTalking();
+            Invoke(nameof(OpenShop), 1.2f);
+        }
+    }
 
-                // Händler Dialog
-                if (DialogueUI.Instance != null)
-                {
-                    DialogueUI.Instance.ShowMessage(speakerName, merchantMessage, 1.2f);
-                }
-                else
-                {
-                    Debug.LogError("DialogueUI fehlt!");
-                }
+    public void StartTalking()
+    {
+        if (isTalking) return;
+        isTalking = true;
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage(speakerName, merchantMessage, speakerPortrait, 1.2f);
+        }
+        Invoke(nameof(ResetTalkState), 1.2f);
+    }
 
-                // Nach Dialog Shop öffnen (Delay reduziert von 2.2f auf 1.2f)
-                Invoke(nameof(OpenShop), 1.2f);
-                }
-                }
-                }
+    private void ResetTalkState()
+    {
+        isTalking = false;
+    }
 
     private void OpenShop()
     {
-        // Den ShopManager suchen und dort OpenShop aufrufen
-        ShopManager shopManager = FindAnyObjectByType<ShopManager>();
-
-        if (shopManager != null)
+        if (ShopManager.Instance != null)
         {
-            shopManager.OpenShopFromMerchant();
+            ShopManager.Instance.OpenShopFromMerchant();
         }
         else
         {
@@ -93,7 +92,22 @@ public class MerchantInteraction : MonoBehaviour
             PlayerMovement player = FindAnyObjectByType<PlayerMovement>();
             if (player != null) player.canMove = false;
         }
-
-        isTalking = false;
     }
-}
+
+    private void OnValidate()
+    {
+        CircleCollider2D circle = GetComponent<CircleCollider2D>();
+        if (circle != null)
+        {
+            circle.radius = interactionRadius;
+            circle.isTrigger = true;
+            circle.offset = Vector2.zero;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(1, 0.92f, 0.016f, 0.5f);
+        Gizmos.DrawWireSphere(transform.position, interactionRadius);
+    }
+    }

@@ -26,6 +26,7 @@ public class AttributeUI : MonoBehaviour
 
     [Header("EXP Ring")]
     public Image expRing;
+    private float currentRingFill = 0f;
 
     [Header("Attribute Buttons")]
     public Button strengthButton;
@@ -155,16 +156,16 @@ public class AttributeUI : MonoBehaviour
         // ATTRIBUTE TEXT
         // =========================
         if (strengthText != null)
-            strengthText.text = playerStats.strength.ToString();
+            strengthText.text = playerStats.GetTotalStrength().ToString();
 
         if (vitalityText != null)
-            vitalityText.text = playerStats.vitality.ToString();
+            vitalityText.text = playerStats.GetTotalVitality().ToString();
 
         if (intelligenceText != null)
-            intelligenceText.text = playerStats.defense.ToString();
+            intelligenceText.text = playerStats.GetTotalIntelligence().ToString();
 
         if (curseText != null)
-            curseText.text = playerStats.agility.ToString();
+            curseText.text = playerStats.GetTotalCurse().ToString();
 
         // =========================
         // HP BAR
@@ -194,7 +195,15 @@ public class AttributeUI : MonoBehaviour
             expRing.type = Image.Type.Filled;
             expRing.fillMethod = Image.FillMethod.Radial360;
             expRing.fillOrigin = (int)Image.Origin360.Top;
-            expRing.fillAmount = (float)playerStats.currentXP / playerStats.xpToNextLevel;
+            
+            float targetFill = (float)playerStats.currentXP / playerStats.xpToNextLevel;
+            // Precise fill with smooth transition
+            currentRingFill = Mathf.Lerp(currentRingFill, targetFill, Time.deltaTime * 5f);
+            
+            // If very close, just snap to avoid perpetual lerp
+            if (Mathf.Abs(currentRingFill - targetFill) < 0.001f) currentRingFill = targetFill;
+            
+            expRing.fillAmount = currentRingFill;
         }
 
         // =========================

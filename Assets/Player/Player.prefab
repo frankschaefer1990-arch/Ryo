@@ -198,11 +198,10 @@ MonoBehaviour:
 
     Curse: Increases the effectiveness and scaling of
     all passive curse skills.'
-  baseHealth: 100
   maxHealth: 0
   currentHealth: 0
   maxMana: 50
-  currentMana: 50
+  currentMana: 60
   isCurseSystemUnlocked: 0
   curseValue: 0
   maxCurseValue: 100
@@ -215,6 +214,16 @@ MonoBehaviour:
   vitalityText: {fileID: 0}
   intelligenceText: {fileID: 0}
   curseText: {fileID: 0}
+  baseHealth: 100
+  baseMana: 50
+  bonusArmor: 0
+  bonusSpellDamage: 0
+  equippedWeapon: 0
+  equippedHelm: 0
+  equippedArmor: 0
+  equippedRing1: 0
+  equippedRing2: 0
+  equippedBoots: 0
 --- !u!114 &2354657156177109498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,4 +302,4 @@ MonoBehaviour:
   yOffset: 12
   indicatorScale: 8
   transparency: 0.55
-  detectionRadius: 1
+  detectionRadius: 0.2

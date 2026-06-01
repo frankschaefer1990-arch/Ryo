@@ -228021,7 +228021,7 @@ Transform:
   m_GameObject: {fileID: 357928682}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 1.25, z: 0}
+  m_LocalPosition: {x: 2.32, y: 2.9, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -228042,6 +228042,7 @@ MonoBehaviour:
   message: "Blicken alle W\xE4chter zum Brunnen zugleich, zeigt sich der H\xFCter
     aus dem Wasserreich."
   interactionDistance: 1.5
+  portrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
 --- !u!61 &357928686
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -228718,7 +228719,7 @@ Transform:
   m_GameObject: {fileID: 950940915}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.91, y: 1.3, z: 0}
+  m_LocalPosition: {x: -2.99, y: 2.9, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -228739,6 +228740,7 @@ MonoBehaviour:
   message: Blickt die mittlere Reihe zum Nordstern empor, tritt der verborgene Pfad
     hervor
   interactionDistance: 1.5
+  portrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
 --- !u!61 &950940919
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -229260,6 +229262,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1203086207}
   - component: {fileID: 1203086208}
+  - component: {fileID: 1203086210}
+  - component: {fileID: 1203086209}
   m_Layer: 0
   m_Name: Brunnen
   m_TagString: Untagged
@@ -229341,6 +229345,57 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!58 &1203086209
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203086203}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.04452324, y: -0.9825907}
+  m_Radius: 4.679434
+--- !u!114 &1203086210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203086203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e2cefada4f6a54cb7791fd4993342e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FountainInteraction
+  interactionDistance: 2.5
+  portrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
+  healSFX: {fileID: 0}
 --- !u!1 &1244591720
 GameObject:
   m_ObjectHideFlags: 0
@@ -229352,6 +229407,7 @@ GameObject:
   - component: {fileID: 1244591723}
   - component: {fileID: 1244591722}
   - component: {fileID: 1244591721}
+  - component: {fileID: 1244591724}
   m_Layer: 0
   m_Name: ExitToBossraum
   m_TagString: Untagged
@@ -229428,12 +229484,24 @@ Transform:
   m_GameObject: {fileID: 1244591720}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 16.5, z: 0}
+  m_LocalPosition: {x: -0.55, y: 14.87, z: 0}
   m_LocalScale: {x: 1.5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1244591724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244591720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e21a8565da519c41bbb5ee9f0a30217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossraumBlocker
 --- !u!1 &1354659532
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Wassergeist
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Wassergeist
-  maxHP: 2000
-  attack: 40
+  maxHP: 1500
+  attack: 30
   defense: 20
   xpReward: 1500
   startHP: 0
-  maxMana: 100
+  maxMana: 200
   startMana: 100
   isBoss: 1
   enemySprite: {fileID: -4534453765115073919, guid: d7dd406833b29ad47b78c75a3a615769, type: 3}

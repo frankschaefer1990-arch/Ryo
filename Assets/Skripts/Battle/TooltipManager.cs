@@ -25,12 +25,15 @@ public class TooltipManager : MonoBehaviour
         if (tooltipPanel != null) tooltipPanel.SetActive(false);
     }
 
-    public void ShowTooltip(string content)
+    private Vector2 currentPivot = new Vector2(1f, 0f);
+
+    public void ShowTooltip(string content, Vector2? pivot = null)
     {
         if (tooltipPanel != null)
         {
+            currentPivot = pivot ?? new Vector2(1f, 0f);
             tooltipPanel.SetActive(true);
-            tooltipPanel.transform.SetAsLastSibling(); // Ensure it's on top of everything in the same Canvas
+            tooltipPanel.transform.SetAsLastSibling(); 
             if (tooltipText != null) tooltipText.text = content;
         }
     }
@@ -50,7 +53,6 @@ public class TooltipManager : MonoBehaviour
             RectTransform canvasRect = canvas.GetComponent<RectTransform>();
             Vector2 localPoint;
             
-            // Determine camera for raycast/positioning
             Camera uiCam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
             if (uiCam == null && canvas.renderMode != RenderMode.ScreenSpaceOverlay) uiCam = Camera.main;
             
@@ -59,11 +61,11 @@ public class TooltipManager : MonoBehaviour
             {
                 RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
                 
-                // Pivot at (1, 0) means the bottom-right corner of the tooltip is at the mouse.
-                // We add a tiny offset so it doesn't clip with the cursor.
-                rt.pivot = new Vector2(1f, 0f);
-                rt.position = worldPoint + new Vector3(-0.1f, 0.1f, 0); // Offset to the Top-Left
+                rt.pivot = currentPivot;
+                float offsetX = (currentPivot.x > 0.5f) ? -0.1f : 0.1f;
+                float offsetY = (currentPivot.y > 0.5f) ? -0.1f : 0.1f;
+                rt.position = worldPoint + new Vector3(offsetX, offsetY, 0); 
             }
-}
+        }
     }
     }
