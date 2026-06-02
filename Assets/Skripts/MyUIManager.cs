@@ -16,6 +16,8 @@ public class MyUIManager : MonoBehaviour
     public GameObject lockedDoorPopup;
     public GameObject shopPanel;
     public GameObject furniturePanel;
+    public GameObject echoPanel;
+    public EchoPanelUI echoPanelUI;
     public ChestUI chestUI;
     public TextMeshProUGUI backpackGoldText;
 
@@ -213,11 +215,12 @@ public class MyUIManager : MonoBehaviour
         bool menuOpen = mainMenuPanel != null && mainMenuPanel.activeInHierarchy;
         bool chestOpen = chestUI != null && chestUI.chestPanel != null && chestUI.chestPanel.activeInHierarchy;
         bool furnitureOpen = furniturePanel != null && furniturePanel.activeInHierarchy;
+        bool echoOpen = (echoPanel != null && echoPanel.activeInHierarchy) || (EchoPanelUI.Instance != null && EchoPanelUI.Instance.panel != null && EchoPanelUI.Instance.panel.activeInHierarchy);
         bool gameOverOpen = BattleUI.Instance != null && BattleUI.Instance.gameOverPanel != null && BattleUI.Instance.gameOverPanel.activeInHierarchy;
         bool radialOpen = RadialMenu.Instance != null && RadialMenu.Instance.IsActive;
 
-        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen || furnitureOpen || gameOverOpen || radialOpen;
-    }
+        return bpOpen || invOpen || attrOpen || skillOpen || shopOpen || lockOpen || saveOpen || menuOpen || chestOpen || furnitureOpen || echoOpen || gameOverOpen || radialOpen;
+        }
 
     private bool IsInBattleScene()
     {
@@ -330,8 +333,19 @@ public class MyUIManager : MonoBehaviour
         shopPanel = FindChildRecursive(searchRoot, "ShopPanel");
         lockedDoorPopup = FindChildRecursive(searchRoot, "LockedDoorPopup");
         furniturePanel = FindChildRecursive(searchRoot, "FurniturePanel");
-        bottomMenuPanel = FindChildRecursive(searchRoot, "BottomMenuPanel");
-        
+        echoPanel = FindChildRecursive(searchRoot, "EchoPanel");
+        if (echoPanel != null)
+        {
+            echoPanelUI = echoPanel.GetComponent<EchoPanelUI>();
+        }
+        else
+        {
+            // Search everywhere in the canvas hierarchy as fallback
+            echoPanelUI = GetComponentInChildren<EchoPanelUI>(true);
+            if (echoPanelUI != null) echoPanel = echoPanelUI.gameObject;
+        }
+bottomMenuPanel = FindChildRecursive(searchRoot, "BottomMenuPanel");
+
         // Link ChestUI
         var chestUIObj = FindChildRecursive(searchRoot, "ChestUI");
         if (chestUIObj != null) chestUI = chestUIObj.GetComponent<ChestUI>();
@@ -622,6 +636,7 @@ public class MyUIManager : MonoBehaviour
         if (skillPanel != null) skillPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (lockedDoorPopup != null) lockedDoorPopup.SetActive(false);
+        if (EchoPanelUI.Instance != null) EchoPanelUI.Instance.Close();
         
         if (shopPanel != null) {
 ShopManager shop = FindFirstObjectByType<ShopManager>();

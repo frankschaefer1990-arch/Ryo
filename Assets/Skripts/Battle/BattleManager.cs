@@ -1174,7 +1174,21 @@ if (activeDotTurns > 0)
                 {
                     QuestManager.Instance.returningFromWassergeist = true;
                 }
+
+                // Handle Echo Progression
+                int echoSlot = PlayerPrefs.GetInt("ActiveEchoSlot", -1);
+                int echoLevel = PlayerPrefs.GetInt("ActiveEchoLevel", -1);
+                if (echoSlot != -1 && echoLevel != -1)
+                {
+                    if (QuestManager.Instance.echoLevels[echoSlot] == echoLevel)
+                    {
+                        QuestManager.Instance.echoLevels[echoSlot]++;
+                        Debug.Log($"Echo Progression: Slot {echoSlot} level increased to {QuestManager.Instance.echoLevels[echoSlot]}");
+                    }
+                    PlayerPrefs.DeleteKey("ActiveEchoSlot");
+                    PlayerPrefs.DeleteKey("ActiveEchoLevel");
                 }
+}
 
                 // Krypta Zombie Logic
                 if (currentEnemy.enemyName == "Starker Zombie" && QuestManager.Instance != null)
@@ -1189,8 +1203,8 @@ if (activeDotTurns > 0)
                 {
                 PlayerStats.Instance.GainXP(currentEnemy.xpReward);
                 PlayerGold goldMgr = PlayerGold.GetInstance();
-                if (goldMgr != null) goldMgr.AddGold(50);
-                }
+                if (goldMgr != null) goldMgr.AddGold(currentEnemy.goldReward);
+}
                 yield return new WaitForSeconds(3f);
             
                 if (GameManager.Instance != null)
@@ -1248,8 +1262,8 @@ if (activeDotTurns > 0)
 
     private void ShowBattleMessage(string message)
     {
-        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Ryo", message, 1.0f);
-        else if (BattleUI.Instance != null) BattleUI.Instance.ShowActionMessage("Ryo", message);
+        if (DialogueUI.Instance != null) DialogueUI.Instance.ShowMessage("Ryo", message, 0.6f);
+else if (BattleUI.Instance != null) BattleUI.Instance.ShowActionMessage("Ryo", message);
     }
 
     private void ApplyCurseVisuals()

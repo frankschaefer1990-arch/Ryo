@@ -68,8 +68,8 @@ public class DorfController : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", "Das Wasser hat sich zurückgezogen. Ich kann die Brücke passieren.", 2.5f);
-        }
+            DialogueUI.Instance.ShowMessage("Ryo", "Das Wasser hat sich zurückgezogen. Ich kann die Brücke passieren.", 1.5f);
+}
     }
 
     private Transform RecursiveFind(Transform parent, string name)

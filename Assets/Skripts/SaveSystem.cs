@@ -39,6 +39,7 @@ public class SaveData
     public bool finishedTempleSequence;
     public bool labyrinthDialogueSeen;
     public bool masterHouseMessageSeen;
+    public bool schleierpfadIntroSeen;
 
     // Krypta Quests
     public bool kryptaIntroSeen;
@@ -69,6 +70,7 @@ public class SaveData
     
     // Persistence
     public List<string> openedChests = new List<string>();
+    public int[] echoLevels;
     }
 
 public class SaveSystem : MonoBehaviour
@@ -154,6 +156,7 @@ public class SaveSystem : MonoBehaviour
             data.finishedTempleSequence = QuestManager.Instance.finishedTempleSequence;
             data.labyrinthDialogueSeen = QuestManager.Instance.labyrinthDialogueSeen;
             data.masterHouseMessageSeen = QuestManager.Instance.masterHouseMessageSeen;
+            data.schleierpfadIntroSeen = QuestManager.Instance.schleierpfadIntroSeen;
 
             data.kryptaIntroSeen = QuestManager.Instance.kryptaIntroSeen;
             data.zombie1Defeated = QuestManager.Instance.zombie1Defeated;
@@ -169,6 +172,7 @@ public class SaveSystem : MonoBehaviour
             data.villageFreeMessageSeen = QuestManager.Instance.villageFreeMessageSeen;
             
             data.openedChests = new List<string>(QuestManager.Instance.openedChests);
+            data.echoLevels = (int[])QuestManager.Instance.echoLevels.Clone();
             }
         
         // Skills
@@ -235,7 +239,8 @@ public class SaveSystem : MonoBehaviour
                 data.waterfallPuzzle2Solved,
                 data.returningFromWassergeist,
                 data.level2IntroSeen,
-                data.villageFreeMessageSeen
+                data.villageFreeMessageSeen,
+                data.schleierpfadIntroSeen
                 );
 
                 if (data.openedChests != null)
@@ -244,7 +249,10 @@ public class SaveSystem : MonoBehaviour
                 // Manually set flags that aren't in SetQuestData if needed
                 QuestManager.Instance.defeatedKryptaBossReturn = data.defeatedKryptaBossReturn;
                 if (data.waterfallLevers != null)
-                QuestManager.Instance.waterfallLevers = (bool[])data.waterfallLevers.Clone();
+                    QuestManager.Instance.waterfallLevers = (bool[])data.waterfallLevers.Clone();
+                
+                if (data.echoLevels != null && data.echoLevels.Length == QuestManager.Instance.echoLevels.Length)
+                    QuestManager.Instance.echoLevels = (int[])data.echoLevels.Clone();
                 }
 
         // Prepare GameManager for save load to skip default spawn points
@@ -365,7 +373,10 @@ public class SaveSystem : MonoBehaviour
             InventoryManager.Instance.SetSlotData(new int[40]);
             InventoryManager.Instance.RefreshInventory();
         }
-        if (QuestManager.Instance != null) QuestManager.Instance.SetQuestData(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+        if (QuestManager.Instance != null) {
+            QuestManager.Instance.SetQuestData(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+            for (int i = 0; i < QuestManager.Instance.echoLevels.Length; i++) QuestManager.Instance.echoLevels[i] = 1;
+        }
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);
     }
 

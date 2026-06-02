@@ -1968,9 +1968,9 @@ MonoBehaviour:
   speakerName: "Dorf\xE4ltester"
   portrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
   randomDialogues:
-  - Bist du ein Shinigami? Seit Jahren war kein Shinigami mehr in diesem Dorf...
-  - "Fr\xFCher benutzten die m\xE4chtigen Shinigamis das Portal der Echos im Norden.
-    Vielleicht solltest du dir das ansehen, Ryo..."
+  - Bist du ein Shinigami...?
+  - "Fr\xFCher kamen die Shinigami \xF6fters in das Dorf, um das seltsame Portal
+    im Norden zu benutzen..."
   interactionRange: 2
   interactKey: 114
 --- !u!1 &1325117815

@@ -119,16 +119,16 @@ public class HouseMasterFurniture : MonoBehaviour
         if (DialogueUI.Instance != null)
         {
             // Duration calculation: typewriter time + visible time + buffer
-            float letterTime = 0.04f;
+            float letterTime = 0.02f;
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage, 3.5f);
-            yield return new WaitForSeconds(deskMessage.Length * letterTime + 3.5f + 0.5f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage, 2.1f);
+            yield return new WaitForSeconds(deskMessage.Length * letterTime + 2.1f + 0.3f);
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage2, 3.5f);
-            yield return new WaitForSeconds(deskMessage2.Length * letterTime + 3.5f + 0.5f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage2, 2.1f);
+            yield return new WaitForSeconds(deskMessage2.Length * letterTime + 2.1f + 0.3f);
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage3, 3.0f);
-            yield return new WaitForSeconds(deskMessage3.Length * letterTime + 3.0f + 0.5f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage3, 1.8f);
+            yield return new WaitForSeconds(deskMessage3.Length * letterTime + 1.8f + 0.3f);
         }
 
         if (pm != null) pm.canMove = true;

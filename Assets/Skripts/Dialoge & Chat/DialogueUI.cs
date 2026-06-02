@@ -23,7 +23,7 @@ public class DialogueUI : MonoBehaviour
     public Sprite defaultPortrait; 
 
     [Header("Typewriter Settings")]
-    public float letterDelay = 0.02f; 
+    public float letterDelay = 0.014f; 
 
     private Coroutine currentRoutine;
     private bool isShowing = false;

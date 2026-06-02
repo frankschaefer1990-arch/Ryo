@@ -172,6 +172,8 @@ public class PlayerStats : MonoBehaviour
 
     public void RecalculateStats()
     {
+        int oldMaxHealth = maxHealth;
+
         int bonusVitality = 0;
         int bonusDefense = 0; // Intelligence
         int bonusStrength = 0;
@@ -191,6 +193,15 @@ public class PlayerStats : MonoBehaviour
 
         maxHealth = baseHealth + ((vitality + bonusVitality - 1) * 10);
         maxMana = baseMana + ((defense + bonusDefense) * 10) + bonusMana;
+
+        // Sync current health with max health changes
+        if (maxHealth > oldMaxHealth && oldMaxHealth > 0)
+        {
+            currentHealth += (maxHealth - oldMaxHealth);
+        }
+        
+        // Always clamp current health to max
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
     }
 
     private void ApplyItemBonuses(int itemId, ref int str, ref int vit, ref int def, ref int agi, ref int mana)
@@ -200,9 +211,9 @@ public class PlayerStats : MonoBehaviour
             case 3: // Basic Sword
                 str += 5; bonusPhysicalDamage += 10; break;
             case 4: // Basic Helm
-                vit += 20; bonusArmor += 5; break;
+                vit += 5; bonusArmor += 4; break;
             case 5: // Basic Armor
-                vit += 40; bonusArmor += 10; break;
+                vit += 12; bonusArmor += 8; break;
             case 6: // Basic Ring
                 def += 5; mana += 20; break;
             case 7: // Basic Boots
@@ -213,9 +224,9 @@ public class PlayerStats : MonoBehaviour
             case 9: // Rare Sword
                 str += 12; bonusPhysicalDamage += 30; break;
             case 10: // Rare Helm
-                vit += 45; bonusArmor += 12; break;
+                vit += 12; bonusArmor += 10; break;
             case 11: // Rare Armor
-                vit += 80; bonusArmor += 25; break;
+                vit += 25; bonusArmor += 20; break;
             case 12: // Rare Ring
                 def += 12; mana += 50; break;
             case 13: // Rare Boots
@@ -227,9 +238,9 @@ public class PlayerStats : MonoBehaviour
                 str += 20; bonusSpellDamage += 15; bonusPhysicalDamage += 25; break;
 
             case 16: // Epic Helm
-                vit += 100; bonusArmor += 25; break;
+                vit += 30; bonusArmor += 20; break;
             case 17: // Epic Armor
-                vit += 150; bonusArmor += 40; break;
+                vit += 65; bonusArmor += 35; break;
             case 18: // Epic Ring
                 def += 25; mana += 100; break;
             case 19: // Epic Boots
@@ -240,9 +251,9 @@ public class PlayerStats : MonoBehaviour
                 def += 50; bonusSpellDamage += 60; break;
 
             case 22: // Legendary Helm
-                vit += 250; bonusArmor += 60; break;
+                vit += 75; bonusArmor += 50; break;
             case 23: // Legendary Armor
-                vit += 400; bonusArmor += 100; break;
+                vit += 150; bonusArmor += 80; break;
             case 24: // Legendary Ring
                 def += 60; mana += 250; break;
             case 25: // Legendary Boots

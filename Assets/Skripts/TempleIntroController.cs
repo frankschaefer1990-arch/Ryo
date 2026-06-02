@@ -225,7 +225,7 @@ public class TempleIntroController : MonoBehaviour
         while (di == null) { di = DialogueUI.Instance; yield return null; }
 
         Debug.Log("TempleIntroController: PostBattle Dialogue 1.");
-        di.ShowMessage("Ryo", "Ich... habe gewonnen...?", 1.0f); yield return WaitForDialogue(di, "Ryo: Gewonnen?");
+        di.ShowMessage("Ryo", "Ich... habe gewonnen...?", 0.6f); yield return WaitForDialogue(di, "Ryo: Gewonnen?");
 
         if (skeleton != null) {
             Debug.Log("TempleIntroController: Skeleton Final Words.");

@@ -9,7 +9,7 @@ public class InteractionPrompt : MonoBehaviour
     public float transparency = 0.55f;
 
     [Header("Detection")]
-    public float detectionRadius = 0.2f; 
+    public float detectionRadius = 1.8f; 
 
     private GameObject indicatorObj;
     private SpriteRenderer indicatorSR;
@@ -131,7 +131,19 @@ public class InteractionPrompt : MonoBehaviour
             {
                 return true;
             }
-        }
+
+            // Echo Statues
+            if (hit.GetComponentInParent<EchoStatue>() != null)
+            {
+                return true;
+            }
+
+            // Guardian Interaction
+            if (hit.GetComponentInParent<GuardianInteraction>() != null)
+            {
+                return true;
+            }
+            }
         return false;
         }
         }

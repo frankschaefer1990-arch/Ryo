@@ -14,6 +14,11 @@ public class CameraFollow : MonoBehaviour
     public float minY = -17f;
     public float maxY = 17f;
 
+    [Header("Smoothing")]
+    public float smoothTime = 0.15f;
+    public Transform targetOverride;
+    private Vector3 currentVelocity = Vector3.zero;
+
     private float camHalfHeight;
     private float camHalfWidth;
 
@@ -25,6 +30,11 @@ public class CameraFollow : MonoBehaviour
         SetupCamera();
         FindPlayer();
         UpdateBounds();
+
+        if (player != null)
+        {
+            transform.position = new Vector3(player.position.x, player.position.y, -10f);
+        }
 
         // Ensure CinemachineBrain is disabled so this script has control
         var brain = GetComponent<Unity.Cinemachine.CinemachineBrain>();
@@ -105,35 +115,41 @@ public class CameraFollow : MonoBehaviour
     // =========================
     private void LateUpdate()
     {
-        if (player == null)
+        Transform currentTarget = targetOverride != null ? targetOverride : player;
+
+        if (currentTarget == null)
         {
             FindPlayer();
             if (player == null) return;
             
-            // Snap to player on first find
-            transform.position = new Vector3(player.position.x, player.position.y, -10f);
+            // Snap to player on first find if no override
+            if (targetOverride == null)
+                transform.position = new Vector3(player.position.x, player.position.y, -10f);
+            
+            currentTarget = player;
         }
 
         camHalfHeight = GetComponent<Camera>().orthographicSize;
         camHalfWidth = camHalfHeight * GetComponent<Camera>().aspect;
 
-        float targetX = player.position.x;
-        float targetY = player.position.y;
+        float targetX = currentTarget.position.x;
+        float targetY = currentTarget.position.y;
 
         float clampedX = targetX;
         float clampedY = targetY;
 
         // Only clamp if the bounds are larger than the camera view
-        if (maxX - minX > camHalfWidth * 2)
+        if (boundsCollider != null && maxX - minX > camHalfWidth * 2)
         {
             clampedX = Mathf.Clamp(targetX, minX + camHalfWidth, maxX - camHalfWidth);
         }
         
-        if (maxY - minY > camHalfHeight * 2)
+        if (boundsCollider != null && maxY - minY > camHalfHeight * 2)
         {
             clampedY = Mathf.Clamp(targetY, minY + camHalfHeight, maxY - camHalfHeight);
         }
 
-        transform.position = new Vector3(clampedX, clampedY, -10f);
+        Vector3 targetPos = new Vector3(clampedX, clampedY, -10f);
+        transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smoothTime);
     }
-}
+    }

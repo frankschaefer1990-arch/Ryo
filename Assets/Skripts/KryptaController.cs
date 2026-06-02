@@ -310,8 +310,8 @@ public class KryptaController : MonoBehaviour
             DialogueUI.Instance.ShowMessage("Stimme / ???", "Mehr Seelen!");
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
 
-            DialogueUI.Instance.ShowMessage("Ryo", "Je mehr Seelen ich absorbiere, desto mehr merke ich, wie etwas Dunkles in mir wächst...", 4.5f);
-            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+            DialogueUI.Instance.ShowMessage("Ryo", "Je mehr Seelen ich absorbiere, desto mehr merke ich, wie etwas Dunkles in mir wächst...", 2.7f);
+while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
         if (QuestManager.Instance != null) 

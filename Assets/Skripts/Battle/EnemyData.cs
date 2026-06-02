@@ -8,8 +8,9 @@ public class EnemyData : ScriptableObject
     public int attack;
     public int defense;
     public int xpReward;
+    public int goldReward = 50;
     public int startHP; 
-    public int maxMana = 100;
+public int maxMana = 100;
     public int startMana = 100;
     public bool isBoss;
 public Sprite enemySprite;
