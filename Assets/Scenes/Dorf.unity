@@ -1498,6 +1498,59 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.05745113, y: -0.49574494}
   m_Radius: 5.027445
+--- !u!1 &1042087351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1042087353}
+  - component: {fileID: 1042087352}
+  m_Layer: 6
+  m_Name: Story Block
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1042087352
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042087351}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.7832794, y: 6.765934, z: 1}
+  m_Center: {x: 0.8916397, y: -0.92136097, z: 0}
+--- !u!4 &1042087353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042087351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.82, y: 7.63, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1216562377
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,6 +1707,8 @@ MonoBehaviour:
   maxX: 17
   minY: -17
   maxY: 17
+  smoothTime: 0.15
+  targetOverride: {fileID: 0}
 --- !u!1 &1254855744
 GameObject:
   m_ObjectHideFlags: 0
@@ -204674,3 +204729,4 @@ SceneRoots:
   - {fileID: 1738339131}
   - {fileID: 163899462}
   - {fileID: 649518588}
+  - {fileID: 1042087353}

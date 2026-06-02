@@ -255,7 +255,6 @@ GameObject:
   m_Component:
   - component: {fileID: 51513058}
   - component: {fileID: 51513060}
-  - component: {fileID: 51513059}
   - component: {fileID: 51513061}
   m_Layer: 0
   m_Name: DoorwayProximity
@@ -279,18 +278,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1299333876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &51513059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51513057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &51513060
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2250,6 +2237,8 @@ MonoBehaviour:
   maxX: 19
   minY: -19
   maxY: 19
+  smoothTime: 0.15
+  targetOverride: {fileID: 0}
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3544,6 +3533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantInteraction
   speakerName: "H\xE4ndler"
+  interactionRadius: 2.5
   merchantMessage: Schau dir meine Waren an...
   shopPanel: {fileID: 0}
   speakerPortrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
@@ -6083,6 +6073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantInteraction
   speakerName: "H\xE4ndler"
+  interactionRadius: 2.5
   merchantMessage: Schau dir meine Waren an...
   shopPanel: {fileID: 0}
   speakerPortrait: {fileID: 0}

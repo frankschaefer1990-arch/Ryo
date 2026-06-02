@@ -16,7 +16,8 @@ MonoBehaviour:
   maxHP: 1500
   attack: 30
   defense: 20
-  xpReward: 1500
+  xpReward: 350
+  goldReward: 50
   startHP: 0
   maxMana: 200
   startMana: 100

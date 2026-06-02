@@ -165,7 +165,7 @@ public Button cancelButton;
     {
         if (currentStatue == null || currentStatue.bossData == null || statsText == null) return;
 
-        float multiplier = 1f + (level - 1) * 0.2f;
+        float multiplier = 1f + (level - 1) * 1.0f; // Increased from 0.2 for better scaling challenge
         int hp = Mathf.RoundToInt(currentStatue.bossData.maxHP * multiplier);
         int mana = Mathf.RoundToInt(currentStatue.bossData.maxMana * multiplier);
         int atk = Mathf.RoundToInt(currentStatue.bossData.attack * multiplier);
@@ -183,7 +183,7 @@ public Button cancelButton;
         if (currentStatue == null || currentStatue.bossData == null) return;
 
         int level = selectedLevel;
-        float multiplier = 1f + (level - 1) * 0.2f;
+        float multiplier = 1f + (level - 1) * 1.0f; // Increased from 0.2 for better scaling challenge
 
         EnemyData scaledEnemy = Instantiate(currentStatue.bossData);
         scaledEnemy.maxHP = Mathf.RoundToInt(currentStatue.bossData.maxHP * multiplier);
