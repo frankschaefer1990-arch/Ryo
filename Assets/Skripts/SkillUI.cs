@@ -26,25 +26,6 @@ public class SkillUI : MonoBehaviour
             {
                 if (slot != null) slot.Refresh();
             }
-
-            SortSlots();
         }
     }
-
-    private void SortSlots()
-    {
-        if (slots == null || slots.Length == 0) return;
-
-        // Sort by level (descending)
-        var sortedSlots = slots
-            .Where(s => s != null)
-            .OrderByDescending(s => s.skill != null ? SkillManager.Instance.GetSkillLevel(s.skill) : -1)
-            .ToList();
-
-        // Reorder in hierarchy if they have the same parent
-        for (int i = 0; i < sortedSlots.Count; i++)
-        {
-            sortedSlots[i].transform.SetSiblingIndex(i);
-        }
     }
-}

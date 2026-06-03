@@ -314,7 +314,13 @@ public class ShopManager : MonoBehaviour
         if (isShopOpen) return;
 
         // Reset to original prices
+        healthPrice = 10;
+        manaPrice = 10;
         swordPrice = 100;
+        helmPrice = 70;
+        armorPrice = 150;
+        ringPrice = 80;
+        bootsPrice = 60;
         wandPrice = 120;
 
         // Update prices if boss is defeated AND we are in the starting area

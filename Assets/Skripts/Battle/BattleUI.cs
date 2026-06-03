@@ -332,12 +332,18 @@ public GameObject gameOverPanel;
 
         List<BattleSkill> learnedSkillsList = uniqueLearnedSkills.Values.ToList();
 
-        if (SkillManager.Instance != null && SkillManager.Instance.learnedOrder != null)
+        // Sort by level (descending) as primary criteria, then by learned order
+        if (SkillManager.Instance != null)
         {
-            learnedSkillsList = learnedSkillsList.OrderBy(s => {
-                int index = SkillManager.Instance.learnedOrder.IndexOf(s.skillId);
-                return index >= 0 ? index : int.MaxValue;
-            }).ToList();
+            learnedSkillsList = learnedSkillsList.OrderByDescending(s => SkillManager.Instance.GetSkillLevel(s))
+                .ThenBy(s => {
+                    if (SkillManager.Instance.learnedOrder != null)
+                    {
+                        int index = SkillManager.Instance.learnedOrder.IndexOf(s.skillId);
+                        return index >= 0 ? index : int.MaxValue;
+                    }
+                    return 0;
+                }).ToList();
         }
 
         List<BattleSkill> attacks = learnedSkillsList.Where(s => !s.isSpell).ToList();
