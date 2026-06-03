@@ -11,7 +11,6 @@ public class IdolPuzzleManager : MonoBehaviour
     }
 
     public DirectionTarget[] targets;
-    public GameObject wallToDeactivate;
     public WaterfallMaster waterfallMaster; 
     public Sprite interactionPortrait;
     public AudioClip solveSound;
@@ -30,6 +29,22 @@ public class IdolPuzzleManager : MonoBehaviour
         {
             isSolved = true;
             ApplySolvedState(true);
+        }
+
+        // Show collapse dialogue after teleport
+        if (QuestManager.Instance != null && QuestManager.Instance.defeatedWassergeist && !QuestManager.Instance.bossChamberCollapsedDialogueSeen)
+        {
+            StartCoroutine(ShowCollapsedDialogue());
+        }
+    }
+
+    private System.Collections.IEnumerator ShowCollapsedDialogue()
+    {
+        yield return new WaitForSeconds(1.5f); // Wait for scene to settle
+        if (DialogueUI.Instance != null)
+        {
+            DialogueUI.Instance.ShowMessage("Ryo", "Die Boss Kammer ist eingestürzt.", interactionPortrait);
+            QuestManager.Instance.bossChamberCollapsedDialogueSeen = true;
         }
     }
 
@@ -65,7 +80,7 @@ public class IdolPuzzleManager : MonoBehaviour
 
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage("Ryo", "Der Wasserfall ist verschwunden... Das muss der Weg sein.", interactionPortrait, 3.5f);
+                DialogueUI.Instance.ShowMessage("Ryo", "Der Wasserfall ist verschwunden... Das muss der Weg sein.", interactionPortrait, 1.8f);
             }
 
             ApplySolvedState(false);
@@ -75,8 +90,6 @@ public class IdolPuzzleManager : MonoBehaviour
 
     private void ApplySolvedState(bool immediate)
     {
-        if (wallToDeactivate != null) wallToDeactivate.SetActive(false);
-        
         // Find all objects named IdolPuzzleWall and deactivate them
         GameObject[] extraWalls = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var wall in extraWalls)

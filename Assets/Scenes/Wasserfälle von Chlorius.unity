@@ -44818,7 +44818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192cbee3d616f5940a2fda6ee6cc35de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KryptaInteractable
-  interactionSize: {x: 1.4, y: 1.4}
+  interactionSize: {x: 1.7, y: 1.7}
   promptMessage: "Dr\xFCcke 'R' zum Interagieren"
 --- !u!212 &519314947
 SpriteRenderer:
@@ -45174,7 +45174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192cbee3d616f5940a2fda6ee6cc35de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KryptaInteractable
-  interactionSize: {x: 1.4, y: 1.4}
+  interactionSize: {x: 1.7, y: 1.7}
   promptMessage: "Dr\xFCcke 'R' zum Interagieren"
 --- !u!212 &794390395
 SpriteRenderer:
@@ -53635,7 +53635,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.15555584, y: -0.9914503}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -53645,7 +53645,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 2.6407433, y: 3.4829006}
   m_EdgeRadius: 0
 --- !u!1 &1567685599
 GameObject:
@@ -53699,7 +53699,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192cbee3d616f5940a2fda6ee6cc35de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KryptaInteractable
-  interactionSize: {x: 1.4, y: 1.4}
+  interactionSize: {x: 1.7, y: 1.7}
   promptMessage: "Dr\xFCcke 'R' zum Interagieren"
 --- !u!212 &1567685602
 SpriteRenderer:
@@ -56091,7 +56091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192cbee3d616f5940a2fda6ee6cc35de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KryptaInteractable
-  interactionSize: {x: 1.4, y: 1.4}
+  interactionSize: {x: 1.7, y: 1.7}
   promptMessage: "Dr\xFCcke 'R' zum Interagieren"
 --- !u!212 &1856834261
 SpriteRenderer:

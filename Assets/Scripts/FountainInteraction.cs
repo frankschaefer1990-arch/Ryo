@@ -43,7 +43,7 @@ public class FountainInteraction : MonoBehaviour
             if (DialogueUI.Instance != null && !DialogueUI.Instance.IsDialogueActive())
             {
                 // Use the provided portrait if available
-                DialogueUI.Instance.ShowMessage("Ryo", "Ich fühle mich erfrischt", portrait, 2.5f);
+                DialogueUI.Instance.ShowMessage("Ryo", "Ich fühle mich erfrischt", portrait, 1.2f);
             }
 
             if (healSFX != null)

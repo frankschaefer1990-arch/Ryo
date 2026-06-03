@@ -2,18 +2,22 @@ using UnityEngine;
 
 public class BossraumBlocker : MonoBehaviour
 {
+    public bool blockAfterDefeat = false; // Default to false to allow re-entry unless specified
+
     private void Start()
     {
-        if (QuestManager.Instance != null && QuestManager.Instance.defeatedWassergeist)
+        if (blockAfterDefeat && QuestManager.Instance != null && QuestManager.Instance.defeatedWassergeist)
         {
-            // Disable the portal but keep object active for spawn points
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null) col.enabled = false;
+            // Disable all portal related components
+            foreach (var col in GetComponents<Collider2D>())
+            {
+                col.enabled = false;
+            }
             
             ScenePortal portal = GetComponent<ScenePortal>();
             if (portal != null) portal.enabled = false;
 
-            Debug.Log("BossraumBlocker: Disabled portal components because Wassergeist is defeated.");
+            Debug.Log("BossraumBlocker: Permanently blocked Bossraum exit.");
         }
     }
 }

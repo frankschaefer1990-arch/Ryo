@@ -49,5 +49,16 @@ public class FurnitureUIConnector : MonoBehaviour
             f.cancelButton = cancelButton;
             Debug.Log($"FurnitureUIConnector: Connected to {f.gameObject.name}");
         }
+
+        var allElara = Object.FindObjectsByType<ElaraRestInteraction>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var e in allElara)
+        {
+            e.interactionPanel = panel;
+            e.textDisplay = textDisplay;
+            e.choiceButtons = choiceButtons;
+            e.sleepButton = sleepButton;
+            e.cancelButton = cancelButton;
+            Debug.Log($"FurnitureUIConnector: Connected to {e.gameObject.name}");
+        }
     }
 }

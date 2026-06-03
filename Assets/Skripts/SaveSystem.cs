@@ -53,6 +53,7 @@ public class SaveData
     public bool defeatedWassergeist;
     public bool returningFromWassergeist;
     public bool level2IntroSeen;
+    public bool bossChamberCollapsedDialogueSeen;
     public bool villageFreeMessageSeen;
     
     // Skills
@@ -73,8 +74,8 @@ public class SaveData
     public int[] echoLevels;
     }
 
-public class SaveSystem : MonoBehaviour
-{
+    public class SaveSystem : MonoBehaviour
+    {
     public static SaveSystem Instance;
     private float currentSessionTime;
     private float loadedPlayTime;
@@ -169,6 +170,7 @@ public class SaveSystem : MonoBehaviour
             data.defeatedWassergeist = QuestManager.Instance.defeatedWassergeist;
             data.returningFromWassergeist = QuestManager.Instance.returningFromWassergeist;
             data.level2IntroSeen = QuestManager.Instance.level2IntroSeen;
+            data.bossChamberCollapsedDialogueSeen = QuestManager.Instance.bossChamberCollapsedDialogueSeen;
             data.villageFreeMessageSeen = QuestManager.Instance.villageFreeMessageSeen;
             
             data.openedChests = new List<string>(QuestManager.Instance.openedChests);
@@ -240,7 +242,8 @@ public class SaveSystem : MonoBehaviour
                 data.returningFromWassergeist,
                 data.level2IntroSeen,
                 data.villageFreeMessageSeen,
-                data.schleierpfadIntroSeen
+                data.schleierpfadIntroSeen,
+                data.bossChamberCollapsedDialogueSeen
                 );
 
                 if (data.openedChests != null)
@@ -374,7 +377,7 @@ public class SaveSystem : MonoBehaviour
             InventoryManager.Instance.RefreshInventory();
         }
         if (QuestManager.Instance != null) {
-            QuestManager.Instance.SetQuestData(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+            QuestManager.Instance.SetQuestData(false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
             for (int i = 0; i < QuestManager.Instance.echoLevels.Length; i++) QuestManager.Instance.echoLevels[i] = 1;
         }
         if (SkillManager.Instance != null) SkillManager.Instance.LoadSkillData(new List<string>(), new List<int>(), 0);

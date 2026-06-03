@@ -62,7 +62,7 @@ public class BridgeLogic : MonoBehaviour
 
             if (isShown && DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage("Ryo", "Die Statuen haben die Brücke freigegeben... Interessant.", 3.0f);
+                DialogueUI.Instance.ShowMessage("Ryo", "Die Statuen haben die Brücke freigegeben... Interessant.", 1.5f);
             }
         }
     }

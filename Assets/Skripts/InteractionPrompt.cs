@@ -9,10 +9,48 @@ public class InteractionPrompt : MonoBehaviour
     public float transparency = 0.55f;
 
     [Header("Detection")]
-    public float detectionRadius = 1.8f; 
+    public Vector2 detectionOffset = Vector2.zero;
+    public Vector2 capsuleSize = new Vector2(2f, 4f);
+    public CapsuleDirection2D capsuleDirection = CapsuleDirection2D.Vertical;
+    public Color gizmoColor = Color.cyan;
+    public bool showGizmo = true;
 
     private GameObject indicatorObj;
     private SpriteRenderer indicatorSR;
+
+    private void OnDrawGizmos()
+    {
+        if (!showGizmo) return;
+        Gizmos.color = gizmoColor;
+        
+        Vector3 worldPos = transform.TransformPoint(detectionOffset);
+        DrawWireCapsule(worldPos, capsuleSize, capsuleDirection, transform.eulerAngles.z);
+    }
+
+    private void DrawWireCapsule(Vector3 center, Vector2 size, CapsuleDirection2D direction, float angle)
+    {
+        float radius = (direction == CapsuleDirection2D.Vertical ? size.x : size.y) / 2f;
+        float height = (direction == CapsuleDirection2D.Vertical ? size.y : size.x);
+        
+        if (height < radius * 2) radius = height / 2f;
+
+        float offsetDist = height / 2f - radius;
+        Quaternion rotation = Quaternion.Euler(0, 0, angle);
+        Vector3 dirVec = (direction == CapsuleDirection2D.Vertical ? Vector3.up : Vector3.right);
+        Vector3 rotatedOffset = rotation * dirVec * offsetDist;
+        
+        #if UNITY_EDITOR
+        UnityEditor.Handles.color = gizmoColor;
+        UnityEditor.Handles.DrawWireDisc(center + rotatedOffset, Vector3.forward, radius);
+        UnityEditor.Handles.DrawWireDisc(center - rotatedOffset, Vector3.forward, radius);
+        #endif
+
+        Vector3 sideVec = (direction == CapsuleDirection2D.Vertical ? Vector3.right : Vector3.up);
+        Vector3 rotatedSide = rotation * sideVec * radius;
+        
+        Gizmos.DrawLine(center + rotatedOffset + rotatedSide, center - rotatedOffset + rotatedSide);
+        Gizmos.DrawLine(center + rotatedOffset - rotatedSide, center - rotatedOffset - rotatedSide);
+    }
 
     private void Start()
     {
@@ -74,7 +112,8 @@ public class InteractionPrompt : MonoBehaviour
             if (pm != null && !pm.canMove) return false;
         }
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius);
+        Vector2 worldPos = transform.TransformPoint(detectionOffset);
+        Collider2D[] hits = Physics2D.OverlapCapsuleAll(worldPos, capsuleSize, capsuleDirection, transform.eulerAngles.z);
         int wallLayerMask = LayerMask.GetMask("Wall");
 
         foreach (var hit in hits)

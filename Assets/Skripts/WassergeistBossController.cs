@@ -57,10 +57,19 @@ public class WassergeistBossController : MonoBehaviour
 
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
         
-        CameraFollow follow = Object.FindAnyObjectByType<CameraFollow>();
-        if (follow != null) {
-            follow.player = player.transform;
-            Debug.Log("[WassergeistBoss] Camera follow set to player");
+        // Ensure camera settings are correct for Cinemachine/Follow
+        Camera mainCam = Camera.main;
+        if (mainCam != null)
+        {
+            var brain = mainCam.GetComponent<CinemachineBrain>();
+            if (brain != null) brain.enabled = true;
+
+            var follow = mainCam.GetComponent<CameraFollow>();
+            if (follow != null)
+            {
+                follow.enabled = false;
+                follow.player = player.transform;
+            }
         }
 
         if (bossObject != null) {

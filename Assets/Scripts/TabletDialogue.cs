@@ -30,7 +30,7 @@ public class TabletDialogue : MonoBehaviour
             {
                 if (DialogueUI.Instance != null && !DialogueUI.Instance.IsDialogueActive())
                 {
-                    DialogueUI.Instance.ShowMessage("Steintafel", message, portrait, 4.0f);
+                    DialogueUI.Instance.ShowMessage("Steintafel", message, portrait, 2.0f);
                 }
             }
         }

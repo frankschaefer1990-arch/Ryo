@@ -27,13 +27,14 @@ public class QuestManager : MonoBehaviour
     public bool defeatedWassergeist = false;
     public bool returningFromWassergeist = false;
     public bool level2IntroSeen = false;
+    public bool bossChamberCollapsedDialogueSeen = false;
     public bool villageFreeMessageSeen = false;
 
     [Header("Persistence")]
     public System.Collections.Generic.List<string> openedChests = new System.Collections.Generic.List<string>();
     public int[] echoLevels = new int[9]; // store highest unlocked level for each of the 9 echo slots
 
-    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false, bool wDefeated = false, bool wf2Solved = false, bool wReturn = false, bool l2Intro = false, bool vFreeMsg = false, bool sIntro = false)
+    public void SetQuestData(bool intro, bool visited, bool defeated, bool finished, bool labyrinth, bool houseMsg, bool kIntro = false, bool z1 = false, bool z2 = false, bool kBoss = false, bool wfSolved = false, bool wDefeated = false, bool wf2Solved = false, bool wReturn = false, bool l2Intro = false, bool vFreeMsg = false, bool sIntro = false, bool bCollapse = false)
     {
         introSeen = intro;
         visitedTemple = visited;
@@ -51,6 +52,7 @@ public class QuestManager : MonoBehaviour
         waterfallPuzzle2Solved = wf2Solved;
         returningFromWassergeist = wReturn;
         level2IntroSeen = l2Intro;
+        bossChamberCollapsedDialogueSeen = bCollapse;
         villageFreeMessageSeen = vFreeMsg;
 
         // Initialize echoLevels if they are all 0 (new game or first time)

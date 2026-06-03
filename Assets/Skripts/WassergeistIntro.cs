@@ -52,6 +52,17 @@ public class WassergeistIntro : MonoBehaviour
     
     private IEnumerator IntroSequence()
     {
+        // Ensure camera settings are correct for Cinemachine
+        Camera mainCam = Camera.main;
+        if (mainCam != null)
+        {
+            var follow = mainCam.GetComponent<CameraFollow>();
+            if (follow != null) follow.enabled = false;
+            
+            var brain = mainCam.GetComponent<CinemachineBrain>();
+            if (brain != null) brain.enabled = true;
+        }
+
         if (pm != null) pm.canMove = false;
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
         

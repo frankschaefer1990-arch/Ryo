@@ -218,6 +218,7 @@ MonoBehaviour:
   baseMana: 50
   bonusArmor: 0
   bonusSpellDamage: 0
+  bonusPhysicalDamage: 0
   equippedWeapon: 0
   equippedHelm: 0
   equippedArmor: 0
@@ -283,8 +284,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.2032545, y: -2.7326121}
-  m_Size: {x: 4.4338684, y: 5.694415}
+  m_Offset: {x: 1.2032545, y: -2}
+  m_Size: {x: 7, y: 8}
   m_Direction: 0
 --- !u!114 &3729908760729603218
 MonoBehaviour:
@@ -302,4 +303,8 @@ MonoBehaviour:
   yOffset: 12
   indicatorScale: 8
   transparency: 0.55
-  detectionRadius: 0.2
+  detectionOffset: {x: 1, y: 0.10000001}
+  capsuleSize: {x: 0.8, y: 1.2}
+  capsuleDirection: 0
+  gizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  showGizmo: 1

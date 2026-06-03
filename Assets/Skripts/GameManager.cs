@@ -328,6 +328,18 @@ public class GameManager : MonoBehaviour
         {
             PersistentPlayer.transform.position = spawn.transform.position;
             Debug.Log($"GameManager: Player moved to {spawn.name} at {spawn.transform.position}");
+
+            // Apply global spawn facing if set
+            if (NextSpawnFacing != Vector2.zero)
+            {
+                PlayerMovement pm = PersistentPlayer.GetComponent<PlayerMovement>();
+                if (pm != null)
+                {
+                    pm.SetFacingDirection(NextSpawnFacing);
+                    Debug.Log($"GameManager: Applied spawn facing {NextSpawnFacing} to {PersistentPlayer.name}");
+                }
+                NextSpawnFacing = Vector2.zero; // Reset
+            }
         }
     }
 

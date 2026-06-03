@@ -18,17 +18,17 @@ public class ElaraRestInteraction : MonoBehaviour
     private bool playerInRange = false;
     private bool isDialogueRunning = false;
 
-    // UI References (similar to HouseMasterFurniture)
-    private GameObject interactionPanel;
-    private TextMeshProUGUI textDisplay;
-    private GameObject choiceButtons;
-    private Button sleepButton;
-    private Button cancelButton;
+    [Header("UI References")]
+    public GameObject interactionPanel;
+    public TextMeshProUGUI textDisplay;
+    public GameObject choiceButtons;
+    public Button sleepButton;
+    public Button cancelButton;
 
     private void Start()
     {
         FindPlayer();
-        FindUIReferences();
+        if (interactionPanel == null) FindUIReferences();
     }
 
     private void Update()
