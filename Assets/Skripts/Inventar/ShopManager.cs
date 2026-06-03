@@ -312,7 +312,21 @@ public class ShopManager : MonoBehaviour
     public void OpenShopFromMerchant()
     {
         if (isShopOpen) return;
+
+        // Reset to original prices
+        swordPrice = 100;
+        wandPrice = 120;
+
+        // Update prices if boss is defeated AND we are in the starting area
+        if (QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss && 
+            SceneManager.GetActiveScene().name == "Legend of Ryo")
+        {
+            swordPrice = 60;
+            wandPrice = 60;
+        }
+
         ReconnectShop();
+        UpdatePriceTexts();
         UpdateGoldUI();
         DeselectShopItem();
         if (shopPanel != null) shopPanel.SetActive(true);
@@ -321,17 +335,55 @@ public class ShopManager : MonoBehaviour
 
         // Item visibility based on scene
         bool isDorf = SceneManager.GetActiveScene().name == "Dorf";
-        if (swordSlotUI != null) swordSlotUI.SetActive(isDorf);
+        bool isStartScene = SceneManager.GetActiveScene().name == "Legend of Ryo";
+        bool bossDefeated = QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss;
+
+        if (swordSlotUI != null) swordSlotUI.SetActive(isDorf || (isStartScene && bossDefeated));
+        if (wandSlotUI != null) wandSlotUI.SetActive(isDorf || (isStartScene && bossDefeated));
+        
         if (helmSlotUI != null) helmSlotUI.SetActive(isDorf);
         if (armorSlotUI != null) armorSlotUI.SetActive(isDorf);
         if (ringSlotUI != null) ringSlotUI.SetActive(isDorf);
         if (bootsSlotUI != null) bootsSlotUI.SetActive(isDorf);
-        if (wandSlotUI != null) wandSlotUI.SetActive(isDorf);
 
         if (MyUIManager.Instance != null) MyUIManager.Instance.SetShopLayout(true);
         LockPlayerMovement(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void UpdatePriceTexts()
+    {
+        if (swordPriceText != null) swordPriceText.text = "Preis: " + swordPrice + " Gold";
+        if (wandPriceText != null) wandPriceText.text = "Preis: " + wandPrice + " Gold";
+        if (healthPriceText != null) healthPriceText.text = "Preis: " + healthPrice + " Gold";
+        if (manaPriceText != null) manaPriceText.text = "Preis: " + manaPrice + " Gold";
+        if (helmPriceText != null) helmPriceText.text = "Preis: " + helmPrice + " Gold";
+        if (armorPriceText != null) armorPriceText.text = "Preis: " + armorPrice + " Gold";
+        if (ringPriceText != null) ringPriceText.text = "Preis: " + ringPrice + " Gold";
+        if (bootsPriceText != null) bootsPriceText.text = "Preis: " + bootsPrice + " Gold";
+
+        // Update Tooltips dynamically
+        UpdateSlotTooltip(swordSlotUI, "Basic Schwert", swordPrice, "+10 Dmg, +5 Stärke");
+        UpdateSlotTooltip(wandSlotUI, "Basic Zauberstab", wandPrice, "+10 Zauberschaden, +10 Int");
+        UpdateSlotTooltip(helmSlotUI, "Basic Helm", helmPrice, "+5 Vitalität, +4 Rüstung");
+        UpdateSlotTooltip(armorSlotUI, "Basic Rüstung", armorPrice, "+12 Vitalität, +8 Rüstung");
+        UpdateSlotTooltip(ringSlotUI, "Basic Ring", ringPrice, "+20 Mana, +5 Int");
+        UpdateSlotTooltip(bootsSlotUI, "Basic Stiefel", bootsPrice, "+5 Fluch");
+
+        // Potion tooltips (usually fixed but good for consistency)
+        UpdateSlotTooltip(FindChildRecursive(shopPanel.transform, "PotionSlot")?.gameObject, "Heiltrank", healthPrice, "Heilt 60 HP");
+        UpdateSlotTooltip(FindChildRecursive(shopPanel.transform, "ManaSlot")?.gameObject, "Manatrank", manaPrice, "Heilt 30 Mana");
+    }
+
+    private void UpdateSlotTooltip(GameObject slotObj, string itemName, int price, string stats)
+    {
+        if (slotObj == null) return;
+        var tt = slotObj.GetComponent<GeneralTooltipTrigger>();
+        if (tt != null)
+        {
+            tt.content = "Preis: " + price + " Gold\n" + itemName + "\n" + stats;
+        }
     }
 
     public void CloseShop()

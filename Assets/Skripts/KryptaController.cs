@@ -26,16 +26,15 @@ public class KryptaController : MonoBehaviour
     [Header("Sequence Objects")]
     public GameObject soulBallObject;
     public GameObject bossObject; // The visual representation in Krypta
+    public Sprite interactionPortrait;
 
     private bool isCutsceneRunning = false;
 
     private void Awake()
-{
-        if (QuestManager.Instance != null && !QuestManager.Instance.kryptaIntroSeen)
-        {
-            if (introCam != null) introCam.Priority.Value = 100;
-            if (playerCam != null) playerCam.Priority.Value = 10;
-        }
+    {
+        // Always ensure player camera has high priority to avoid the camera swinger
+        if (playerCam != null) playerCam.Priority.Value = 100;
+        if (introCam != null) introCam.Priority.Value = 10;
 
         if (bossObject != null) bossObject.SetActive(false);
         if (soulBallObject != null) soulBallObject.SetActive(false);
@@ -124,38 +123,23 @@ public class KryptaController : MonoBehaviour
 
         if (MyUIManager.Instance != null) MyUIManager.Instance.isLocked = true;
         
-        // 1. Setup Camera Targets
-        // Sarcophagus position
-        if (sargGross != null) { 
-            introCam.Follow = sargGross; 
-            introCam.LookAt = sargGross; 
-        }
+        // Setup Camera Targets
         playerCam.Follow = player.transform;
         playerCam.LookAt = player.transform;
 
-        // Ensure Brain starts on introCam
-        introCam.Priority.Value = 100;
-        playerCam.Priority.Value = 10;
-        
+        // Ensure Brain is active
         var brain = Camera.main?.GetComponent<CinemachineBrain>();
         if (brain != null) brain.enabled = true;
 
-        // Wait a moment for camera to settle
-        yield return new WaitForSeconds(1.5f);
+        // Wait a moment for player to settle
+        yield return new WaitForSeconds(0.5f);
 
-        // 2. Dialogue while looking at Sarg
+        // Dialogue while looking at player
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Ryo", "Von diesem Sarg geht eine unheimliche Macht aus...");
+            DialogueUI.Instance.ShowMessage("Ryo", "Von diesem Sarg geht eine unheimliche Macht aus...", interactionPortrait);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
-
-        // 3. Pan back to Ryo
-        introCam.Priority.Value = 10;
-        playerCam.Priority.Value = 100;
-
-        // Wait for pan (Cinemachine default blend is usually 2s)
-        yield return new WaitForSeconds(2.5f);
 
         if (QuestManager.Instance != null) QuestManager.Instance.kryptaIntroSeen = true;
         isCutsceneRunning = false;
@@ -310,7 +294,7 @@ public class KryptaController : MonoBehaviour
             DialogueUI.Instance.ShowMessage("Stimme / ???", "Mehr Seelen!");
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
 
-            DialogueUI.Instance.ShowMessage("Ryo", "Je mehr Seelen ich absorbiere, desto mehr merke ich, wie etwas Dunkles in mir wächst...", 2.7f);
+            DialogueUI.Instance.ShowMessage("Ryo", "Je mehr Seelen ich absorbiere, desto mehr merke ich, wie etwas Dunkles in mir wächst...", 1.8f);
 while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
@@ -402,32 +386,32 @@ while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage("Ryo", "Dieser Sarg schreit förmlich nach Seelen...");
+                DialogueUI.Instance.ShowMessage("Ryo", "Dieser Sarg schreit förmlich nach Seelen...", interactionPortrait);
             }
-        }
-    }
+            }
+            }
 
-    private void OnInteractSargKlein1()
-    {
-        if (isCutsceneRunning) return;
-        if (QuestManager.Instance != null && QuestManager.Instance.zombie1Defeated)
-        {
-            DialogueUI.Instance?.ShowMessage("Ryo", "Dieser Sarg ist nun still.");
+            private void OnInteractSargKlein1()
+            {
+            if (isCutsceneRunning) return;
+            if (QuestManager.Instance != null && QuestManager.Instance.zombie1Defeated)
+            {
+            DialogueUI.Instance?.ShowMessage("Ryo", "Dieser Sarg ist nun still.", interactionPortrait);
             return;
-        }
-        StartBattle(zombieData, 1);
-    }
+            }
+            StartBattle(zombieData, 1);
+            }
 
-    private void OnInteractSargKlein2()
-    {
-        if (isCutsceneRunning) return;
-        if (QuestManager.Instance != null && QuestManager.Instance.zombie2Defeated)
-        {
-            DialogueUI.Instance?.ShowMessage("Ryo", "Dieser Sarg ist nun still.");
+            private void OnInteractSargKlein2()
+            {
+            if (isCutsceneRunning) return;
+            if (QuestManager.Instance != null && QuestManager.Instance.zombie2Defeated)
+            {
+            DialogueUI.Instance?.ShowMessage("Ryo", "Dieser Sarg ist nun still.", interactionPortrait);
             return;
-        }
-        StartBattle(zombieData, 2);
-    }
+            }
+            StartBattle(zombieData, 2);
+            }
 
     private void StartBattle(EnemyData enemy, int zombieIndex)
     {

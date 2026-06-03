@@ -73,13 +73,13 @@ public class WassergeistBossController : MonoBehaviour
         if (DialogueUI.Instance != null)
         {
             Debug.Log("[WassergeistBoss] Showing first dialogue");
-            DialogueUI.Instance.ShowMessage("Wassergeist", "Ich habe... verloren...", 2.0f);
+            DialogueUI.Instance.ShowMessage("Wassergeist", "Ich habe... verloren...", 1.2f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
             
-            DialogueUI.Instance.ShowMessage("Ryo", "Der Kampf ist vorbei.", 2.0f);
+            DialogueUI.Instance.ShowMessage("Ryo", "Der Kampf ist vorbei.", 1.2f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
             
-            DialogueUI.Instance.ShowMessage("Wassergeist", "Nein... Meine Zeit ist vorbei.", 2.0f);
+            DialogueUI.Instance.ShowMessage("Wassergeist", "Nein... Meine Zeit ist vorbei.", 1.2f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
@@ -109,13 +109,13 @@ public class WassergeistBossController : MonoBehaviour
             
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage("Wassergeist", "Nun verstehe ich... weshalb ich deine Seele nicht erkennen konnte.", 2.5f);
+                DialogueUI.Instance.ShowMessage("Wassergeist", "Nun verstehe ich... weshalb ich deine Seele nicht erkennen konnte.", 1.5f);
                 while (DialogueUI.Instance.IsDialogueActive()) yield return null;
                 
-                DialogueUI.Instance.ShowMessage("Ryo", "Wovon redest du?", 2.0f);
+                DialogueUI.Instance.ShowMessage("Ryo", "Wovon redest du?", 1.2f);
                 while (DialogueUI.Instance.IsDialogueActive()) yield return null;
                 
-                DialogueUI.Instance.ShowMessage("Wassergeist", "Möge die Quelle dir vergeben...", 2.0f);
+                DialogueUI.Instance.ShowMessage("Wassergeist", "Möge die Quelle dir vergeben...", 1.2f);
                 while (DialogueUI.Instance.IsDialogueActive()) yield return null;
             }
 
@@ -152,10 +152,10 @@ public class WassergeistBossController : MonoBehaviour
         Debug.Log("[WassergeistBoss] Showing final dialogue");
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage("Stimme / ???", "Meeehr Seelen!", 2.5f);
+            DialogueUI.Instance.ShowMessage("Stimme / ???", "Meeehr Seelen!", 1.5f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
             
-            DialogueUI.Instance.ShowMessage("Ryo", "Ugh...!", 1.5f);
+            DialogueUI.Instance.ShowMessage("Ryo", "Ugh...!", 0.8f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 

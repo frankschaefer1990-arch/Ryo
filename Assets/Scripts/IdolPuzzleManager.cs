@@ -13,6 +13,7 @@ public class IdolPuzzleManager : MonoBehaviour
     public DirectionTarget[] targets;
     public GameObject wallToDeactivate;
     public WaterfallMaster waterfallMaster; 
+    public Sprite interactionPortrait;
     public AudioClip solveSound;
     public UnityEvent OnPuzzleSolved;
     
@@ -64,7 +65,7 @@ public class IdolPuzzleManager : MonoBehaviour
 
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage("Ryo", "Der Wasserfall ist verschwunden... Das muss der Weg sein.", 3.5f);
+                DialogueUI.Instance.ShowMessage("Ryo", "Der Wasserfall ist verschwunden... Das muss der Weg sein.", interactionPortrait, 3.5f);
             }
 
             ApplySolvedState(false);

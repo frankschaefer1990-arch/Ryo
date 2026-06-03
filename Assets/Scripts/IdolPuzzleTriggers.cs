@@ -4,6 +4,7 @@ public class IdolPuzzleEntryTrigger : MonoBehaviour
 {
     public string message = "Welch ein seltsamer Ort";
     public string speaker = "Ryo";
+    public Sprite portrait;
     private bool hasTriggered = false;
 
     private void Start()
@@ -18,7 +19,7 @@ public class IdolPuzzleEntryTrigger : MonoBehaviour
         
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage(speaker, message);
+            DialogueUI.Instance.ShowMessage(speaker, message, portrait);
             if (QuestManager.Instance != null) QuestManager.Instance.level2IntroSeen = true;
         }
     }
@@ -28,6 +29,7 @@ public class IdolPuzzleWallTrigger : MonoBehaviour
 {
     public string message = "Wer den Wächter der Wasserfälle will sehen, muss alle Statuen zum Brunnen drehen.";
     public string speaker = "???";
+    public Sprite portrait;
     private bool isPlayerInside = false;
     private bool popupShown = false;
 
@@ -37,7 +39,7 @@ public class IdolPuzzleWallTrigger : MonoBehaviour
         {
             if (DialogueUI.Instance != null)
             {
-                DialogueUI.Instance.ShowMessage(speaker, message);
+                DialogueUI.Instance.ShowMessage(speaker, message, portrait);
                 popupShown = true;
             }
         }

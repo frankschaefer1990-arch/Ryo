@@ -60,9 +60,17 @@ public class MerchantInteraction : MonoBehaviour
     {
         if (isTalking) return;
         isTalking = true;
+
+        string currentMessage = merchantMessage;
+        if (QuestManager.Instance != null && QuestManager.Instance.defeatedTempleBoss && 
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Legend of Ryo")
+        {
+            currentMessage = "Ryo, ich habe hier was zum Sonderpreis für dich! Das Schwert und der Stab sind jetzt im Angebot.";
+        }
+
         if (DialogueUI.Instance != null)
         {
-            DialogueUI.Instance.ShowMessage(speakerName, merchantMessage, speakerPortrait, 1.2f);
+            DialogueUI.Instance.ShowMessage(speakerName, currentMessage, speakerPortrait, 0.8f);
         }
         Invoke(nameof(ResetTalkState), 1.2f);
     }

@@ -52,7 +52,7 @@ public class NPCInteraction : MonoBehaviour
         if (randomDialogues == null || randomDialogues.Length == 0) return;
         
         string msg = randomDialogues[Random.Range(0, randomDialogues.Length)];
-        DialogueUI.Instance.ShowMessage(speakerName, msg, portrait, 1.2f);
+        DialogueUI.Instance.ShowMessage(speakerName, msg, portrait, 0.8f);
 }
 
     private void OnDrawGizmosSelected()

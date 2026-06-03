@@ -1597,6 +1597,7 @@ MonoBehaviour:
   heartbeatSFX: {fileID: 8300000, guid: 086d57c07f0cd85438fc34f6efcf0030, type: 3}
   soulBallObject: {fileID: 1159801451}
   bossObject: {fileID: 1788766324}
+  interactionPortrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
 --- !u!4 &1814710225
 Transform:
   m_ObjectHideFlags: 0

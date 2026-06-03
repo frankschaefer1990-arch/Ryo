@@ -366,7 +366,9 @@ MonoBehaviour:
   legacyPopupText: {fileID: 1779554590}
   speakerNameObject: {fileID: 248821920}
   speakerNameText: {fileID: 248821923}
+  speakerPortrait: {fileID: 0}
   defaultSpeakerName: Ryo
+  defaultPortrait: {fileID: 0}
   letterDelay: 0.03
 --- !u!4 &186002769
 Transform:
@@ -1156,7 +1158,7 @@ SpriteRenderer:
   m_Size: {x: 15.36, y: 9.82}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &375823445
 Transform:
@@ -2537,8 +2539,8 @@ Camera:
   m_GameObject: {fileID: 1279165486}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2762,6 +2764,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861161bc43bef714e9b9fba0b2c1e6b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComboSystem
+  qteHintSound: {fileID: 0}
+  qteVolume: 1
+  pauseDuration: 0.15
+  perfectScale: 1
 --- !u!114 &1538556067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2780,6 +2786,21 @@ MonoBehaviour:
   playerPos: {fileID: 0}
   enemyPos: {fileID: 0}
   slashEffect: {fileID: 1538556065}
+  lightningEffect: {fileID: 0}
+  audioSource: {fileID: 0}
+  damageFont: {fileID: 0}
+  comboStrikeObjects: []
+  blitzAnimationObject: {fileID: 0}
+  enemyAttackVisual: {fileID: 0}
+  playerAura: {fileID: 0}
+  shinigamiSprite: {fileID: 0}
+  shinigamiOffset: {x: 0, y: -0.5, z: 0}
+  shinigamiSlashSprite: {fileID: 0}
+  shinigamiSlashSound: {fileID: 0}
+  blockVisual: {fileID: 0}
+  blockSound: {fileID: 0}
+  state: 0
+  battleMusic: {fileID: 0}
 --- !u!4 &1538556068
 Transform:
   m_ObjectHideFlags: 0
@@ -2811,15 +2832,68 @@ MonoBehaviour:
   playerHPText: {fileID: 0}
   enemyHPFill: {fileID: 741762297}
   enemyHPText: {fileID: 0}
+  enemyManaFill: {fileID: 0}
+  enemyManaText: {fileID: 0}
+  playerManaFill: {fileID: 0}
+  playerManaText: {fileID: 0}
+  curseBarRoot: {fileID: 0}
+  curseFill: {fileID: 0}
+  curseValueText: {fileID: 0}
+  curseGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
   enemyNameText: {fileID: 248821923}
-  qteText: {fileID: 0}
+  qteRoot: {fileID: 0}
+  qteKeyText: {fileID: 0}
+  qteOuterRing: {fileID: 0}
+  qteShrinkRing: {fileID: 0}
+  qteButtonCore: {fileID: 0}
+  qteController: {fileID: 0}
+  qteFeedbackText: {fileID: 0}
+  battleInfoPanel: {fileID: 0}
+  skillNameText: {fileID: 0}
   commandPanel: {fileID: 481890945}
   attackPanel: {fileID: 2135114337}
   spellPanel: {fileID: 2126294093}
   itemPanel: {fileID: 192021028}
   itemButtonText: {fileID: 1724288935}
-  spellButtonText: {fileID: 0}
-  attackButtonText: {fileID: 0}
+  manaItemButtonText: {fileID: 0}
+  qteSuccessColor: {r: 0, g: 1, b: 0, a: 1}
+  qteFailColor: {r: 1, g: 0, b: 0, a: 1}
+  lerpSpeed: 2
+  targetPlayerHP: 1
+  targetEnemyHP: 1
+  targetPlayerMana: 1
+  targetEnemyMana: 1
+  gameOverPanel: {fileID: 0}
+  allSkills: []
 --- !u!1 &1647494261
 GameObject:
   m_ObjectHideFlags: 0
@@ -3547,7 +3621,7 @@ SpriteRenderer:
   m_Size: {x: 15.36, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1764204919
 GameObject:

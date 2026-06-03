@@ -124,12 +124,12 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-    public void ShowMessage(string speakerName, string message, float visibleDuration = 1.0f)
+    public void ShowMessage(string speakerName, string message, float visibleDuration = 0.8f)
     {
         ShowMessage(speakerName, message, null, visibleDuration);
     }
 
-    public void ShowMessage(string speakerName, string message, Sprite portrait, float visibleDuration = 1.0f)
+    public void ShowMessage(string speakerName, string message, Sprite portrait, float visibleDuration = 0.8f)
     {
         Debug.Log($"DialogueUI: ShowMessage called. Speaker: {speakerName}, Msg: {message}");
 

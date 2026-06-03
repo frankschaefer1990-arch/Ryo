@@ -28125,6 +28125,8 @@ MonoBehaviour:
   lockedDoorPopup: {fileID: 1830977142}
   shopPanel: {fileID: 1607514325}
   furniturePanel: {fileID: 1050076888}
+  echoPanel: {fileID: 0}
+  echoPanelUI: {fileID: 0}
   chestUI: {fileID: 1214356385}
   backpackGoldText: {fileID: 1613248718}
   backpackKey: 98

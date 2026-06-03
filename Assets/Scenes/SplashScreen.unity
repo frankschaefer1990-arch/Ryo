@@ -2790,7 +2790,7 @@ MonoBehaviour:
   speakerNameText: {fileID: 1427225597}
   speakerPortrait: {fileID: 0}
   defaultSpeakerName: Ryo
-  defaultPortrait: {fileID: 0}
+  defaultPortrait: {fileID: -1171790437229086565, guid: 207fdb2503c52c54f9e96fd51d2dcbac, type: 3}
   letterDelay: 0.05
 --- !u!1 &98281691
 GameObject:
@@ -37441,6 +37441,8 @@ MonoBehaviour:
     musicClip: {fileID: 8300000, guid: bf0f6dbd690687c4c80ebc3e9ebeffb1, type: 3}
   - sceneName: Schleierpfad
     musicClip: {fileID: 8300000, guid: 701df46c6a82f474ba38b4a7d6bdc360, type: 3}
+  - sceneName: Bossraum
+    musicClip: {fileID: 8300000, guid: 28dfa1ee19ac40a409c4c75003d9596c, type: 3}
 --- !u!1 &1540589960
 GameObject:
   m_ObjectHideFlags: 0
@@ -42327,7 +42329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62efc0a4f890e7647b8ab66ca85b7e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GeneralTooltipTrigger
-  content: "Preis: 70 Gold\nBasic Helm\n+20 Vitalit\xE4t, +5 R\xFCstung"
+  content: "Preis: 70 Gold\nBasic Helm\n+5 Vitalit\xE4t, +4 R\xFCstung"
   pivotOverride: {x: 1, y: 0}
 --- !u!1 &1690981755
 GameObject:
@@ -47944,7 +47946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62efc0a4f890e7647b8ab66ca85b7e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GeneralTooltipTrigger
-  content: "Preis: 150 Gold\nBasic R\xFCstung\n+40 Vitalit\xE4t, +10 R\xFCstung"
+  content: "Preis: 150 Gold\nBasic R\xFCstung\n+12 Vitalit\xE4t, +8 R\xFCstung"
   pivotOverride: {x: 1, y: 0}
 --- !u!1 &1950201612
 GameObject:

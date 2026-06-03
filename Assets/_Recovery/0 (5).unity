@@ -326,6 +326,8 @@ MonoBehaviour:
   maxX: 12.29
   minY: -12.29
   maxY: 12.29
+  smoothTime: 0.15
+  targetOverride: {fileID: 0}
 --- !u!81 &127825834
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1537,7 +1539,7 @@ SpriteRenderer:
   m_Size: {x: 12.54, y: 12.54}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1788766326
 Transform:

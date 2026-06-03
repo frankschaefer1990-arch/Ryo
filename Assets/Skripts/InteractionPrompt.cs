@@ -126,6 +126,12 @@ public class InteractionPrompt : MonoBehaviour
                 return true;
             }
 
+            // Elara Rest Interaction
+            if (hit.GetComponentInParent<ElaraRestInteraction>() != null)
+            {
+                return true;
+            }
+
             // Stone Idols
             if (hit.GetComponentInParent<StoneIdol>() != null)
             {

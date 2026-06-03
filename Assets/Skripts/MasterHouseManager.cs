@@ -57,19 +57,19 @@ public class MasterHouseManager : MonoBehaviour
                 if (DialogueUI.Instance != null)
                 {
                     Debug.Log("MasterHouseManager: Showing HONOR message.");
-                    DialogueUI.Instance.ShowMessage("Ryo", unlockOnceMessage, 3.5f);
+                    DialogueUI.Instance.ShowMessage("Ryo", unlockOnceMessage, 2.0f);
                     QuestManager.Instance.masterHouseMessageSeen = true;
-                }
-            }
-        }
-        else
-        {
-            if (DialogueUI.Instance != null)
-            {
-                Debug.Log("MasterHouseManager: Showing LOCKED message.");
-                DialogueUI.Instance.ShowMessage("Ryo", lockedMessage, 2.5f);
-            }
-        }
+                    }
+                    }
+                    }
+                    else
+                    {
+                    if (DialogueUI.Instance != null)
+                    {
+                    Debug.Log("MasterHouseManager: Showing LOCKED message.");
+                    DialogueUI.Instance.ShowMessage("Ryo", lockedMessage, 1.5f);
+                    }
+                    }
     }
 
     public void OnPlayerExitHouse()

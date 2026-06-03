@@ -2466,7 +2466,9 @@ MonoBehaviour:
   legacyPopupText: {fileID: 0}
   speakerNameObject: {fileID: 0}
   speakerNameText: {fileID: 1427225597}
+  speakerPortrait: {fileID: 0}
   defaultSpeakerName: Ryo
+  defaultPortrait: {fileID: 0}
   letterDelay: 0.05
 --- !u!1 &98281691
 GameObject:
@@ -13142,7 +13144,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 18.000061, y: -104.99997}
+  m_AnchoredPosition: {x: 18, y: -104.99997}
   m_SizeDelta: {x: 769.8691, y: 61.4074}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &637749247
@@ -22382,6 +22384,10 @@ MonoBehaviour:
   bottomMenuPanel: {fileID: 637749244}
   lockedDoorPopup: {fileID: 1830977142}
   shopPanel: {fileID: 1607514325}
+  furniturePanel: {fileID: 0}
+  echoPanel: {fileID: 0}
+  echoPanelUI: {fileID: 0}
+  chestUI: {fileID: 0}
   backpackGoldText: {fileID: 1613248718}
   backpackKey: 98
   inventoryKey: 105
@@ -26776,6 +26782,7 @@ MonoBehaviour:
   - {fileID: 1671278106}
   - {fileID: 1188336635}
   nameInputField: {fileID: 104105466}
+  titleText: {fileID: 0}
 --- !u!114 &1371561034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32433,6 +32440,10 @@ MonoBehaviour:
   saveSystemPrefab: {fileID: 0}
   spawnPointName: 
   isLoadingSave: 0
+  lastGameplayScene: 
+  lastGameplayPosition: {x: 0, y: 0, z: 0}
+  lastEnemyTriggerID: 
+  defeatedEnemiesInCurrentScene: []
 --- !u!1 &1675696581
 GameObject:
   m_ObjectHideFlags: 0
@@ -35553,7 +35564,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.39996338, y: -1.2999878}
+  m_AnchoredPosition: {x: -0.39990234, y: -1.2999878}
   m_SizeDelta: {x: 600, y: 120}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &1830977145
@@ -40673,7 +40684,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
   backpackPanel: {fileID: 0}
+  inventoryPanel: {fileID: 0}
+  basicSword: {fileID: 0}
+  rareSword: {fileID: 0}
+  epicSword: {fileID: 0}
+  legendarySword: {fileID: 0}
+  basicWand: {fileID: 0}
+  rareWand: {fileID: 0}
+  epicWand: {fileID: 0}
+  legendaryWand: {fileID: 0}
+  undeadSword: {fileID: 0}
+  basicHelm: {fileID: 0}
+  rareHelm: {fileID: 0}
+  epicHelm: {fileID: 0}
+  legendaryHelm: {fileID: 0}
+  basicArmor: {fileID: 0}
+  rareArmor: {fileID: 0}
+  epicArmor: {fileID: 0}
+  legendaryArmor: {fileID: 0}
+  basicRing: {fileID: 0}
+  rareRing: {fileID: 0}
+  epicRing: {fileID: 0}
+  legendaryRing: {fileID: 0}
+  basicBoots: {fileID: 0}
+  rareBoots: {fileID: 0}
+  epicBoots: {fileID: 0}
+  legendaryBoots: {fileID: 0}
   potionSprite: {fileID: 21300000, guid: 02adfd7ade2c47e49b2020882f0d3b95, type: 3}
+  manaPotionSprite: {fileID: 0}
+  weaponSlot: {fileID: 0}
+  helmSlot: {fileID: 0}
+  armorSlot: {fileID: 0}
+  ring1Slot: {fileID: 0}
+  ring2Slot: {fileID: 0}
+  bootsSlot: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

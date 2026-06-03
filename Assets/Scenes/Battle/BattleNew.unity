@@ -458,7 +458,9 @@ MonoBehaviour:
   legacyPopupText: {fileID: 0}
   speakerNameObject: {fileID: 1550437939011570512}
   speakerNameText: {fileID: 5195222545437277146}
+  speakerPortrait: {fileID: 0}
   defaultSpeakerName: Ryo
+  defaultPortrait: {fileID: 0}
   letterDelay: 0.05
 --- !u!225 &261052463
 CanvasGroup:
@@ -645,8 +647,8 @@ Camera:
   m_GameObject: {fileID: 651839775}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -6553,7 +6555,6 @@ MonoBehaviour:
 
     Curse: Increases the effectiveness and scaling of
     all passive curse skills.'
-  baseHealth: 100
   maxHealth: 100
   currentHealth: 100
   maxMana: 50
@@ -6570,6 +6571,17 @@ MonoBehaviour:
   vitalityText: {fileID: 0}
   intelligenceText: {fileID: 0}
   curseText: {fileID: 0}
+  baseHealth: 100
+  baseMana: 50
+  bonusArmor: 0
+  bonusSpellDamage: 0
+  bonusPhysicalDamage: 0
+  equippedWeapon: 0
+  equippedHelm: 0
+  equippedArmor: 0
+  equippedRing1: 0
+  equippedRing2: 0
+  equippedBoots: 0
 --- !u!1 &4756897994588040948
 GameObject:
   m_ObjectHideFlags: 0

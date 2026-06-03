@@ -275,6 +275,8 @@ MonoBehaviour:
   maxX: 24.822855
   minY: -24.52751
   maxY: 24.63249
+  smoothTime: 0.15
+  targetOverride: {fileID: 0}
 --- !u!1 &303659177
 GameObject:
   m_ObjectHideFlags: 0
