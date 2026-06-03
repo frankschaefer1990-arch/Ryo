@@ -91,7 +91,7 @@ public Button cancelButton;
         string displayName = currentStatue.bossName;
         if (displayName == "Skelettkrieger") displayName = "Skelett Krieger";
 
-        for (int i = 1; i <= maxLevel; i++)
+        for (int i = maxLevel; i >= 1; i--)
         {
             int level = i;
             GameObject btnObj = Instantiate(levelButtonTemplate, levelButtonContainer);

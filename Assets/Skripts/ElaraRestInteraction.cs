@@ -63,25 +63,59 @@ public class ElaraRestInteraction : MonoBehaviour
 
     private void FindUIReferences()
     {
-        var connector = FurnitureUIConnector.Instance;
-        if (connector != null)
+        // Try MyUIManager first
+        if (MyUIManager.Instance != null && MyUIManager.Instance.furniturePanel != null)
         {
-            interactionPanel = connector.panel;
-            textDisplay = connector.textDisplay;
-            choiceButtons = connector.choiceButtons;
-            sleepButton = connector.sleepButton;
-            cancelButton = connector.cancelButton;
+            interactionPanel = MyUIManager.Instance.furniturePanel;
+            // Try to get other references from Connector if possible, or search children
+            var connector = MyUIManager.Instance.GetComponentInChildren<FurnitureUIConnector>(true);
+            if (connector != null)
+            {
+                textDisplay = connector.textDisplay;
+                choiceButtons = connector.choiceButtons;
+                sleepButton = connector.sleepButton;
+                cancelButton = connector.cancelButton;
+            }
+            Debug.Log($"Elara: Linked to UI via MyUIManager.");
+            return;
+        }
+
+        var fConnector = FurnitureUIConnector.Instance;
+        if (fConnector == null)
+        {
+            fConnector = Object.FindAnyObjectByType<FurnitureUIConnector>(FindObjectsInactive.Include);
+        }
+
+        if (fConnector != null)
+        {
+            interactionPanel = fConnector.panel;
+            textDisplay = fConnector.textDisplay;
+            choiceButtons = fConnector.choiceButtons;
+            sleepButton = fConnector.sleepButton;
+            cancelButton = fConnector.cancelButton;
+            Debug.Log($"Elara: Successfully linked to UI via {fConnector.gameObject.name}");
+        }
+        else
+        {
+            Debug.LogWarning("Elara: Could not find FurnitureUIConnector or MyUIManager in scene.");
         }
     }
 
     private IEnumerator OfferRestRoutine()
     {
+        Debug.Log("Elara: Starting OfferRestRoutine");
         isDialogueRunning = true;
 
         if (DialogueUI.Instance != null)
         {
+            Debug.Log($"Elara: Showing message: {offerMessage}");
             DialogueUI.Instance.ShowMessage(speakerName, offerMessage, portrait, 0.8f);
             while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+            Debug.Log("Elara: Dialogue finished");
+        }
+        else
+        {
+            Debug.LogWarning("Elara: DialogueUI.Instance is null");
         }
 
         OpenUI();
@@ -90,10 +124,21 @@ public class ElaraRestInteraction : MonoBehaviour
 
     private void OpenUI()
     {
-        if (interactionPanel == null) FindUIReferences();
-        if (interactionPanel == null) return;
+        Debug.Log("Elara: OpenUI called");
+        if (interactionPanel == null) 
+        {
+            Debug.Log("Elara: interactionPanel is null, trying to find UI references");
+            FindUIReferences();
+        }
+        
+        if (interactionPanel == null) 
+        {
+            Debug.LogError("Elara: interactionPanel is STILL null after FindUIReferences");
+            return;
+        }
 
         interactionPanel.SetActive(true);
+        Debug.Log($"Elara: Set interactionPanel {interactionPanel.name} to active");
         if (textDisplay != null) textDisplay.text = "Möchtest du dich ausruhen? (Mana & HP werden wiederhergestellt)";
         if (choiceButtons != null) choiceButtons.SetActive(true);
 

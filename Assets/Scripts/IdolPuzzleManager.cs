@@ -40,7 +40,7 @@ public class IdolPuzzleManager : MonoBehaviour
 
     private System.Collections.IEnumerator ShowCollapsedDialogue()
     {
-        yield return new WaitForSeconds(1.5f); // Wait for scene to settle
+        yield return new WaitForSeconds(1.0f); // Wait for scene to settle
         if (DialogueUI.Instance != null)
         {
             DialogueUI.Instance.ShowMessage("Ryo", "Die Boss Kammer ist eingestürzt.", interactionPortrait);

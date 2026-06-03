@@ -135,9 +135,13 @@ public class SkillSlotUI : MonoBehaviour, UnityEngine.EventSystems.IPointerEnter
             {
                 SkillManager.Instance.LearnOrUpgrade(skill);
             }
-            Refresh();
-        }
-    }
+            
+            // Refresh parent UI to update sorting
+            SkillUI parentUI = GetComponentInParent<SkillUI>();
+            if (parentUI != null) parentUI.RefreshUI();
+            else Refresh();
+            }
+            }
 
     public void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData)
     {

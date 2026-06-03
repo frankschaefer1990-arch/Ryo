@@ -38,6 +38,7 @@ public class FurnitureUIConnector : MonoBehaviour
 
     public void UpdateFurnitureReferences()
     {
+        Debug.Log("FurnitureUIConnector: UpdateFurnitureReferences called");
         // Find all furniture in current scene and assign references
         var allFurniture = Object.FindObjectsByType<HouseMasterFurniture>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var f in allFurniture)
@@ -47,10 +48,11 @@ public class FurnitureUIConnector : MonoBehaviour
             f.choiceButtons = choiceButtons;
             f.sleepButton = sleepButton;
             f.cancelButton = cancelButton;
-            Debug.Log($"FurnitureUIConnector: Connected to {f.gameObject.name}");
+            Debug.Log($"FurnitureUIConnector: Connected to HouseMasterFurniture {f.gameObject.name}");
         }
 
         var allElara = Object.FindObjectsByType<ElaraRestInteraction>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Debug.Log($"FurnitureUIConnector: Found {allElara.Length} ElaraRestInteraction(s)");
         foreach (var e in allElara)
         {
             e.interactionPanel = panel;
@@ -58,7 +60,7 @@ public class FurnitureUIConnector : MonoBehaviour
             e.choiceButtons = choiceButtons;
             e.sleepButton = sleepButton;
             e.cancelButton = cancelButton;
-            Debug.Log($"FurnitureUIConnector: Connected to {e.gameObject.name}");
+            Debug.Log($"FurnitureUIConnector: Connected to ElaraRestInteraction {e.gameObject.name}. Panel null? {panel == null}");
         }
     }
 }

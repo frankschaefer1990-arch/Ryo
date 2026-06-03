@@ -1,10 +1,12 @@
 using UnityEngine;
+using System.Collections;
 
 public class NPCInteraction : MonoBehaviour
 {
     [Header("NPC Settings")]
     public string speakerName = "NPC";
     public Sprite portrait;
+    public bool isSequence = false; // If true, shows all dialogues in order. If false, picks one at random.
     
     [TextArea]
     public string[] randomDialogues;
@@ -15,6 +17,7 @@ public class NPCInteraction : MonoBehaviour
     
     private Transform player;
     private bool playerInRange = false;
+    private bool isDialogueRunning = false;
 
     private void Start()
     {
@@ -32,11 +35,12 @@ public class NPCInteraction : MonoBehaviour
         float distance = Vector2.Distance(transform.position, player.position);
         playerInRange = distance <= interactionRange;
 
-        if (playerInRange && Input.GetKeyDown(interactKey))
+        if (playerInRange && Input.GetKeyDown(interactKey) && !isDialogueRunning)
         {
             if (DialogueUI.Instance != null && !DialogueUI.Instance.IsDialogueActive())
             {
-                ShowRandomDialogue();
+                if (isSequence) ShowSequenceDialogue();
+                else ShowRandomDialogue();
             }
         }
     }
@@ -53,7 +57,30 @@ public class NPCInteraction : MonoBehaviour
         
         string msg = randomDialogues[Random.Range(0, randomDialogues.Length)];
         DialogueUI.Instance.ShowMessage(speakerName, msg, portrait, 0.8f);
-}
+    }
+
+    private void ShowSequenceDialogue()
+    {
+        if (randomDialogues == null || randomDialogues.Length == 0) return;
+        StartCoroutine(DialogueSequenceRoutine());
+    }
+
+    private IEnumerator DialogueSequenceRoutine()
+    {
+        isDialogueRunning = true;
+        
+        foreach (string msg in randomDialogues)
+        {
+            if (DialogueUI.Instance != null)
+            {
+                DialogueUI.Instance.ShowMessage(speakerName, msg, portrait, 0.8f);
+                while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+                yield return new WaitForSeconds(0.1f); // Tiny gap between windows
+            }
+        }
+        
+        isDialogueRunning = false;
+    }
 
     private void OnDrawGizmosSelected()
     {

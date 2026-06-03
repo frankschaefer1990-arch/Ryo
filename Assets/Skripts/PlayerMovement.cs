@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -28,6 +29,14 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStats playerStats;
     private bool wasLockedLastFrame = false;
 
+    private float sceneLoadLockTimer = 0f;
+
+    public void TriggerSceneLoadLock(float duration = 1.0f)
+    {
+        sceneLoadLockTimer = duration;
+        Debug.Log($"PlayerMovement: Scene load lock triggered for {duration}s");
+    }
+
     public void SetFacingDirection(Vector2 direction)
     {
         if (direction.sqrMagnitude > 0.01f)
@@ -39,6 +48,33 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetFloat("MoveY", lastMovement.y);
             }
         }
+    }
+
+    void Awake()
+    {
+        SceneManager.sceneLoaded += OnSceneLoadedInternal;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoadedInternal;
+    }
+
+    private void OnSceneLoadedInternal(Scene scene, LoadSceneMode mode)
+    {
+        // Don't lock in battle or menus
+        string sName = scene.name.ToLower();
+        if (sName.Contains("battle") || sName.Contains("kampf") || sName.Contains("menu") || sName.Contains("splash"))
+            return;
+
+        Debug.Log($"PlayerMovement: Scene {scene.name} loaded. Triggering 1.0s movement lock.");
+        TriggerSceneLoadLock(1.0f); 
+    }
+
+    void OnEnable()
+    {
+        // Still keep this for first spawn
+        if (sceneLoadLockTimer <= 0) sceneLoadLockTimer = 1.0f;
     }
 
     void Start()
@@ -136,8 +172,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // =========================
-        // UI & CURSOR SYSTEM
+        // MOVEMENT LOCK
         // =========================
+        if (sceneLoadLockTimer > 0)
+        {
+            sceneLoadLockTimer -= Time.deltaTime;
+        }
+
         bool dialogueActive = DialogueUI.Instance != null && DialogueUI.Instance.IsDialogueActive();
         bool uiPanelOpen = MyUIManager.Instance != null && MyUIManager.Instance.IsAnyPanelOpen();
         bool radialMenuActive = RadialMenu.Instance != null && RadialMenu.Instance.IsActive;
@@ -165,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
         // =========================
         // MOVEMENT LOCK
         // =========================
-        if (!canMove || dialogueActive || uiPanelOpen)
+        if (!canMove || dialogueActive || uiPanelOpen || sceneLoadLockTimer > 0)
         {
             movement = Vector2.zero;
             if (animator != null)
