@@ -118,17 +118,18 @@ public class HouseMasterFurniture : MonoBehaviour
 
         if (DialogueUI.Instance != null)
         {
-            // Duration calculation: typewriter time + visible time + buffer
-            float letterTime = 0.02f;
+            float waitAfter = 0.8f; // How long the box stays open AFTER the text is fully typed
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage, 2.1f);
-            yield return new WaitForSeconds(deskMessage.Length * letterTime + 2.1f + 0.3f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage, waitAfter);
+            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+            yield return new WaitForSeconds(0.2f); // Tiny gap between messages
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage2, 2.1f);
-            yield return new WaitForSeconds(deskMessage2.Length * letterTime + 2.1f + 0.3f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage2, waitAfter);
+            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
+            yield return new WaitForSeconds(0.2f);
             
-            DialogueUI.Instance.ShowMessage("Meister", deskMessage3, 1.8f);
-            yield return new WaitForSeconds(deskMessage3.Length * letterTime + 1.8f + 0.3f);
+            DialogueUI.Instance.ShowMessage("Meister", deskMessage3, waitAfter);
+            while (DialogueUI.Instance.IsDialogueActive()) yield return null;
         }
 
         if (pm != null) pm.canMove = true;
